@@ -1,0 +1,27 @@
+[project]
+name = "trackteroid"
+authors = [
+    { name = "Rico Koschmitzky" },
+    { name = "Dennis Weil" },
+]
+description = "Fluent, object-oriented wrapper for Ftrack queries. Powerful functional-style interactions with resulting collections."
+readme = "README.md"
+license = { file = "LICENSE" }
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    "ftrack-python-api",
+    "wrapt"
+]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = { attr = "trackteroid.constants.__VERSION__" }
+
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"

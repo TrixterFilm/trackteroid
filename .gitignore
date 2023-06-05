@@ -1,3 +1,6 @@
 *.pyc
 .idea
 .vscode
+venv
+build
+*.egg-info
