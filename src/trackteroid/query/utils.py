@@ -30,6 +30,9 @@ def build_partial_query(target, arguments, attribute):
             if len(relation_tokens) > 1:
                 attribute = "{}_id".format(relation_tokens[-1])
                 relation = ".".join(relation_tokens[:-1])
+            else:
+                attribute = "{}_id".format(relation_tokens[0])
+                relation = ""
 
         if len(non_pattern_elements) == 1:
             non_pattern_expressions.append(
