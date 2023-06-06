@@ -276,8 +276,6 @@ class Query(object):
                 # resolved already wrapped - like projections=[AssetBuild.name]
                 if isinstance(projection, RelationshipDeclaration):
                     projection = projection.resolve_path_for(self.entity_type, self.session, self.schema)
-                    if not isinstance(projection, list):
-                        projection = [projection]
                     _projections.extend(projection)
                 else:
                     _projections.append(projection)

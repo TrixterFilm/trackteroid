@@ -1,3 +1,4 @@
+import itertools
 import importlib
 import inspect
 import logging
@@ -18,6 +19,7 @@ class RelationshipDeclaration(object):
 
     """
     def __init__(self, parent, child):
+        self._filter_re = re.compile("\[\w+\]")
         self._chain = []
         self._entities_module = importlib.import_module("..entities", __name__)
         self._chain.extend(
@@ -26,7 +28,6 @@ class RelationshipDeclaration(object):
                 getattr(self._entities_module, child.__name__ if not isinstance(child, basestring) else child, child)
             ]
         )
-        x = 1
 
     def __getattr__(self, item):
         if not item.startswith("__"):
@@ -38,9 +39,7 @@ class RelationshipDeclaration(object):
         for item in self._chain:
             if item:
                 if not isinstance(item, basestring):
-
                     item.relationship(session=session, schema=schema)
-                    # TODO:
                     relationship = entity_type.relationship.get(item)
                     if not relationship:
                         _LOG.warning("Unable to retrieve relationship of `{}` for `{}`".format(
@@ -48,13 +47,17 @@ class RelationshipDeclaration(object):
                             item
                         ))
                         continue
-
-                    relationships.append(relationship.relation)
+                    if not isinstance(relationship.relation, list):
+                        relationships.append([self._filter_re.sub("", relationship.relation)])
+                    else:
+                        relationships.append(
+                            [self._filter_re.sub("", _) for _ in relationship.relation]
+                        )
                     entity_type = item
                 else:
-                    relationships.append(item)
+                    relationships.append([item])
 
-        return ".".join(relationships)
+        return [".".join(_) for _ in itertools.product(*relationships)]
 
 
 
