@@ -4,4 +4,4 @@
 
 # Trackteroid
 
-**Fluent, object-oriented wrapper for Ftrack queries. Powerful functional-style interactions with resulting collections.**
+**Declarative, object-oriented wrapper for Ftrack queries. Powerful functional-style interactions with resulting collections.**
