@@ -21,15 +21,17 @@ print(version_collection)
 
 ### The Query
 
-In order to receive data from the Ftrack server you need to perform queries. 
-The `Query` class is the entry point for your data access and needs to be initialized with the entity type you want to receive: `Query(<Entity Type>)`.
+To retrieve data from the Ftrack server, you need to perform queries using the Query class. This class serves as the entry point for accessing data and should be initialized with the desired entity type: `Query(<Entity Type>)`.
 
-In the prior example we want to receive any `AssetVersion`, but only take the first result from the server. Any `get_` method on the Query instance we do refer to as **terminators**. 
-Terminators will send the resolved query instruction to the server and fetch the data. The result is a collection, namely an EntityCollection or an EmptyCollection instance. When printed this is being represented.
+In the previous example, we wanted to retrieve any `AssetVersion` but only fetched the first result from the server. Any `get_` method on the Query instance we do refer to as **terminators**. 
+These terminators are responsible for executing the resolved query instruction, sending it to the Ftrack server, and fetching the corresponding data. 
+
+The result is returned as a collection, specifically an instance of either EntityCollection or EmptyCollection, depending on the outcome. When printed, the collection is represented as:
 
 `EntityCollection[<Entity Type>]{<Number of Results>}` or `EmptyCollection[<Entity Type>]`
 
-You can resolve the query without sending it to the server by just printing it or calling `str` on it.
+If you wish to preview the resolved query without sending it to the server, you can simply print the collection or call str on it.
+
 ```python
 print(Query(AssetVersion))
 # output: select id, asset.name, version from AssetVersion
@@ -37,19 +39,26 @@ print(Query(AssetVersion))
 
 #### Projections
 
-When you want to access data on your resulting collection you have to ensure to that you _project_ the attributes you need to access later.
-A typical resolved query looks like this:
+When accessing data from the resulting collection, it is important to _project_ (specify) the attributes that you will need to access later. 
+A resolved query typically takes the form:
 
-`select <projections> from <entity type> where <criteria>`
+```sql
+select <projections> from <entity type> where <criteria>
+```
 
-If you take a look at the prior example you can see that `id`, `asset.name` and `version` have been included within the resolved query instruction. This is because some attributes are so common to access that it can be predefined for some entity types.
+Looking back at the previous example, you can observe that the attributes _id_, _asset.name_, and _version_ were included in the resolved query instruction. 
+This was done because these attributes are commonly accessed and can be predefined for certain entity types.
+
+By projecting the necessary attributes in the query, you ensure that the resulting collection includes the specific data you require.
 
 ```python
 print(AssetVersion.projections)
 # output: ['id', 'asset.name', 'version']
 ```
-Different to the Ftrack Python API the default Session within Trackteroid disables the auto-population feature. That means 
-it will not automatically fetch missing data on attribute access on your query result.
+In contrast to the Ftrack Python API, the default Session within Trackteroid disables the auto-population feature. This means that the Session will not automatically fetch missing data when accessing attributes on your collections. Instead, the data is fetched only for the attributes that were explicitly projected in the query.
+This behavior provides a more controlled and optimized approach to data retrieval. By avoiding unnecessary data fetching, disabled auto-population minimizes network requests and might improve performance significantly. 
+
+When working with Trackteroid, it is important to be aware of this behavior and ensure that you project all the attributes you need in your queries. 
 
 ```python
 print(Query(AssetVersion).get_first().id)
@@ -61,7 +70,8 @@ print(Query(AssetVersion).get_first().comment)
 print(Query(AssetVersion).get_first(projections=["comment"]).comment)
 # output: [u'Hello World']
 ```
-You will receive a `Symbol(NOT_SET)` when data wasn't fetched, but you're trying to access it. Nested relationships within the projections would be described via dot notation.
+When attempting to access the comment attribute without projecting it, the output contains `Symbol(NOT_SET)`, indicating that the data for the comment attribute was not fetched.
+However, by modifying the query to include the comment attribute in the projections list (projections=["comment"]) and accessing it, the output becomes [u'Hello World'], providing the retrieved value of the comment.
 
 ```python
 print(
@@ -71,7 +81,7 @@ print(
 )
 # output: [u'DummyProject']
 ```
-As you can already guess knowing these relationships is not necessarily easy and written queries might become long. Luckily for many relationships there is a way shorter and easier alternative.
+Knowing these relationships and constructing written queries can be challenging, leading to long and complex queries. However, Trackteroid provides a shorter and easier alternative for many relationships
 ```python
 from trackteroid import (
     Query,
@@ -91,10 +101,12 @@ print(
 # output: ([u'DummyProject'], [u'DummyProject'])
 ```
 
+This concise and intuitive approach simplifies querying and attribute retrieval for complex relationships.
+
 #### Filtering
 
-To avoid fetching more data than you eventually needed and to keep your code as performant as possible you should try to narrow down the results directly via Query critiera.
-Criteria methods are following a `by_` and `not_by_` name prefix and can be chained together. Different entity types expose different criteria methods but many share common ones.
+To ensure optimal performance and avoid fetching unnecessary data, it's recommended to narrow down the query results directly using Query criteria. Criteria methods in Trackteroid follow a `by_` and `not_by_` name prefix convention and can be chained together. While different entity types may have different criteria methods available, many share common ones.
+By utilizing criteria methods, you can specify filtering conditions directly in the query construction process, reducing the amount of data retrieved. This approach helps improve code performance and efficiency.
 
 ```python
 from trackteroid import (
@@ -115,17 +127,16 @@ print(
 )
 # output: EntityCollection[AssetVersion]{2}
 
-# get initial potential two AssetVersions of an Asset called 'SomeAsset'
+# get all AssetVersions with version number 1 or 2 of an Asset called 'SomeAsset'
 print(Query(AssetVersion).by_name("SomeAsset").by_version(1, 2)).get_all()
 # output: EntityCollection[AssetVersion]{2}
 
-# get initial potential two AssetVersions of any Asset that is not called 'SomeAsset'
+# get all AssetVersions with version number 1 or 2 of any Asset that is NOT called 'SomeAsset'
 print(Query(AssetVersion).not_by_name("SomeAsset").by_version(1, 2)).get_all()
 # output: EntityCollection[AssetVersion]{10}
 ```
 
-It is also possible filtering via a pattern using the `%` placeholder representing "zero or more of any character".
-
+Moreover, the query mechanism allows for pattern-based filtering using the % placeholder, which denotes "zero or more of any character". This feature enhances the flexibility and sophistication of your filtering options within queries.
 ```python
 from trackteroid import (
     Query,
@@ -143,9 +154,7 @@ print(Query(Asset).by_name("%Asset%").get_all().name)
 ```
 
 
-Often criteria describe the lookup of direct properties of an entity, like `id`, `name`, `metadata`. By default, they refer directly to the entity type that you want to receive as your results via `Query(<Entity Type>)`. 
-But those criteria also support defining a so called **target** that allows you to specify for what entity type you want to refer to its property instead.
-
+Frequently, criteria in the query mechanism involve searching for direct properties of an entity, such as _id_, _name_, or _metadata_. By default, those criteria are associated with the entity type specified in the Query, representing the desired results. However, criteria can also offer the flexibility to define a target, allowing you to specify the entity type for which you want to reference its property instead.
 ```python
 from trackteroid import (
     Query,
@@ -160,7 +169,7 @@ print(Query(Asset).by_name("SomeAsset").by_name(Project, "DummyProject", "DummyP
 # output: EntityCollection[Asset]{2}
 ```
 
-Per criterion that enable target support, you can optionally provide exactly one target as the first positional argument to define the relationship for the property used within the criterion.
+For criteria that support target specification, you have the option to provide exactly one target as the first positional argument. This target defines the relationship for the property used within the criterion.
 
 ### Limiting and Ordering
 
