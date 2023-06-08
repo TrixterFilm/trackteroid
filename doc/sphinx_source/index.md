@@ -38,4 +38,5 @@ In summary Trackeroid tries to empower developers by providing a more intuitive 
 ```{toctree}
 installation.md
 quickstart.md
+configuration.md
 ```

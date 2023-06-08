@@ -153,7 +153,6 @@ print(Query(Asset).by_name("%Asset%").get_all().name)
 # output: [u'SomeAsset', u'SomeAsset', u'SomeAsset', u'AnAssetClone']
 ```
 
-
 Frequently, criteria in the query mechanism involve searching for direct properties of an entity, such as _id_, _name_, or _metadata_. By default, those criteria are associated with the entity type specified in the Query, representing the desired results. However, criteria can also offer the flexibility to define a target, allowing you to specify the entity type for which you want to reference its property instead.
 ```python
 from trackteroid import (
@@ -187,6 +186,13 @@ print(Query(AssetVersion).get_all(limit=8, order="descending", order_by="version
 ```
 
 ## Defining Relationships
+
+One of the main objectives of Trackteroid is to minimize the need for in-depth knowledge of the underlying database structure when working with queries and resulting collections. This goal is accomplished through two distinct approaches.
+
+Firstly, it automatically derives relationships whenever possible by dynamically inspecting the schema of the current session. This capability allows for seamless handling of relationships without requiring explicit configuration.
+
+However, Ftrack's dynamic nature means that certain entity types may require configuring relationships to align with specific requirements. Trackteroid provides the flexibility to describe and represent contextual relationships for such cases, enabling customization and adaptation to meet individual needs.
+
 
 
 ## Collections
