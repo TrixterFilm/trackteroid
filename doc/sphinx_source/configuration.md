@@ -25,11 +25,9 @@ RELATIONSHIPS_RESOLVER = lambda api_version: {}
 
 When invoked, the API will pass the version string to the callable, ensuring resilience in the event of changes to the Trackteroid API that necessitate schema modifications. Your resolver function should return a dictionary adhering to a specific schema.
 
-Let's delve into the schema and demonstrate the usage of a custom resolver through a comprehensive example. In this example, we'll utilize a JSON file that the resolver will read and use to provide the necessary information.
+Let's explore the schema using a comprehensive example that involves reading a JSON file to provide the necessary relationship information.
 
-We implement a custom function that loads content from different json files:
-
-_trackteroid_user_config.py_
+Here's an example implementation of a custom resolver in a _trackteroid_user_config.py_ file.
 
 ```python
 def relationships_from_json(**kwargs):
@@ -47,10 +45,10 @@ def relationships_from_json(**kwargs):
 
 RELATIONSHIPS_RESOLVER = relationships_from_json
 ```
+In this example, the custom resolver function relationships_from_json reads the appropriate JSON file based on the API version. The returned data from the JSON file provides the relationship information needed by Trackteroid.
 
-We create a json file that adds relationship for AssetVersion and Component exlusively for demonstration purpose.
+Here's an example of the JSON file _trackteroid_relationships.json_ that conforms to the schema:
 
-_trackteroid_relationships.json_
 ```json
 {
    "entities":{
@@ -90,9 +88,8 @@ _trackteroid_relationships.json_
 }
 ```
 
-Based on the json example we can abstract the actual schema and explain the content.
+The resulting dictionary schema can be summarized as follows:
 
-_schema_
 ```
 {
   "entities":{
@@ -115,3 +112,48 @@ _schema_
   ]
 }
 ```
+
+The schema at the root level contains the relationships that will be used as the default schema for the Query. These relationships serve as the base schema, which can be reused or overridden for other custom schemas, as demonstrated in the examples for vfx and episodic.
+
+
+Here's an example to illustrate how the overrides are applied using the SCHEMA object:
+```python
+from pprint import pprint
+from trackteroid.query import SCHEMA
+
+pprint(SCHEMA.default)
+# output: 
+# {'entities': {'AssetVersion': {'AssetBuild': 'asset.parent[AssetBuild]',
+#                                'AssetGroup': 'asset.parent[AssetBuild].parent[AssetGroup]',
+#                                'Sequence': ['asset.parent[Shot].parent[Sequence]',
+#                                             'asset.parent[Sequence]'],
+#                                'Shot': 'asset.parent[Shot]'},
+#               'Component': {'AssetBuild': 'asset.parent[AssetBuild]',
+#                             'AssetGroup': 'asset.parent[AssetBuild].parent[AssetGroup]',
+#                             'Project': 'asset.parent.parent.project',
+#                             'Sequence': 'asset.parent.parent[Sequence]',
+#                             'Shot': 'asset.parent[Shot]'}}}
+
+pprint(SCHEMA.vfx)
+# output: 
+# {'entities': {'AssetVersion': {'AssetBuild': 'asset.parent[AssetBuild]',
+#                                'AssetGroup': 'asset.parent[AssetBuild].parent[AssetGroup]',
+#                                'Sequence': ['asset.parent[Shot].parent[Sequence]',
+#                                             'asset.parent[Sequence]'],
+#                                'Shot': 'asset.parent[Folder].parent[Shot]'},
+#               'Component': {'AssetBuild': 'asset.parent[AssetBuild]',
+#                             'AssetGroup': 'asset.parent[AssetBuild].parent[AssetGroup]',
+#                             'Project': 'asset.parent.parent.project',
+#                             'Sequence': 'asset.parent.parent[Sequence]',
+#                             'Shot': 'asset.parent[Shot]'}},
+#  'name': 'vfx'}
+
+pprint(SCHEMA.episodic)
+# output:
+# {'entities': {'AssetVersion': {'Episode': 'asset.parent[Shot].parent[Episode]'}},
+#  'name': u'episodic'}
+```
+
+In the example, SCHEMA.default represents the default schema, SCHEMA.vfx demonstrates an override named "vfx," and SCHEMA.episodic demonstrates an override named "episodic." 
+The printed outputs display the relationship mappings for each schema, showcasing how the overrides modify specific relationships within the schema with and without inheritance.
+
