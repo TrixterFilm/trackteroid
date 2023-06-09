@@ -1,4 +1,4 @@
-import anydbm
+import dbm
 import contextlib
 import json
 import warnings
@@ -151,9 +151,9 @@ class Session(object):
         operations = Operations()
 
         try:
-            _db = anydbm.open(initial_operations_path, "r")
+            _db = dbm.open(initial_operations_path, "r")
             _db.close()
-        except anydbm.error:
+        except dbm.error:
             raise OSError("Unable to open Database `{}`".format(initial_operations_path))
 
         initial_cache = SerialisedCache(

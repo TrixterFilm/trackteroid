@@ -18,11 +18,11 @@ class _CustomAttributeTypeCompatibility(object):
     _compatibility_map = {
         "number": (int, float),
         "date": (Arrow, datetime),
-        "text": (str, unicode),
+        "text": (str),
         "boolean": (bool,),
-        "enumerator": (str, unicode),
-        "dynamic_enumerator": (str, unicode),
-        "expression": (str, unicode)
+        "enumerator": (str),
+        "dynamic_enumerator": (str),
+        "expression": (str)
         }
 
     def __init__(self):
