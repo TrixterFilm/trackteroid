@@ -25,7 +25,7 @@ def build_partial_query(target, arguments, attribute):
         non_pattern_expressions = []
 
         # handle known id shortcuts like parent.id -> parent_id, version.id -> version_id
-        if attribute is "id" and not target.collection:
+        if attribute is "id" and target.relation and not target.collection:
             relation_tokens = relation.split(".")
             if len(relation_tokens) > 1:
                 attribute = "{}_id".format(relation_tokens[-1])
