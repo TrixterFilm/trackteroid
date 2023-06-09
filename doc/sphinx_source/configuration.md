@@ -114,7 +114,7 @@ The resulting dictionary schema can be summarized as follows:
 ```
 
 The schema at the root level contains the relationships that will be used as the default schema for the Query. These relationships serve as the base schema, which can be reused or overridden for other custom schemas, as demonstrated in the examples for vfx and episodic.
-
+If a target entity entry contains multiple values it presents an OR relationship.
 
 Here's an example to illustrate how the overrides are applied using the SCHEMA object:
 ```python
@@ -154,6 +154,4 @@ pprint(SCHEMA.episodic)
 #  'name': u'episodic'}
 ```
 
-In the example, SCHEMA.default represents the default schema, SCHEMA.vfx demonstrates an override named "vfx," and SCHEMA.episodic demonstrates an override named "episodic." 
-The printed outputs display the relationship mappings for each schema, showcasing how the overrides modify specific relationships within the schema with and without inheritance.
-
+In the example, `SCHEMA.default` represents the default schema, which serves as the baseline for other schemas. `SCHEMA.vfx` demonstrates an override named "vfx," which inherits all the entries from the default schema but overrides the relationship for `Shot`. On the other hand, `SCHEMA.episodic` demonstrates an override named "episodic" that doesn't inherit from the default schema and only includes the relationships it provides, as it has disabled inheritance.
