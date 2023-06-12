@@ -55,10 +55,9 @@ class QuerySchema(object):
                 overrides["entities"] = entities
 
             for key, value in override["entities"].items():
-                overrides["entities"].get(key, {}).update(value)
-
-            # for key, value in override["entities"].items():
-            #     overrides["entities"][key].update(override["entities"])
+                per_entity_relationships = overrides["entities"].get(key, {})
+                per_entity_relationships.update(value)
+                overrides["entities"][key] = per_entity_relationships
 
             setattr(self, override["name"], overrides)
 
