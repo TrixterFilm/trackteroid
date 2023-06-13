@@ -194,14 +194,67 @@ Firstly, it automatically derives relationships whenever possible by dynamically
 However, Ftrack's dynamic nature means that certain entity types may require configuring relationships to align with specific requirements. Trackteroid provides the flexibility to describe and represent contextual relationships for such cases, enabling customization and adaptation to meet individual needs by implementing a [resolver](configuration.md#relationships-resolver).
 
 
+All communication with an Ftrack server is facilitated through a `Session` object. By default, a Query is constructed using the _SESSION_ singleton and the _default_ schema. Here's an example:
+```python
+from trackteroid import (
+    AssetVersion,
+    Query,
+    SESSION,
+)
+from trackteroid.query import SCHEMA
+
+# same as Query(AssetVersion)
+Query(AssetVersion, session=SESSION, schema=SCHEMA.default)
+```
+
+However, you also have the flexibility to initialize your own `Session` object and provide a different schema. Here's an example:
+
+```python
+from trackteroid import (
+    AssetVersion,
+    Query,
+    SESSION,
+)
+from trackteroid.query import SCHEMA
+from trackteroid.session import Session
+
+my_session = Session(server_url="<some_ftrack_server>")
+
+Query(AssetVersion, session=my_session, schema=SCHEMA.vfx)
+```
 
 ## Collections
 
-### Transforming, Filtering and Option handling
+The result of terminated _Query_ is a collection, specifically an instance of either EntityCollection or EmptyCollection, depending on the outcome. When printed, the collection is represented as:
+
+`EntityCollection[<Entity Type>]{<Number of Results>}` or `EmptyCollection[<Entity Type>]`
+
+An _EntityCollection_ is a container of wrapped ftrack entity objects with the following definitions:
+- It is an ordered container of entity objects.
+- It is immutable, meaning its contents entities can not be added or removed once created.
+- It is iterable, allowing for easy iteration over the entities no matter if there is a single or multiple entities in it.
+- It only contains unique elements, ensuring there are no duplicate entities.
+
+An _EmptyCollection_ is placeholder for an _EntityCollection_ that doesn't contain any entities.
+- It is iterable, allowing for iteration even though it doesn't have any entities.
+- It allows for any attribute access that you would typically perform on an _EntityCollection_, providing flexibility for operations or checks on the collection itself.
+
+:::{admonition} **Iterables all the way down!**
+:class: important
+
+Regardless of the number of entities it contains, whether it's multiple, single, or none at all, a collection remains iterable. 
+This holds true even when requesting attributes that result in a primitive data type, such as strings. This consistent behavior allows for uniform usage across different scenarios and helps avoid the need for excessive conditional statements.
+:::
+
+### Transformation, Fetching and Option Handling
+
+#### Filtering and Transformation Methods
 
 #### Set Operations
 
-#### Transformation Methods
+#### Fetching Attributes 
+
+#### Fallback Concept
 
 
 ## Authoring

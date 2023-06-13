@@ -6,8 +6,10 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+import time
+
 project = 'Trackteroid'
-copyright = '2023, Trixter Film GmbH'
+copyright = f'2023-{time.strftime("%Y")} Trixter Film GmbH'
 author = 'Dennis Weil, Rico Koschmitzky'
 release = '0.1.0'
 
@@ -23,6 +25,9 @@ source_suffix = {
 extensions = [
     'myst_parser',
 ]
+myst_enable_extensions = [
+    'colon_fence'
+]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -34,4 +39,5 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
+html_favicon = "_static/favicon.ico"
 html_logo = '_static/logo_white.svg'
