@@ -294,7 +294,55 @@ No need to worry if you haven't fully grasped the concepts yet. Subsequent secti
 
 ### Transformation, Fetching and Option Handling
 
+The `EntityCollection` provides you with a lot of convenience for accessing, filtering and transforming containing data. 
+
+
 #### Filtering and Transformation Methods
+
+````{admonition} **Retrieving items from a collection is straightforward and effortless.**
+:class: dropdown
+
+```python
+from trackteroid import (
+    Query,
+    AssetVersion,
+    Shot,
+    TypedContext
+)
+
+av_collection = Query(AssetVersion).get_all(limit=10)
+print(av_collection)
+# output: EntityCollection[AssetVersion]{10}
+
+# get a new collection only containing the first item
+first_av_collection = av_collection[0]
+print(first_av_collection)
+# output: EntityCollection[AssetVersion]{1}
+
+# get a new collection via slices
+last_av_collection = av_collection[-1]
+print(last_av_collection)
+# output: EntityCollection[AssetVersion]{1}
+
+range_av_collection = av_collection[2:5]
+print(range_av_collection)
+# output: EntityCollection[AssetVersion]{3}
+
+# get a new collection via some entity id
+last_av_id = last_av_collection.id[0]
+last_av_collection_from_id = av_collection[last_av_id]
+# output: EntityCollection[AssetVersion]{1}
+
+tc_collection = Query(TypedContext).get_all(limit=100)
+print(tc_collection)
+# output: EntityCollection[TypedContext]{100}
+
+# get a new collection that only contains `Shot` subtypes
+sh_collection = tc_collection[Shot]
+print(sh_collection)
+# output: EntityCollection[Shot]{8}
+```
+````
 
 #### Set Operations
 
