@@ -239,12 +239,58 @@ An _EmptyCollection_ is placeholder for an _EntityCollection_ that doesn't conta
 - It is iterable, allowing for iteration even though it doesn't have any entities.
 - It allows for any attribute access that you would typically perform on an _EntityCollection_, providing flexibility for operations or checks on the collection itself.
 
-:::{admonition} **Iterables all the way down!**
+`````{admonition} **Iterables all the way down!**
 :class: important
 
 Regardless of the number of entities it contains, whether it's multiple, single, or none at all, a collection remains iterable. 
 This holds true even when requesting attributes that result in a primitive data type, such as strings. This consistent behavior allows for uniform usage across different scenarios and helps avoid the need for excessive conditional statements.
-:::
+
+````{admonition} **In practice...**
+:class: dropdown
+
+```python
+from trackteroid import (
+    Query,
+    Component,
+    ComponentLocation,
+    TypedContext
+)
+
+print(
+    Query(TypedContext).get_all(
+        limit=1, projections=[Component.name, ComponentLocation.resource_identifier]
+    )[Shot] \
+    .filter(lambda shot: shot.Component.name[0] == "main") \
+    .ComponentLocation.resource_identifier[0] \
+    or "Not existing"
+)
+
+print(
+    Query(TypedContext).get_all(
+        limit=10, projections=[Component.name, ComponentLocation.resource_identifier]
+    )[Shot] \
+    .filter(lambda shot: shot.Component.name[0] == "main") \
+    .ComponentLocation.resource_identifier \
+    or "Still not existing, even for multiple results"
+)
+```
+
+The provided code demonstrates some of the capabilities of Trackteroid in handling complex scenarios without the need for explicit loops or excessive conditional statements. 
+Although the code may seem complex at first glance, the following explanations will break it down step by step.
+
+In the first part of the code, a single _TypedContext_ sample is retrieved using the _Query_ class. 
+The limit parameter is set to 1 to fetch only one sample. The projections parameter is used to specify the desired attributes (_Component.name_ and _ComponentLocation.resource_identifier_) to be included in the result.
+
+Next, the retrieved _TypedContext_ sample is filtered using the _[Shot]_ filter. This filter selects only the subtypes of _TypedContext_ that match the _Shot_ entity and ensures that only _Shot_ entities are considered in the subsequent operations. 
+Since we are limiting the result of the _TypedContext_ query to only one entity, there is a possibility that the retrieved entity may not be a _Shot_. It could be of a different entity type, such as _AssetBuild_, _Sequence_, or _Folder_.
+Following the filter, the _Shot_ sample is further filtered using the _filter_ method. In this case, the filter condition checks if the _Component_ name of any of the _Shot's_ _AssetVersions_ is equal to "main". 
+Finally, the _resource_identifier_ attribute of a single _ComponentLocation_ is accessed. As we are anticipating only one result, the value is accessed using the [0] index. If a value is present, it is utilized; otherwise, the fallback string _"Not existing"_ is used.
+
+The second part of the code follows a similar structure, but this time the limit parameter is set to 10 to retrieve 10 potential _TypedContext_ samples. 
+
+No need to worry if you haven't fully grasped the concepts yet. Subsequent sections will provide further clarification.
+````
+`````
 
 ### Transformation, Fetching and Option Handling
 

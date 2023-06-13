@@ -24,9 +24,10 @@ source_suffix = {
 
 extensions = [
     'myst_parser',
+    'sphinx_togglebutton',
 ]
 myst_enable_extensions = [
-    'colon_fence'
+    'colon_fence',
 ]
 
 templates_path = ['_templates']
