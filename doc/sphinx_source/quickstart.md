@@ -344,6 +344,30 @@ print(sh_collection)
 ```
 ````
 
+
+````{admonition} **Accessing related collections and primitive data is user-friendly.**
+:class: dropdown
+
+```python
+from trackteroid import (
+    Query,
+    AssetVersion,
+    Shot,
+    TypedContext
+)
+
+av_collection = Query(AssetVersion).get_all(limit=1, projections=[ComponentLocation.resource_identifier])
+
+print(av_collection.ComponentLocation.resource_identifier)
+# expanded attribute access would be like this and the result be the same
+print(av_collection.components.component_locations.resource_identifier)
+# output: 
+# [u'/path/to/some_file1.jpg', u'/path/to/some_file2.mov'] 
+# [u'/path/to/some_file1.jpg', u'/path/to/some_file2.mov'] 
+
+```
+````
+
 #### Set Operations
 
 #### Fetching Attributes 
