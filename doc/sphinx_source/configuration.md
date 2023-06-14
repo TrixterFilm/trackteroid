@@ -154,4 +154,7 @@ pprint(SCHEMA.episodic)
 #  'name': u'episodic'}
 ```
 
-In the example, `SCHEMA.default` represents the default schema, which serves as the baseline for other schemas. `SCHEMA.vfx` demonstrates an override named "vfx," which inherits all the entries from the default schema but overrides the relationship for `Shot`. On the other hand, `SCHEMA.episodic` demonstrates an override named "episodic" that doesn't inherit from the default schema and only includes the relationships it provides, as it has disabled inheritance.
+In the example, `SCHEMA.default` represents the default schema, which serves as the baseline for other schemas. `SCHEMA.vfx` demonstrates an override named "vfx," which inherits all the entries from the default schema but overrides the relationship for `Shot`. On the other hand, `SCHEMA.episodic` demonstrates an override named "episodic" that doesn't inherit from the default schema and only includes the relationships it provides, as it has dis abled inheritance. 
+```{warning}
+The relationships provided by your resolver take precedence over the relationships automatically derived from the Session/Database schema.
+```

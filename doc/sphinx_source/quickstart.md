@@ -230,10 +230,10 @@ The result of terminated _Query_ is a collection, specifically an instance of ei
 `EntityCollection[<Entity Type>]{<Number of Results>}` or `EmptyCollection[<Entity Type>]`
 
 An _EntityCollection_ is a container of wrapped ftrack entity objects with the following definitions:
-- It is an ordered container of entity objects.
-- It is immutable, meaning its contents entities can not be added or removed once created.
-- It is iterable, allowing for easy iteration over the entities no matter if there is a single or multiple entities in it.
-- It only contains unique elements, ensuring there are no duplicate entities.
+- It is an **ordered** container of entity objects.
+- It is **immutable**, meaning its contents entities can not be added or removed once created.
+- It is **iterable**, allowing for easy iteration over the entities no matter if there is a single or multiple entities in it.
+- It only contains **unique** elements, ensuring there are no duplicate entities.
 
 An _EmptyCollection_ is placeholder for an _EntityCollection_ that doesn't contain any entities.
 - It is iterable, allowing for iteration even though it doesn't have any entities.
@@ -299,9 +299,8 @@ The `EntityCollection` provides you with a lot of convenience for accessing, fil
 
 #### Filtering and Transformation Methods
 
-````{admonition} **Retrieving items from a collection is straightforward and effortless.**
-:class: dropdown
-
+Retrieving items from a collection is straightforward and effortless. 
+These examples illustrate the versatility of the item getter on an EntityCollection.
 ```python
 from trackteroid import (
     Query,
@@ -342,12 +341,9 @@ sh_collection = tc_collection[Shot]
 print(sh_collection)
 # output: EntityCollection[Shot]{8}
 ```
-````
 
-
-````{admonition} **Accessing related collections and primitive data is user-friendly.**
-:class: dropdown
-
+Accessing related collections and primitive data is user-friendly. 
+This example demonstrates the seamless navigation through nested collections and the retrieval of primitive data stored in the _resource_identifier_ attribute of associated _component_locations_.
 ```python
 from trackteroid import (
     Query,
@@ -356,7 +352,12 @@ from trackteroid import (
     TypedContext
 )
 
-av_collection = Query(AssetVersion).get_all(limit=1, projections=[ComponentLocation.resource_identifier])
+av_collection = Query(AssetVersion).get_all(
+    limit=1, 
+    projections=[
+        ComponentLocation.resource_identifier
+    ]
+)
 
 print(av_collection.ComponentLocation.resource_identifier)
 # expanded attribute access would be like this and the result be the same
@@ -366,7 +367,64 @@ print(av_collection.components.component_locations.resource_identifier)
 # [u'/path/to/some_file1.jpg', u'/path/to/some_file2.mov'] 
 
 ```
-````
+
+
+While iterating through loops is a valid approach, leveraging transformations can provide enhanced convenience. 
+The EntityCollection class provides higher-order methods that accept functions as arguments, aligning with the principles of functional programming. 
+The presented example highlights a subset of the transformation methods available.
+```python
+from pprint import pprint
+from tracteroid import (
+    Query,
+    Asset,
+    AssetVersion
+)
+
+av_collection = Query(AssetVersion).get_all(limit=5, projections=[Asset.name, "version"])
+
+for i, collection in enumerate(av_collection):
+    print(i, collection, collection.id)
+# output:
+# (0, EntityCollection[AssetVersion]{1}, [u'00001180-b7e7-43cf-b0e5-a2df0cefe669'])
+# (1, EntityCollection[AssetVersion]{1}, [u'00001fd9-c8b8-4d84-8a8d-2c8fbbed46a0'])
+# (2, EntityCollection[AssetVersion]{1}, [u'00004585-b77e-4638-89dc-33ea4dfe7f73'])
+# (3, EntityCollection[AssetVersion]{1}, [u'0000482d-f10c-4d00-b2b3-aec57ec8510f'])
+# (4, EntityCollection[AssetVersion]{1}, [u'00004a1a-fdd2-11ec-a538-005056a76761'])
+
+# construct a list of strings that are combining the name of the AssetVersion's Asset and it's version number
+print(
+    av_collection.map(
+        lambda avc: "{}_v{:03d}".format(avc.Asset.name[0], avc.version[0])
+    )
+)
+# output: ['SomeAsset_v001', 'SomeAsset_v002', 'SomeCharacter_v004', 'SomeScene_v010', 'AnAssetClone_v002']
+
+# group together AssetVersions by the name of its Asset
+pprint(av_collection.group(lambda avc: avc.Asset.name[0]))
+# output: 
+# {u'SomeAsset': EntityCollection[AssetVersion]{2},
+#  u'SomeCharacter': EntityCollection[AssetVersion]{1},
+#  u'SomeScene': EntityCollection[AssetVersion]{1},
+#  u'AnAssetClone': EntityCollection[AssetVersion]{1}}
+
+# group together AssetVersions by the name of its Asset and 
+# associate all of its version numbers with it
+pprint(
+    av_collection.group_and_map(lambda avc: avc.Asset.name[0], lambda avc: avc.version)
+)
+# output:
+# {u'SomeAsset': [1, 2],
+#  u'SomeCharacter': [4],
+#  u'SomeScene': [10],
+#  u'AnAssetClone': [2]}
+
+# get a tuple with two items
+# the first representing a true matching condition and 
+# the second the false matching condition
+print(av_collection.partition(lambda avc: avc.version[0] == 2))
+# output: 
+# (EntityCollection[AssetVersion]{2}, EntityCollection[AssetVersion]{3})
+```
 
 #### Set Operations
 
