@@ -25,7 +25,7 @@ class RelationshipDeclaration(object):
         self._chain.extend(
             [
                 getattr(self._entities_module, parent.__name__, parent),
-                getattr(self._entities_module, child.__name__ if not isinstance(child, basestring) else child, child)
+                getattr(self._entities_module, child.__name__ if not isinstance(child, str) else child, child)
             ]
         )
 
@@ -38,7 +38,7 @@ class RelationshipDeclaration(object):
         relationships = []
         for item in self._chain:
             if item:
-                if not isinstance(item, basestring):
+                if not isinstance(item, str):
                     item.relationship(session=session, schema=schema)
                     relationship = entity_type.relationship.get(item)
                     if not relationship:

@@ -298,7 +298,7 @@ def get_extended_entity_stubs(classes, stubs):
             #  that support filtering via Entity
             stub.add_method(
                 name="__getitem__",
-                arguments="self, item: typing.Union[int, slice, basestring]",
+                arguments="self, item: typing.Union[int, slice, str]",
                 keyword_arguments="",
                 return_type=stub_name
             )
