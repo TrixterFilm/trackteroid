@@ -36,7 +36,11 @@ We have decided to build a wrapping API around the Ftrack Python API to address 
 In summary Trackeroid tries to empower developers by providing a more intuitive and efficient way to interact with the Ftrack platform, ultimately accelerating development, improving code quality, and enhancing the overall user experience.
 
 ```{toctree}
+:maxdepth: 1
+
 installation.md
 quickstart.md
 configuration.md
+session.md
+collections.md
 ```
