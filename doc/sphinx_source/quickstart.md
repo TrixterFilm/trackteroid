@@ -428,6 +428,41 @@ print(av_collection.partition(lambda avc: avc.version[0] == 2))
 
 #### Set Operations
 
+Due to the immutability of collections, it is not possible to directly add or remove entities. However, you can utilize the identical set operations available in Python's `set` class to obtain new collections.
+```python
+from trackteroid import (
+    Query,
+    AssetVersion
+)
+
+collection_a = Query(AssetVersion).get(limit=3)
+collection_b = Query(AssetVersion).get(limit=3, offset=1)
+
+print(f"a = {collection_a.version}")
+# output: 'a = [2, 10, 2]'
+print(f"b = {collection_b.version}")
+# output: 'b = [10, 2, 9])'
+
+# union
+print(f"a + b = {collection_a.union(collection_b).version}")
+# output: 'a + b = [2, 10, 2, 9]'
+
+# difference
+print(f"a - b = {collection_a.difference(collection_b).version}")
+# output: 'a - b = [2]'
+print(f"b - a = ", collection_b.difference(collection_a).version)
+# output: 'b - a = [9]'
+
+# symmetric difference
+print(f"(a - b) + (b - a) = {collection_a.symmetric_difference(collection_b).version}")
+# output: '(a - b) + (b - a) = [2, 9]'
+
+# intersection
+print(f"(a + b) - ((a - b) + (b - a)) = {collection_a.intersection(collection_b).version}")
+# output: '(a + b) - ((a - b) + (b - a)) = [10, 2]'
+```
+
+
 #### Fetching Attributes 
 
 #### Fallback Concept
