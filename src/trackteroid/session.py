@@ -42,7 +42,7 @@ class Session(object):
     def __init__(self, auto_populate=False, auto_connect_event_hub=False, **kwargs):
         # Collect arguments to hand over to the native ftrack_api.Session
         local_args = dict(locals())
-        valid_args = [_ for _ in inspect.getargspec(ftrack_api.Session.__init__).args if _ not in ('self', 'kwargs')]
+        valid_args = [_ for _ in inspect.getfullargspec(ftrack_api.Session.__init__).args if _ not in ('self', 'kwargs')]
         session_arguments = {}
         for arg_key, arg_val in local_args.items():
             if arg_key in valid_args:
@@ -108,7 +108,7 @@ class Session(object):
             kwargs: optional overrides for existing session arguments.
         """
         session_attributes = {}
-        valid_args = [_ for _ in inspect.getargspec(ftrack_api.Session.__init__).args if _ not in ('self', 'kwargs')]
+        valid_args = [_ for _ in inspect.getfullargspec(ftrack_api.Session.__init__).args if _ not in ('self', 'kwargs')]
         for arg in valid_args:
             if hasattr(self._session, arg):
                 session_attributes[arg] = getattr(self._session, arg)
