@@ -297,7 +297,7 @@ No need to worry if you haven't fully grasped the concepts yet. Subsequent secti
 The `EntityCollection` provides you with a lot of convenience for accessing, filtering and transforming containing data. 
 
 
-#### Filtering and Transformation Methods
+#### Item & Attribute Access
 
 Retrieving items from a collection is straightforward and effortless. 
 These examples illustrate the versatility of the item getter on an EntityCollection.
@@ -367,7 +367,24 @@ print(av_collection.components.component_locations.resource_identifier)
 # [u'/path/to/some_file1.jpg', u'/path/to/some_file2.mov'] 
 
 ```
+You can conveniently access individual attributes within the custom_attributes field by utilizing the `custom_` prefix as a shortcut. This allows direct access to specific attributes without the need to explicitly refer to the _custom_attributes_ field and retrieve values by their corresponding keys.
+```python
+from trackteroid import (
+    Query,
+    Shot
+)
 
+print(
+    Query(Shot).get_all(limit=2, projections=["custom_attributes"]).custom_frame_start
+)
+# output: [1009.0, 1006.0]
+print(
+    Query(Shot).get_all(limit=2, projections=["custom_attributes"]).custom_frame_end
+)
+# output: [1055.0, 1015.0]
+```
+
+#### Transformation Methods
 
 While iterating through loops is a valid approach, leveraging transformations can provide enhanced convenience. 
 The EntityCollection class provides higher-order methods that accept functions as arguments, aligning with the principles of functional programming. 
@@ -462,8 +479,7 @@ print(f"(a + b) - ((a - b) + (b - a)) = {collection_a.intersection(collection_b)
 # output: '(a + b) - ((a - b) + (b - a)) = [10, 2]'
 ```
 
-
-#### Fetching Attributes 
+#### Fetching Attributes
 
 #### Fallback Concept
 
