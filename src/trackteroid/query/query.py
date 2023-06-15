@@ -44,6 +44,7 @@ class QuerySchema(object):
         primary_keys_to_exclude = ["overrides"]
         primary_entities = relationships.get("entities", {})
         setattr(self, default_schema, {})
+        getattr(self, default_schema)["name"] = default_schema
         for key, value in relationships.items():
             if key not in primary_keys_to_exclude:
                 getattr(self, default_schema).update({key: value})
