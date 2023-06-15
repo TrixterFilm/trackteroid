@@ -4,22 +4,23 @@ from .base import Entity
 from ..query import Query
 
 class ApiKey:
+    prefix: str = str() 
+    identifier: str = str() 
+    id: str = str() 
+    resource_id: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.identifier: str = str() 
-        self.prefix: str = str() 
-        self.resource_id: str = str() 
 
 
 class Appointment(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.context: Context = Context 
-        self.context_id: str = str() 
-        self.id: str = str() 
-        self.resource: Resource = Resource 
-        self.resource_id: str = str() 
-        self.type: str = str() 
+    resource: Resource = Resource 
+    resource_id: str = str() 
+    context_id: str = str() 
+    context: Context = Context 
+    type: str = str() 
+    id: str = str() 
 
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Appointment:... 
     def by_id(self, target, *ids) -> Query(Appointment):... 
     def by_metadata(self, target, *dictionaries) -> Query(Appointment):... 
@@ -37,22 +38,23 @@ class Appointment(Entity):
     def not_by_id(self, target, *ids) -> Query(Appointment):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Appointment):... 
 
-class Asset(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.ancestors: TypedContext = TypedContext 
-        self.context_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.id: str = str() 
-        self.latest_version: AssetVersion = AssetVersion 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.parent: Context = Context 
-        self.project_id: str = str() 
-        self.type: AssetType = AssetType 
-        self.type_id: str = str() 
-        self.versions: AssetVersion = AssetVersion 
 
+class Asset(Entity):
+    ancestors: TypedContext = TypedContext 
+    name: str = str() 
+    parent: Context = Context 
+    type_id: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    context_id: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    versions: AssetVersion = AssetVersion 
+    latest_version: AssetVersion = AssetVersion 
+    project_id: str = str() 
+    type: AssetType = AssetType 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Asset:... 
     def by_id(self, target, *ids) -> Query(Asset):... 
     def by_metadata(self, target, *dictionaries) -> Query(Asset):... 
@@ -74,59 +76,60 @@ class Asset(Entity):
     def not_by_name(self, target, *names) -> Query(Asset):... 
     def not_by_type(self, target, *types) -> Query(Asset):... 
 
-class AssetBuild(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.split_parts: SplitTaskPart = SplitTaskPart 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
+class AssetBuild(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetBuild:... 
     def by_assignee(self, target, *assignees) -> Query(AssetBuild):... 
     def by_id(self, target, *ids) -> Query(AssetBuild):... 
@@ -166,50 +169,54 @@ class AssetBuild(TypedContext):
     def unlink_inputs(self, entity_collection) -> AssetBuild:... 
     def unlink_outputs(self, entity_collection) -> AssetBuild:... 
 
-class AssetCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.asset: Asset = Asset 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class AssetCustomAttributeLink:
+    to_entity_type: str = str() 
+    from_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    asset: Asset = Asset 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetCustomAttributeLink:... 
 
-class AssetCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.asset: Asset = Asset 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class AssetCustomAttributeLinkFrom:
+    to_entity_type: str = str() 
+    from_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    asset: Asset = Asset 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetCustomAttributeLinkFrom:... 
 
-class AssetCustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
 
+class AssetCustomAttributeValue:
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetCustomAttributeValue:... 
 
-class AssetType(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.assets: Asset = Asset 
-        self.component: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.short: str = str() 
 
+class AssetType(Entity):
+    short: str = str() 
+    component: str = str() 
+    assets: Asset = Asset 
+    name: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetType:... 
     def by_id(self, target, *ids) -> Query(AssetType):... 
     def by_metadata(self, target, *dictionaries) -> Query(AssetType):... 
@@ -227,43 +234,45 @@ class AssetType(Entity):
     def not_by_id(self, target, *ids) -> Query(AssetType):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(AssetType):... 
 
-class AssetVersion(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.asset: Asset = Asset 
-        self.asset_id: str = str() 
-        self.comment: str = str() 
-        self.components: Component = Component 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: AssetVersionLink = AssetVersionLink 
-        self.is_latest_version: bool = bool() 
-        self.is_published: bool = bool() 
-        self.link: str = str() 
-        self.lists: AssetVersionList = AssetVersionList 
-        self.metadata: typing.List = [Metadata] 
-        self.notes: Note = Note 
-        self.outgoing_links: AssetVersionLink = AssetVersionLink 
-        self.project_id: str = str() 
-        self.review_session_objects: ReviewSessionObject = ReviewSessionObject 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.task: Task = Task 
-        self.task_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.used_in_versions: AssetVersion = AssetVersion 
-        self.user: User = User 
-        self.user_id: str = str() 
-        self.uses_versions: AssetVersion = AssetVersion 
-        self.version: int = int() 
 
-    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersion:... 
-    def by_id(self, target, *ids) -> Query(AssetVersion):... 
+class AssetVersion(Entity):
+    comment: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: AssetVersionLink = AssetVersionLink 
+    id: str = str() 
+    asset_id: str = str() 
+    user_id: str = str() 
+    version: int = int() 
+    asset: Asset = Asset 
+    project_id: str = str() 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    status: Status = Status 
+    components: Component = Component 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    lists: AssetVersionList = AssetVersionList 
+    uses_versions: AssetVersion = AssetVersion 
+    link: str = str() 
+    user: User = User 
+    date: str = str() 
+    used_in_versions: AssetVersion = AssetVersion 
+    task: Task = Task 
+    task_id: str = str() 
+    review_session_objects: ReviewSessionObject = ReviewSessionObject 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    notes: Note = Note 
+    thumbnail_url: object 
+    is_latest_version: bool = bool() 
+    outgoing_links: AssetVersionLink = AssetVersionLink 
+    is_published: bool = bool() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersion:...
+    @classmethod
+    def by_id(cls: Type[T], target, *ids) -> Query(AssetVersion):...
     def by_incoming_link(self, target, *ids) -> Query(AssetVersion):... 
     def by_metadata(self, target, *dictionaries) -> Query(AssetVersion):... 
     def by_name(self, target, *names) -> Query(AssetVersion):... 
@@ -305,51 +314,55 @@ class AssetVersion(Entity):
     def unlink_inputs(self, entity_collection) -> AssetVersion:... 
     def unlink_outputs(self, entity_collection) -> AssetVersion:... 
 
-class AssetVersionCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.asset_version: AssetVersion = AssetVersion 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class AssetVersionCustomAttributeLink:
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    asset_version: AssetVersion = AssetVersion 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionCustomAttributeLink:... 
 
-class AssetVersionCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.asset_version: AssetVersion = AssetVersion 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class AssetVersionCustomAttributeLinkFrom:
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    asset_version: AssetVersion = AssetVersion 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionCustomAttributeLinkFrom:... 
 
-class AssetVersionCustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
 
+class AssetVersionCustomAttributeValue:
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionCustomAttributeValue:... 
 
-class AssetVersionLink(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.from: AssetVersion = AssetVersion 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.metadata: typing.List = [Metadata] 
-        self.to: AssetVersion = AssetVersion 
-        self.to_id: str = str() 
 
+class AssetVersionLink(Entity):
+    from: AssetVersion = AssetVersion 
+    to_id: str = str() 
+    to: AssetVersion = AssetVersion 
+    from_id: str = str() 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionLink:... 
     def by_id(self, target, *ids) -> Query(AssetVersionLink):... 
     def by_metadata(self, target, *dictionaries) -> Query(AssetVersionLink):... 
@@ -367,23 +380,24 @@ class AssetVersionLink(Entity):
     def not_by_id(self, target, *ids) -> Query(AssetVersionLink):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(AssetVersionLink):... 
 
-class AssetVersionList(List):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.category: ListCategory = ListCategory 
-        self.category_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.date: str = str() 
-        self.id: str = str() 
-        self.is_open: bool = bool() 
-        self.items: AssetVersion = AssetVersion 
-        self.name: str = str() 
-        self.owner: User = User 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.system_type: str = str() 
-        self.user_id: str = str() 
 
+class AssetVersionList(List):
+    category: ListCategory = ListCategory 
+    project_id: str = str() 
+    user_id: str = str() 
+    name: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    items: AssetVersion = AssetVersion 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    project: Project = Project 
+    owner: User = User 
+    is_open: bool = bool() 
+    system_type: str = str() 
+    date: str = str() 
+    category_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionList:... 
     def by_id(self, target, *ids) -> Query(AssetVersionList):... 
     def by_metadata(self, target, *dictionaries) -> Query(AssetVersionList):... 
@@ -403,120 +417,127 @@ class AssetVersionList(List):
     def not_by_metadata(self, target, *dictionaries) -> Query(AssetVersionList):... 
     def not_by_name(self, target, *names) -> Query(AssetVersionList):... 
 
-class AssetVersionStatusChange:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.date: str = str() 
-        self.from_status: Status = Status 
-        self.from_status_id: str = str() 
-        self.id: str = str() 
-        self.parent: AssetVersion = AssetVersion 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.status: Status = Status 
-        self.status_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
+class AssetVersionStatusChange:
+    status: Status = Status 
+    user_id: str = str() 
+    parent: AssetVersion = AssetVersion 
+    status_id: str = str() 
+    parent_type: str = str() 
+    parent_id: str = str() 
+    user: User = User 
+    from_status: Status = Status 
+    date: str = str() 
+    from_status_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionStatusChange:... 
 
+
 class AssetVersionStatusRuleGroup:
+    status: Status = Status 
+    status_rules: StatusRule = StatusRule 
+    status_id: str = str() 
+    entity_type: str = str() 
+    role_id: str = str() 
+    schema_id: str = str() 
+    role: SecurityRole = SecurityRole 
+    id: str = str() 
+    schema: ProjectSchema = ProjectSchema 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.entity_type: str = str() 
-        self.id: str = str() 
-        self.role: SecurityRole = SecurityRole 
-        self.role_id: str = str() 
-        self.schema: ProjectSchema = ProjectSchema 
-        self.schema_id: str = str() 
-        self.status: Status = Status 
-        self.status_id: str = str() 
-        self.status_rules: StatusRule = StatusRule 
 
 
 class BaseUser:
+    first_name: str = str() 
+    last_name: str = str() 
+    dashboard_resources: DashboardResource = DashboardResource 
+    thumbnail_id: str = str() 
+    email: str = str() 
+    id: str = str() 
+    assignments: Appointment = Appointment 
+    appointments: Appointment = Appointment 
+    thumbnail_url: object 
+    allocations: Appointment = Appointment 
+    thumbnail: Component = Component 
+    resource_type: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assignments: Appointment = Appointment 
-        self.dashboard_resources: DashboardResource = DashboardResource 
-        self.email: str = str() 
-        self.first_name: str = str() 
-        self.id: str = str() 
-        self.last_name: str = str() 
-        self.resource_type: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
 
 
 class CalendarEvent:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.calendar_event_resources: CalendarEventResource = CalendarEventResource 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.effort: float = float() 
-        self.end: str = str() 
-        self.estimate: float = float() 
-        self.everyone: bool = bool() 
-        self.forecast: bool = bool() 
-        self.id: str = str() 
-        self.leave: bool = bool() 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.start: str = str() 
-        self.type: Type = Type 
-        self.type_id: str = str() 
+    calendar_event_resources: CalendarEventResource = CalendarEventResource 
+    everyone: bool = bool() 
+    end: str = str() 
+    name: str = str() 
+    type_id: str = str() 
+    leave: bool = bool() 
+    created_at: str = str() 
+    created_by: User = User 
+    forecast: bool = bool() 
+    project: Project = Project 
+    start: str = str() 
+    effort: float = float() 
+    created_by_id: str = str() 
+    estimate: float = float() 
+    project_id: str = str() 
+    type: Type = Type 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
 
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> CalendarEvent:... 
 
-class CalendarEventResource:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.calendar_event: CalendarEvent = CalendarEvent 
-        self.calendar_event_id: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.id: str = str() 
-        self.resource: Resource = Resource 
-        self.resource_id: str = str() 
 
+class CalendarEventResource:
+    resource: Resource = Resource 
+    resource_id: str = str() 
+    calendar_event_id: str = str() 
+    created_at: str = str() 
+    created_by: User = User 
+    calendar_event: CalendarEvent = CalendarEvent 
+    created_by_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> CalendarEventResource:... 
 
+
 class Collaborator:
+    created_from_shared_url: str = str() 
+    first_name: str = str() 
+    last_name: str = str() 
+    assignments: Appointment = Appointment 
+    thumbnail_id: str = str() 
+    thumbnail: Component = Component 
+    id: str = str() 
+    dashboard_resources: DashboardResource = DashboardResource 
+    appointments: Appointment = Appointment 
+    thumbnail_url: object 
+    allocations: Appointment = Appointment 
+    email: str = str() 
+    resource_type: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assignments: Appointment = Appointment 
-        self.created_from_shared_url: str = str() 
-        self.dashboard_resources: DashboardResource = DashboardResource 
-        self.email: str = str() 
-        self.first_name: str = str() 
-        self.id: str = str() 
-        self.last_name: str = str() 
-        self.resource_type: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
 
 
 class Component(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component_locations: ComponentLocation = ComponentLocation 
-        self.container: ContainerComponent = ContainerComponent 
-        self.container_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.file_type: str = str() 
-        self.id: str = str() 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.size: int = int() 
-        self.system_type: str = str() 
-        self.version: AssetVersion = AssetVersion 
-        self.version_id: str = str() 
+    container: ContainerComponent = ContainerComponent 
+    name: str = str() 
+    component_locations: ComponentLocation = ComponentLocation 
+    file_type: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    container_id: str = str() 
+    version_id: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    version: AssetVersion = AssetVersion 
+    system_type: str = str() 
+    size: int = int() 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
 
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Component:... 
     def by_file_type(self, target, *file_types) -> Query(Component):... 
     def by_id(self, target, *ids) -> Query(Component):... 
@@ -548,42 +569,45 @@ class Component(Entity):
     def not_by_system_type(self, target, *system_types) -> Query(Component):... 
     def not_by_version(self, target, *versions) -> Query(Component):... 
 
-class ComponentCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class ComponentCustomAttributeLink:
+    to_entity_type: str = str() 
+    component: Component = Component 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ComponentCustomAttributeLink:... 
 
-class ComponentCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class ComponentCustomAttributeLinkFrom:
+    to_entity_type: str = str() 
+    component: Component = Component 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ComponentCustomAttributeLinkFrom:... 
 
-class ComponentLocation(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.component_id: str = str() 
-        self.id: str = str() 
-        self.location: Location = Location 
-        self.location_id: str = str() 
-        self.resource_identifier: str = str() 
-        self.url: object 
 
+class ComponentLocation(Entity):
+    component_id: str = str() 
+    url: object 
+    component: Component = Component 
+    resource_identifier: str = str() 
+    location: Location = Location 
+    location_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ComponentLocation:... 
     def by_id(self, target, *ids) -> Query(ComponentLocation):... 
     def by_metadata(self, target, *dictionaries) -> Query(ComponentLocation):... 
@@ -607,23 +631,24 @@ class ComponentLocation(Entity):
     def not_by_resource_identifier(self, target, *resource_identifiers) -> Query(ComponentLocation):... 
     def not_by_version(self, target, *versions) -> Query(ComponentLocation):... 
 
-class ContainerComponent(Component):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component_locations: ComponentLocation = ComponentLocation 
-        self.container: ContainerComponent = ContainerComponent 
-        self.container_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.file_type: str = str() 
-        self.id: str = str() 
-        self.members: Component = Component 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.size: int = int() 
-        self.system_type: str = str() 
-        self.version: AssetVersion = AssetVersion 
-        self.version_id: str = str() 
 
+class ContainerComponent(Component):
+    container: ContainerComponent = ContainerComponent 
+    name: str = str() 
+    component_locations: ComponentLocation = ComponentLocation 
+    file_type: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    container_id: str = str() 
+    version_id: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    version: AssetVersion = AssetVersion 
+    system_type: str = str() 
+    members: Component = Component 
+    metadata: typing.List = [Metadata] 
+    id: str = str() 
+    size: int = int() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ContainerComponent:... 
     def by_file_type(self, target, *file_types) -> Query(ContainerComponent):... 
     def by_id(self, target, *ids) -> Query(ContainerComponent):... 
@@ -655,34 +680,35 @@ class ContainerComponent(Component):
     def not_by_system_type(self, target, *system_types) -> Query(ContainerComponent):... 
     def not_by_version(self, target, *versions) -> Query(ContainerComponent):... 
 
-class Context(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.id: str = str() 
-        self.link: str = str() 
-        self.managers: Manager = Manager 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.timelogs: Timelog = Timelog 
 
+class Context(Entity):
+    created_at: str = str() 
+    managers: Manager = Manager 
+    created_by: User = User 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    _link: str = str() 
+    children: Context = Context 
+    parent_id: str = str() 
+    project_id: str = str() 
+    thumbnail: Component = Component 
+    scopes: Scope = Scope 
+    parent: Context = Context 
+    thumbnail_id: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    name: str = str() 
+    assets: Asset = Asset 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    notes: Note = Note 
+    assignments: Appointment = Appointment 
+    thumbnail_url: object 
+    allocations: Appointment = Appointment 
+    created_by_id: str = str() 
+    context_type: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Context:... 
     def by_id(self, target, *ids) -> Query(Context):... 
     def by_metadata(self, target, *dictionaries) -> Query(Context):... 
@@ -700,209 +726,225 @@ class Context(Entity):
     def not_by_id(self, target, *ids) -> Query(Context):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Context):... 
 
-class ContextCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.context: Context = Context 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class ContextCustomAttributeLink:
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    context: Context = Context 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ContextCustomAttributeLink:... 
 
-class ContextCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.context: Context = Context 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class ContextCustomAttributeLinkFrom:
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    context: Context = Context 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ContextCustomAttributeLinkFrom:... 
 
-class ContextCustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
 
+class ContextCustomAttributeValue:
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ContextCustomAttributeValue:... 
 
-class CustomAttributeConfiguration:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.config: str = str() 
-        self.core: bool = bool() 
-        self.default: typing.Any = None 
-        self.entity_type: str = str() 
-        self.group: CustomAttributeGroup = CustomAttributeGroup 
-        self.group_id: str = str() 
-        self.id: str = str() 
-        self.is_hierarchical: bool = bool() 
-        self.key: str = str() 
-        self.label: str = str() 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.project_id: str = str() 
-        self.read_security_roles: SecurityRole = SecurityRole 
-        self.sort: int = int() 
-        self.type: CustomAttributeType = CustomAttributeType 
-        self.type_id: str = str() 
-        self.values: CustomAttributeValue = CustomAttributeValue 
-        self.write_security_roles: SecurityRole = SecurityRole 
 
+class CustomAttributeConfiguration:
+    sort: int = int() 
+    core: bool = bool() 
+    group_id: str = str() 
+    group: CustomAttributeGroup = CustomAttributeGroup 
+    key: str = str() 
+    type_id: str = str() 
+    default: typing.Any = None 
+    type: CustomAttributeType = CustomAttributeType 
+    object_type: ObjectType = ObjectType 
+    label: str = str() 
+    read_security_roles: SecurityRole = SecurityRole 
+    entity_type: str = str() 
+    values: CustomAttributeValue = CustomAttributeValue 
+    object_type_id: str = str() 
+    write_security_roles: SecurityRole = SecurityRole 
+    is_hierarchical: bool = bool() 
+    project_id: str = str() 
+    config: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeConfiguration:... 
 
-class CustomAttributeGroup:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.custom_attribute_configurations: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.id: str = str() 
-        self.name: str = str() 
 
+class CustomAttributeGroup:
+    custom_attribute_configurations: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    id: str = str() 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeGroup:... 
 
-class CustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class CustomAttributeLink:
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeLink:... 
 
-class CustomAttributeLinkConfiguration:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.config: str = str() 
-        self.core: bool = bool() 
-        self.entity_type: str = str() 
-        self.entity_type_to: str = str() 
-        self.group: CustomAttributeGroup = CustomAttributeGroup 
-        self.group_id: str = str() 
-        self.id: str = str() 
-        self.key: str = str() 
-        self.label: str = str() 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.object_type_id_to: str = str() 
-        self.object_type_to: ObjectType = ObjectType 
-        self.one_to_one: bool = bool() 
-        self.project_id: str = str() 
-        self.read_security_roles: SecurityRole = SecurityRole 
-        self.sort: int = int() 
-        self.write_security_roles: SecurityRole = SecurityRole 
 
+class CustomAttributeLinkConfiguration:
+    sort: int = int() 
+    core: bool = bool() 
+    group_id: str = str() 
+    group: CustomAttributeGroup = CustomAttributeGroup 
+    key: str = str() 
+    one_to_one: bool = bool() 
+    object_type: ObjectType = ObjectType 
+    object_type_id_to: str = str() 
+    entity_type_to: str = str() 
+    label: str = str() 
+    read_security_roles: SecurityRole = SecurityRole 
+    entity_type: str = str() 
+    object_type_id: str = str() 
+    write_security_roles: SecurityRole = SecurityRole 
+    object_type_to: ObjectType = ObjectType 
+    project_id: str = str() 
+    config: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeLinkConfiguration:... 
 
-class CustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class CustomAttributeLinkFrom:
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeLinkFrom:... 
 
-class CustomAttributeType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.core: bool = bool() 
-        self.custom_attribute_configurations: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.form_config: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
 
+class CustomAttributeType:
+    form_config: str = str() 
+    core: bool = bool() 
+    id: str = str() 
+    name: str = str() 
+    custom_attribute_configurations: CustomAttributeConfiguration = CustomAttributeConfiguration 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeType:... 
 
-class CustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.value: typing.Any = None 
 
+class CustomAttributeValue:
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeValue:... 
 
-class CustomConfigurationBase:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.config: str = str() 
-        self.core: bool = bool() 
-        self.entity_type: str = str() 
-        self.group: CustomAttributeGroup = CustomAttributeGroup 
-        self.group_id: str = str() 
-        self.id: str = str() 
-        self.key: str = str() 
-        self.label: str = str() 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.project_id: str = str() 
-        self.read_security_roles: SecurityRole = SecurityRole 
-        self.sort: int = int() 
-        self.write_security_roles: SecurityRole = SecurityRole 
 
+class CustomConfigurationBase:
+    sort: int = int() 
+    core: bool = bool() 
+    group_id: str = str() 
+    group: CustomAttributeGroup = CustomAttributeGroup 
+    object_type_id: str = str() 
+    entity_type: str = str() 
+    object_type: ObjectType = ObjectType 
+    label: str = str() 
+    read_security_roles: SecurityRole = SecurityRole 
+    key: str = str() 
+    write_security_roles: SecurityRole = SecurityRole 
+    project_id: str = str() 
+    config: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomConfigurationBase:... 
 
-class Dashboard:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.dashboard_resources: DashboardResource = DashboardResource 
-        self.id: str = str() 
-        self.is_shared_with_everyone: bool = bool() 
-        self.name: str = str() 
-        self.widgets: DashboardWidget = DashboardWidget 
 
+class Dashboard:
+    name: str = str() 
+    created_by: User = User 
+    dashboard_resources: DashboardResource = DashboardResource 
+    widgets: DashboardWidget = DashboardWidget 
+    created_by_id: str = str() 
+    is_shared_with_everyone: bool = bool() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Dashboard:... 
 
-class DashboardResource:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.dashboard: Dashboard = Dashboard 
-        self.dashboard_id: str = str() 
-        self.resource: Resource = Resource 
-        self.resource_id: str = str() 
 
+class DashboardResource:
+    dashboard_id: str = str() 
+    resource: Resource = Resource 
+    dashboard: Dashboard = Dashboard 
+    resource_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> DashboardResource:... 
 
-class DashboardWidget:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.config: str = str() 
-        self.dashboard: Dashboard = Dashboard 
-        self.dashboard_id: str = str() 
-        self.id: str = str() 
-        self.sort: float = float() 
-        self.type: str = str() 
 
+class DashboardWidget:
+    sort: float = float() 
+    type: str = str() 
+    dashboard_id: str = str() 
+    dashboard: Dashboard = Dashboard 
+    config: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> DashboardWidget:... 
 
-class Disk:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.projects: Project = Project 
-        self.unix: str = str() 
-        self.windows: str = str() 
 
+class Disk:
+    windows: str = str() 
+    unix: str = str() 
+    id: str = str() 
+    projects: Project = Project 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Disk:... 
 
-class EntitySetting(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.group: str = str() 
-        self.name: str = str() 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.value: str = str() 
 
+class EntitySetting(Entity):
+    parent_id: str = str() 
+    parent_type: str = str() 
+    name: str = str() 
+    value: str = str() 
+    group: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> EntitySetting:... 
     def by_id(self, target, *ids) -> Query(EntitySetting):... 
     def by_metadata(self, target, *dictionaries) -> Query(EntitySetting):... 
@@ -920,59 +962,60 @@ class EntitySetting(Entity):
     def not_by_id(self, target, *ids) -> Query(EntitySetting):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(EntitySetting):... 
 
-class Episode(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.split_parts: SplitTaskPart = SplitTaskPart 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
+class Episode(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Episode:... 
     def by_assignee(self, target, *assignees) -> Query(Episode):... 
     def by_id(self, target, *ids) -> Query(Episode):... 
@@ -1012,21 +1055,22 @@ class Episode(TypedContext):
     def unlink_inputs(self, entity_collection) -> Episode:... 
     def unlink_outputs(self, entity_collection) -> Episode:... 
 
-class Event(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.action: str = str() 
-        self.created_at: str = str() 
-        self.data: str = str() 
-        self.feeds: Feed = Feed 
-        self.id: int = int() 
-        self.insert: str = str() 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
+class Event(Entity):
+    insert: str = str() 
+    user_id: str = str() 
+    created_at: str = str() 
+    parent_type: str = str() 
+    project: Project = Project 
+    parent_id: str = str() 
+    user: User = User 
+    action: str = str() 
+    feeds: Feed = Feed 
+    project_id: str = str() 
+    data: str = str() 
+    id: int = int() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Event:... 
     def by_action(self, target, *actions) -> Query(Event):... 
     def by_data(self, target, *datas) -> Query(Event):... 
@@ -1050,35 +1094,37 @@ class Event(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Event):... 
     def not_by_name(self, target, *names) -> Query(Event):... 
 
-class Feed:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.cluster_id: str = str() 
-        self.created_at: str = str() 
-        self.distance: int = int() 
-        self.event: Event = Event 
-        self.id: str = str() 
-        self.owner_id: str = str() 
-        self.relation: str = str() 
-        self.social_id: int = int() 
 
+class Feed:
+    distance: int = int() 
+    created_at: str = str() 
+    id: str = str() 
+    relation: str = str() 
+    social_id: int = int() 
+    cluster_id: str = str() 
+    event: Event = Event 
+    owner_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Feed:... 
 
-class FileComponent(Component):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component_locations: ComponentLocation = ComponentLocation 
-        self.container: ContainerComponent = ContainerComponent 
-        self.container_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.file_type: str = str() 
-        self.id: str = str() 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.size: int = int() 
-        self.system_type: str = str() 
-        self.version: AssetVersion = AssetVersion 
-        self.version_id: str = str() 
 
+class FileComponent(Component):
+    container: ContainerComponent = ContainerComponent 
+    name: str = str() 
+    component_locations: ComponentLocation = ComponentLocation 
+    file_type: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    container_id: str = str() 
+    version_id: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    version: AssetVersion = AssetVersion 
+    system_type: str = str() 
+    metadata: typing.List = [Metadata] 
+    id: str = str() 
+    size: int = int() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> FileComponent:... 
     def by_file_type(self, target, *file_types) -> Query(FileComponent):... 
     def by_id(self, target, *ids) -> Query(FileComponent):... 
@@ -1110,59 +1156,60 @@ class FileComponent(Component):
     def not_by_system_type(self, target, *system_types) -> Query(FileComponent):... 
     def not_by_version(self, target, *versions) -> Query(FileComponent):... 
 
-class Folder(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.split_parts: SplitTaskPart = SplitTaskPart 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
+class Folder(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Folder:... 
     def by_assignee(self, target, *assignees) -> Query(Folder):... 
     def by_id(self, target, *ids) -> Query(Folder):... 
@@ -1202,24 +1249,25 @@ class Folder(TypedContext):
     def unlink_inputs(self, entity_collection) -> Folder:... 
     def unlink_outputs(self, entity_collection) -> Folder:... 
 
-class Group(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assignments: Appointment = Appointment 
-        self.children: Group = Group 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.dashboard_resources: DashboardResource = DashboardResource 
-        self.id: str = str() 
-        self.link: str = str() 
-        self.local: bool = bool() 
-        self.memberships: Membership = Membership 
-        self.name: str = str() 
-        self.parent: Group = Group 
-        self.parent_id: str = str() 
-        self.resource_type: str = str() 
 
+class Group(Entity):
+    assignments: Appointment = Appointment 
+    name: str = str() 
+    parent: Group = Group 
+    parent_id: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    children: Group = Group 
+    memberships: Membership = Membership 
+    dashboard_resources: DashboardResource = DashboardResource 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    allocations: Appointment = Appointment 
+    local: bool = bool() 
+    id: str = str() 
+    resource_type: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Group:... 
     def by_id(self, target, *ids) -> Query(Group):... 
     def by_metadata(self, target, *dictionaries) -> Query(Group):... 
@@ -1239,85 +1287,88 @@ class Group(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Group):... 
     def not_by_name(self, target, *names) -> Query(Group):... 
 
-class GroupCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.group: Group = Group 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class GroupCustomAttributeLink:
+    to_entity_type: str = str() 
+    group: Group = Group 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> GroupCustomAttributeLink:... 
 
-class GroupCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.group: Group = Group 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class GroupCustomAttributeLinkFrom:
+    to_entity_type: str = str() 
+    group: Group = Group 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> GroupCustomAttributeLinkFrom:... 
 
-class Image(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.split_parts: SplitTaskPart = SplitTaskPart 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
+class Image(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Image:... 
     def by_assignee(self, target, *assignees) -> Query(Image):... 
     def by_id(self, target, *ids) -> Query(Image):... 
@@ -1357,59 +1408,60 @@ class Image(TypedContext):
     def unlink_inputs(self, entity_collection) -> Image:... 
     def unlink_outputs(self, entity_collection) -> Image:... 
 
-class Information(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.split_parts: SplitTaskPart = SplitTaskPart 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
+class Information(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Information:... 
     def by_assignee(self, target, *assignees) -> Query(Information):... 
     def by_id(self, target, *ids) -> Query(Information):... 
@@ -1449,18 +1501,19 @@ class Information(TypedContext):
     def unlink_inputs(self, entity_collection) -> Information:... 
     def unlink_outputs(self, entity_collection) -> Information:... 
 
-class Job(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.created_at: str = str() 
-        self.data: str = str() 
-        self.finished_at: str = str() 
-        self.id: str = str() 
-        self.job_components: JobComponent = JobComponent 
-        self.status: str = str() 
-        self.type: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
+class Job(Entity):
+    status: str = str() 
+    user_id: str = str() 
+    finished_at: str = str() 
+    created_at: str = str() 
+    data: str = str() 
+    user: User = User 
+    type: str = str() 
+    id: str = str() 
+    job_components: JobComponent = JobComponent 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Job:... 
     def by_creation_date(self, target, creation_date) -> Query(Job):... 
     def by_data(self, target, *dictionaries) -> Query(Job):... 
@@ -1490,32 +1543,34 @@ class Job(Entity):
     def not_by_name(self, target, *names) -> Query(Job):... 
     def not_by_status(self, target, *status) -> Query(Job):... 
 
-class JobComponent:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.component_id: str = str() 
-        self.job: Job = Job 
-        self.job_id: str = str() 
-        self.url: object 
 
+class JobComponent:
+    url: object 
+    job: Job = Job 
+    component_id: str = str() 
+    component: Component = Component 
+    job_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> JobComponent:... 
 
-class List(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.category: ListCategory = ListCategory 
-        self.category_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.date: str = str() 
-        self.id: str = str() 
-        self.is_open: bool = bool() 
-        self.name: str = str() 
-        self.owner: User = User 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.system_type: str = str() 
-        self.user_id: str = str() 
 
+class List(Entity):
+    category: ListCategory = ListCategory 
+    category_id: str = str() 
+    user_id: str = str() 
+    name: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    project: Project = Project 
+    date: str = str() 
+    is_open: bool = bool() 
+    system_type: str = str() 
+    owner: User = User 
+    project_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> List:... 
     def by_id(self, target, *ids) -> Query(List):... 
     def by_metadata(self, target, *dictionaries) -> Query(List):... 
@@ -1535,12 +1590,13 @@ class List(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(List):... 
     def not_by_name(self, target, *names) -> Query(List):... 
 
-class ListCategory(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.lists: List = List 
-        self.name: str = str() 
 
+class ListCategory(Entity):
+    id: str = str() 
+    lists: List = List 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ListCategory:... 
     def by_id(self, target, *ids) -> Query(ListCategory):... 
     def by_metadata(self, target, *dictionaries) -> Query(ListCategory):... 
@@ -1560,69 +1616,75 @@ class ListCategory(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(ListCategory):... 
     def not_by_name(self, target, *names) -> Query(ListCategory):... 
 
-class ListCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.list: List = List 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class ListCustomAttributeLink:
+    to_entity_type: str = str() 
+    list: List = List 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ListCustomAttributeLink:... 
 
-class ListCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.list: List = List 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
 
+class ListCustomAttributeLinkFrom:
+    to_entity_type: str = str() 
+    list: List = List 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ListCustomAttributeLinkFrom:... 
 
-class ListCustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
 
+class ListCustomAttributeValue:
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ListCustomAttributeValue:... 
 
-class ListObject:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.entity_id: str = str() 
-        self.id: str = str() 
-        self.list: List = List 
-        self.list_id: str = str() 
 
+class ListObject:
+    entity_id: str = str() 
+    list: List = List 
+    id: str = str() 
+    list_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ListObject:... 
 
-class ListObjectCustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
 
+class ListObjectCustomAttributeValue:
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ListObjectCustomAttributeValue:... 
 
-class Location(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.description: str = str() 
-        self.id: str = str() 
-        self.label: str = str() 
-        self.location_components: ComponentLocation = ComponentLocation 
-        self.name: str = str() 
 
+class Location(Entity):
+    label: str = str() 
+    location_components: ComponentLocation = ComponentLocation 
+    id: str = str() 
+    name: str = str() 
+    description: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Location:... 
     def by_id(self, target, *ids) -> Query(Location):... 
     def by_metadata(self, target, *dictionaries) -> Query(Location):... 
@@ -1642,33 +1704,36 @@ class Location(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Location):... 
     def not_by_name(self, target, *names) -> Query(Location):... 
 
-class Manager:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.context: Context = Context 
-        self.context_id: str = str() 
-        self.id: str = str() 
-        self.type: ManagerType = ManagerType 
-        self.type_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
+class Manager:
+    user_id: str = str() 
+    type_id: str = str() 
+    context_id: str = str() 
+    user: User = User 
+    context: Context = Context 
+    type: ManagerType = ManagerType 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Manager:... 
 
-class ManagerType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
 
+class ManagerType:
+    id: str = str() 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ManagerType:... 
 
-class Membership(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.group: Group = Group 
-        self.group_id: str = str() 
-        self.id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
+class Membership(Entity):
+    user_id: str = str() 
+    group_id: str = str() 
+    group: Group = Group 
+    id: str = str() 
+    user: User = User 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Membership:... 
     def by_id(self, target, *ids) -> Query(Membership):... 
     def by_metadata(self, target, *dictionaries) -> Query(Membership):... 
@@ -1686,13 +1751,14 @@ class Membership(Entity):
     def not_by_id(self, target, *ids) -> Query(Membership):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Membership):... 
 
-class Metadata(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.key: str = str() 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.value: str = str() 
 
+class Metadata(Entity):
+    parent_id: str = str() 
+    parent_type: str = str() 
+    key: str = str() 
+    value: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Metadata:... 
     def by_id(self, target, *ids) -> Query(Metadata):... 
     def by_metadata(self, target, *dictionaries) -> Query(Metadata):... 
@@ -1710,59 +1776,60 @@ class Metadata(Entity):
     def not_by_id(self, target, *ids) -> Query(Metadata):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Metadata):... 
 
-class Milestone(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.split_parts: SplitTaskPart = SplitTaskPart 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
+class Milestone(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Milestone:... 
     def by_assignee(self, target, *assignees) -> Query(Milestone):... 
     def by_id(self, target, *ids) -> Query(Milestone):... 
@@ -1802,33 +1869,34 @@ class Milestone(TypedContext):
     def unlink_inputs(self, entity_collection) -> Milestone:... 
     def unlink_outputs(self, entity_collection) -> Milestone:... 
 
-class Note(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.author: BaseUser = BaseUser 
-        self.category: NoteCategory = NoteCategory 
-        self.category_id: str = str() 
-        self.completed_at: str = str() 
-        self.completed_by: User = User 
-        self.completed_by_id: str = str() 
-        self.content: str = str() 
-        self.date: str = str() 
-        self.frame_number: int = int() 
-        self.id: str = str() 
-        self.in_reply_to: Note = Note 
-        self.in_reply_to_id: str = str() 
-        self.is_todo: bool = bool() 
-        self.metadata: typing.List = [Metadata] 
-        self.note_components: NoteComponent = NoteComponent 
-        self.note_label_links: NoteLabelLink = NoteLabelLink 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.recipients: Recipient = Recipient 
-        self.replies: Note = Note 
-        self.thread_activity: str = str() 
-        self.user_id: str = str() 
 
+class Note(Entity):
+    in_reply_to_id: str = str() 
+    parent_type: str = str() 
+    completed_at: str = str() 
+    thread_activity: str = str() 
+    replies: Note = Note 
+    id: str = str() 
+    category: NoteCategory = NoteCategory 
+    user_id: str = str() 
+    author: BaseUser = BaseUser 
+    note_components: NoteComponent = NoteComponent 
+    content: str = str() 
+    parent_id: str = str() 
+    project_id: str = str() 
+    metadata: typing.List = [Metadata] 
+    note_label_links: NoteLabelLink = NoteLabelLink 
+    recipients: Recipient = Recipient 
+    completed_by_id: str = str() 
+    completed_by: User = User 
+    date: str = str() 
+    in_reply_to: Note = Note 
+    project: Project = Project 
+    is_todo: bool = bool() 
+    category_id: str = str() 
+    frame_number: int = int() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Note:... 
     def by_id(self, target, *ids) -> Query(Note):... 
     def by_metadata(self, target, *dictionaries) -> Query(Note):... 
@@ -1848,24 +1916,26 @@ class Note(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Note):... 
     def not_by_name(self, target, *names) -> Query(Note):... 
 
+
 class NoteAnnotationComponent:
+    component_id: str = str() 
+    url: object 
+    component: Component = Component 
+    note: Note = Note 
+    thumbnail_url: object 
+    data: object 
+    note_id: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.component_id: str = str() 
-        self.data: object 
-        self.note: Note = Note 
-        self.note_id: str = str() 
-        self.thumbnail_url: object 
-        self.url: object 
 
 
 class NoteCategory(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.color: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.sort: int = int() 
+    sort: int = int() 
+    color: str = str() 
+    id: str = str() 
+    name: str = str() 
 
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> NoteCategory:... 
     def by_id(self, target, *ids) -> Query(NoteCategory):... 
     def by_metadata(self, target, *dictionaries) -> Query(NoteCategory):... 
@@ -1885,15 +1955,16 @@ class NoteCategory(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(NoteCategory):... 
     def not_by_name(self, target, *names) -> Query(NoteCategory):... 
 
-class NoteComponent(Component):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.component_id: str = str() 
-        self.note: Note = Note 
-        self.note_id: str = str() 
-        self.thumbnail_url: object 
-        self.url: object 
 
+class NoteComponent(Component):
+    component_id: str = str() 
+    url: object 
+    component: Component = Component 
+    note: Note = Note 
+    note_id: str = str() 
+    thumbnail_url: object 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> NoteComponent:... 
     def by_file_type(self, target, *file_types) -> Query(NoteComponent):... 
     def by_id(self, target, *ids) -> Query(NoteComponent):... 
@@ -1925,13 +1996,14 @@ class NoteComponent(Component):
     def not_by_system_type(self, target, *system_types) -> Query(NoteComponent):... 
     def not_by_version(self, target, *versions) -> Query(NoteComponent):... 
 
-class NoteLabel(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.color: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.sort: int = int() 
 
+class NoteLabel(Entity):
+    sort: int = int() 
+    color: str = str() 
+    id: str = str() 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> NoteLabel:... 
     def by_id(self, target, *ids) -> Query(NoteLabel):... 
     def by_metadata(self, target, *dictionaries) -> Query(NoteLabel):... 
@@ -1951,31 +2023,33 @@ class NoteLabel(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(NoteLabel):... 
     def not_by_name(self, target, *names) -> Query(NoteLabel):... 
 
-class NoteLabelLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.label: NoteLabel = NoteLabel 
-        self.label_id: str = str() 
-        self.note: Note = Note 
-        self.note_id: str = str() 
 
+class NoteLabelLink:
+    note: Note = Note 
+    label_id: str = str() 
+    note_id: str = str() 
+    label: NoteLabel = NoteLabel 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> NoteLabelLink:... 
 
-class ObjectType(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.icon: str = str() 
-        self.id: str = str() 
-        self.is_leaf: bool = bool() 
-        self.is_prioritizable: bool = bool() 
-        self.is_schedulable: bool = bool() 
-        self.is_statusable: bool = bool() 
-        self.is_taskable: bool = bool() 
-        self.is_time_reportable: bool = bool() 
-        self.is_typeable: bool = bool() 
-        self.name: str = str() 
-        self.project_schemas: ProjectSchema = ProjectSchema 
-        self.sort: int = int() 
-        self.tasks: Task = Task 
 
+class ObjectType(Entity):
+    sort: int = int() 
+    is_leaf: bool = bool() 
+    tasks: Task = Task 
+    is_typeable: bool = bool() 
+    project_schemas: ProjectSchema = ProjectSchema 
+    is_time_reportable: bool = bool() 
+    is_schedulable: bool = bool() 
+    is_prioritizable: bool = bool() 
+    is_statusable: bool = bool() 
+    is_taskable: bool = bool() 
+    icon: str = str() 
+    id: str = str() 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ObjectType:... 
     def by_id(self, target, *ids) -> Query(ObjectType):... 
     def by_metadata(self, target, *dictionaries) -> Query(ObjectType):... 
@@ -1993,63 +2067,65 @@ class ObjectType(Entity):
     def not_by_id(self, target, *ids) -> Query(ObjectType):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(ObjectType):... 
 
-class Priority:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.color: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.sort: int = int() 
-        self.tasks: Task = Task 
-        self.value: float = float() 
 
+class Priority:
+    sort: int = int() 
+    tasks: Task = Task 
+    name: str = str() 
+    color: str = str() 
+    value: float = float() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Priority:... 
 
-class Project(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.calendar_events: CalendarEvent = CalendarEvent 
-        self.children: Context = Context 
-        self.color: str = str() 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.disk: Disk = Disk 
-        self.disk_id: str = str() 
-        self.end_date: str = str() 
-        self.full_name: str = str() 
-        self.id: str = str() 
-        self.is_global: bool = bool() 
-        self.is_private: bool = bool() 
-        self.link: str = str() 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.project_id: str = str() 
-        self.project_schema: ProjectSchema = ProjectSchema 
-        self.project_schema_id: str = str() 
-        self.review_session_folders: ReviewSessionFolder = ReviewSessionFolder 
-        self.review_sessions: ReviewSession = ReviewSession 
-        self.root: str = str() 
-        self.scopes: Scope = Scope 
-        self.start_date: str = str() 
-        self.status: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.timelogs: Timelog = Timelog 
-        self.user_security_role_projects: UserSecurityRoleProject = UserSecurityRoleProject 
 
+class Project(Entity):
+    created_at: str = str() 
+    managers: Manager = Manager 
+    calendar_events: CalendarEvent = CalendarEvent 
+    color: str = str() 
+    disk_id: str = str() 
+    full_name: str = str() 
+    disk: Disk = Disk 
+    children: Context = Context 
+    timelogs: Timelog = Timelog 
+    end_date: str = str() 
+    parent_id: str = str() 
+    created_by: User = User 
+    id: str = str() 
+    user_security_role_projects: UserSecurityRoleProject = UserSecurityRoleProject 
+    start_date: str = str() 
+    project_id: str = str() 
+    project_schema: ProjectSchema = ProjectSchema 
+    metadata: typing.List = [Metadata] 
+    status: str = str() 
+    scopes: Scope = Scope 
+    project_schema_id: str = str() 
+    parent: Context = Context 
+    descendants: TypedContext = TypedContext 
+    thumbnail_id: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    review_sessions: ReviewSession = ReviewSession 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    review_session_folders: ReviewSessionFolder = ReviewSessionFolder 
+    is_private: bool = bool() 
+    assets: Asset = Asset 
+    is_global: bool = bool() 
+    name: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    notes: Note = Note 
+    thumbnail: Component = Component 
+    assignments: Appointment = Appointment 
+    thumbnail_url: object 
+    allocations: Appointment = Appointment 
+    created_by_id: str = str() 
+    _link: str = str() 
+    root: str = str() 
+    context_type: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Project:... 
     def by_id(self, target, *ids) -> Query(Project):... 
     def by_lifespan(self, target, start=None, end=None) -> Query(Project):... 
@@ -2073,26 +2149,27 @@ class Project(Entity):
     def not_by_name(self, target, *names) -> Query(Project):... 
     def not_by_status(self, target, status) -> Query(Project):... 
 
-class ProjectSchema(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._overrides: ProjectSchemaOverride = ProjectSchemaOverride 
-        self._schemas: Schema = Schema 
-        self._task_type_schema: TaskTypeSchema = TaskTypeSchema 
-        self._task_workflow: WorkflowSchema = WorkflowSchema 
-        self._version_workflow: WorkflowSchema = WorkflowSchema 
-        self.asset_version_workflow_schema: WorkflowSchema = WorkflowSchema 
-        self.asset_version_workflow_schema_id: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.object_type_schemas: Schema = Schema 
-        self.object_types: ObjectType = ObjectType 
-        self.task_templates: TaskTemplate = TaskTemplate 
-        self.task_type_schema: TaskTypeSchema = TaskTypeSchema 
-        self.task_type_schema_id: str = str() 
-        self.task_workflow_schema: WorkflowSchema = WorkflowSchema 
-        self.task_workflow_schema_id: str = str() 
-        self.task_workflow_schema_overrides: ProjectSchemaOverride = ProjectSchemaOverride 
 
+class ProjectSchema(Entity):
+    _task_workflow: WorkflowSchema = WorkflowSchema 
+    asset_version_workflow_schema_id: str = str() 
+    _schemas: Schema = Schema 
+    task_workflow_schema_id: str = str() 
+    _overrides: ProjectSchemaOverride = ProjectSchemaOverride 
+    _task_type_schema: TaskTypeSchema = TaskTypeSchema 
+    task_workflow_schema: WorkflowSchema = WorkflowSchema 
+    object_types: ObjectType = ObjectType 
+    _version_workflow: WorkflowSchema = WorkflowSchema 
+    asset_version_workflow_schema: WorkflowSchema = WorkflowSchema 
+    id: str = str() 
+    task_workflow_schema_overrides: ProjectSchemaOverride = ProjectSchemaOverride 
+    task_type_schema_id: str = str() 
+    task_type_schema: TaskTypeSchema = TaskTypeSchema 
+    task_templates: TaskTemplate = TaskTemplate 
+    object_type_schemas: Schema = Schema 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ProjectSchema:... 
     def by_id(self, target, *ids) -> Query(ProjectSchema):... 
     def by_metadata(self, target, *dictionaries) -> Query(ProjectSchema):... 
@@ -2110,34 +2187,37 @@ class ProjectSchema(Entity):
     def not_by_id(self, target, *ids) -> Query(ProjectSchema):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(ProjectSchema):... 
 
-class ProjectSchemaObjectType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.project_schema: ProjectSchema = ProjectSchema 
-        self.project_schema_id: str = str() 
 
+class ProjectSchemaObjectType:
+    object_type: ObjectType = ObjectType 
+    project_schema_id: str = str() 
+    project_schema: ProjectSchema = ProjectSchema 
+    object_type_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ProjectSchemaObjectType:... 
 
-class ProjectSchemaOverride:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.project_schema_id: str = str() 
-        self.type_id: str = str() 
-        self.workflow_schema: WorkflowSchema = WorkflowSchema 
-        self.workflow_schema_id: str = str() 
 
+class ProjectSchemaOverride:
+    project_schema_id: str = str() 
+    workflow_schema_id: str = str() 
+    workflow_schema: WorkflowSchema = WorkflowSchema 
+    id: str = str() 
+    type_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ProjectSchemaOverride:... 
 
-class Recipient(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.note: Note = Note 
-        self.note_id: str = str() 
-        self.recipient: Resource = Resource 
-        self.resource_id: str = str() 
-        self.text_mentioned: str = str() 
-        self.user: User = User 
 
+class Recipient(Entity):
+    note_id: str = str() 
+    resource_id: str = str() 
+    text_mentioned: str = str() 
+    note: Note = Note 
+    user: User = User 
+    recipient: Resource = Resource 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Recipient:... 
     def by_id(self, target, *ids) -> Query(Recipient):... 
     def by_metadata(self, target, *dictionaries) -> Query(Recipient):... 
@@ -2155,15 +2235,16 @@ class Recipient(Entity):
     def not_by_id(self, target, *ids) -> Query(Recipient):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Recipient):... 
 
-class Resource(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assignments: Appointment = Appointment 
-        self.dashboard_resources: DashboardResource = DashboardResource 
-        self.id: str = str() 
-        self.resource_type: str = str() 
 
+class Resource(Entity):
+    assignments: Appointment = Appointment 
+    dashboard_resources: DashboardResource = DashboardResource 
+    appointments: Appointment = Appointment 
+    allocations: Appointment = Appointment 
+    id: str = str() 
+    resource_type: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Resource:... 
     def by_id(self, target, *ids) -> Query(Resource):... 
     def by_metadata(self, target, *dictionaries) -> Query(Resource):... 
@@ -2181,33 +2262,34 @@ class Resource(Entity):
     def not_by_id(self, target, *ids) -> Query(Resource):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Resource):... 
 
-class ReviewSession(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.availability: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.is_moderated: bool = bool() 
-        self.is_open: bool = bool() 
-        self.name: str = str() 
-        self.passphrase: str = str() 
-        self.passphrase_enabled: bool = bool() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.review_session_folder: ReviewSessionFolder = ReviewSessionFolder 
-        self.review_session_folder_id: str = str() 
-        self.review_session_invitees: ReviewSessionInvitee = ReviewSessionInvitee 
-        self.review_session_objects: ReviewSessionObject = ReviewSessionObject 
-        self.settings: EntitySetting = EntitySetting 
-        self.shareable_url_enabled: bool = bool() 
-        self.start_date: str = str() 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
 
+class ReviewSession(Entity):
+    passphrase_enabled: bool = bool() 
+    is_open: bool = bool() 
+    review_session_folder: ReviewSessionFolder = ReviewSessionFolder 
+    passphrase: str = str() 
+    id: str = str() 
+    shareable_url_enabled: bool = bool() 
+    review_session_invitees: ReviewSessionInvitee = ReviewSessionInvitee 
+    created_by: User = User 
+    availability: str = str() 
+    project_id: str = str() 
+    start_date: str = str() 
+    description: str = str() 
+    end_date: str = str() 
+    thumbnail_id: str = str() 
+    review_session_folder_id: str = str() 
+    name: str = str() 
+    review_session_objects: ReviewSessionObject = ReviewSessionObject 
+    settings: EntitySetting = EntitySetting 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    thumbnail_url: object 
+    is_moderated: bool = bool() 
+    created_by_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ReviewSession:... 
     def by_id(self, target, *ids) -> Query(ReviewSession):... 
     def by_metadata(self, target, *dictionaries) -> Query(ReviewSession):... 
@@ -2227,31 +2309,33 @@ class ReviewSession(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(ReviewSession):... 
     def not_by_name(self, target, *names) -> Query(ReviewSession):... 
 
+
 class ReviewSessionFolder:
+    project: Project = Project 
+    id: str = str() 
+    project_id: str = str() 
+    name: str = str() 
+    review_sessions: ReviewSession = ReviewSession 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.review_sessions: ReviewSession = ReviewSession 
 
 
 class ReviewSessionInvitee(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.created_from_shared_url: bool = bool() 
-        self.email: str = str() 
-        self.id: str = str() 
-        self.last_sent_at: str = str() 
-        self.name: str = str() 
-        self.resource: Resource = Resource 
-        self.resource_id: str = str() 
-        self.review_session: ReviewSession = ReviewSession 
-        self.review_session_id: str = str() 
-        self.statuses: ReviewSessionObjectStatus = ReviewSessionObjectStatus 
+    created_from_shared_url: bool = bool() 
+    resource: Resource = Resource 
+    name: str = str() 
+    resource_id: str = str() 
+    created_at: str = str() 
+    created_by: User = User 
+    id: str = str() 
+    review_session_id: str = str() 
+    last_sent_at: str = str() 
+    created_by_id: str = str() 
+    email: str = str() 
+    statuses: ReviewSessionObjectStatus = ReviewSessionObjectStatus 
+    review_session: ReviewSession = ReviewSession 
 
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ReviewSessionInvitee:... 
     def by_id(self, target, *ids) -> Query(ReviewSessionInvitee):... 
     def by_metadata(self, target, *dictionaries) -> Query(ReviewSessionInvitee):... 
@@ -2269,22 +2353,23 @@ class ReviewSessionInvitee(Entity):
     def not_by_id(self, target, *ids) -> Query(ReviewSessionInvitee):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(ReviewSessionInvitee):... 
 
-class ReviewSessionObject(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.annotations: ReviewSessionObjectAnnotation = ReviewSessionObjectAnnotation 
-        self.asset_version: AssetVersion = AssetVersion 
-        self.created_at: str = str() 
-        self.description: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.review_session: ReviewSession = ReviewSession 
-        self.review_session_id: str = str() 
-        self.sort_order: float = float() 
-        self.statuses: ReviewSessionObjectStatus = ReviewSessionObjectStatus 
-        self.version: str = str() 
-        self.version_id: str = str() 
 
+class ReviewSessionObject(Entity):
+    name: str = str() 
+    created_at: str = str() 
+    description: str = str() 
+    version_id: str = str() 
+    id: str = str() 
+    review_session_id: str = str() 
+    version: str = str() 
+    notes: Note = Note 
+    asset_version: AssetVersion = AssetVersion 
+    sort_order: float = float() 
+    annotations: ReviewSessionObjectAnnotation = ReviewSessionObjectAnnotation 
+    statuses: ReviewSessionObjectStatus = ReviewSessionObjectStatus 
+    review_session: ReviewSession = ReviewSession 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ReviewSessionObject:... 
     def by_id(self, target, *ids) -> Query(ReviewSessionObject):... 
     def by_metadata(self, target, *dictionaries) -> Query(ReviewSessionObject):... 
@@ -2302,40 +2387,43 @@ class ReviewSessionObject(Entity):
     def not_by_id(self, target, *ids) -> Query(ReviewSessionObject):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(ReviewSessionObject):... 
 
+
 class ReviewSessionObjectAnnotation:
+    created_at: str = str() 
+    review_session_object_id: str = str() 
+    updated_at: str = str() 
+    id: str = str() 
+    review_session_object: ReviewSessionObject = ReviewSessionObject 
+    data: str = str() 
+    frame_number: int = int() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.created_at: str = str() 
-        self.data: str = str() 
-        self.frame_number: int = int() 
-        self.id: str = str() 
-        self.review_session_object: ReviewSessionObject = ReviewSessionObject 
-        self.review_session_object_id: str = str() 
-        self.updated_at: str = str() 
 
 
 class ReviewSessionObjectAnnotationComponent:
+    component_id: str = str() 
+    url: object 
+    review_session_object_id: str = str() 
+    component: Component = Component 
+    thumbnail_url: object 
+    review_session_object: ReviewSessionObject = ReviewSessionObject 
+    frame_number: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.component_id: str = str() 
-        self.frame_number: str = str() 
-        self.review_session_object: ReviewSessionObject = ReviewSessionObject 
-        self.review_session_object_id: str = str() 
-        self.thumbnail_url: object 
-        self.url: object 
 
 
 class ReviewSessionObjectStatus(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.created_at: str = str() 
-        self.id: str = str() 
-        self.invitee: ReviewSessionInvitee = ReviewSessionInvitee 
-        self.resource: Resource = Resource 
-        self.resource_id: str = str() 
-        self.review_session_invitee_id: str = str() 
-        self.review_session_object: ReviewSessionObject = ReviewSessionObject 
-        self.review_session_object_id: str = str() 
-        self.status: str = str() 
+    status: str = str() 
+    review_session_object_id: str = str() 
+    resource: Resource = Resource 
+    resource_id: str = str() 
+    created_at: str = str() 
+    invitee: ReviewSessionInvitee = ReviewSessionInvitee 
+    review_session_object: ReviewSessionObject = ReviewSessionObject 
+    review_session_invitee_id: str = str() 
+    id: str = str() 
 
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> ReviewSessionObjectStatus:... 
     def by_id(self, target, *ids) -> Query(ReviewSessionObjectStatus):... 
     def by_metadata(self, target, *dictionaries) -> Query(ReviewSessionObjectStatus):... 
@@ -2353,59 +2441,60 @@ class ReviewSessionObjectStatus(Entity):
     def not_by_id(self, target, *ids) -> Query(ReviewSessionObjectStatus):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(ReviewSessionObjectStatus):... 
 
-class Scene(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.split_parts: SplitTaskPart = SplitTaskPart 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
+class Scene(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Scene:... 
     def by_assignee(self, target, *assignees) -> Query(Scene):... 
     def by_id(self, target, *ids) -> Query(Scene):... 
@@ -2445,49 +2534,54 @@ class Scene(TypedContext):
     def unlink_inputs(self, entity_collection) -> Scene:... 
     def unlink_outputs(self, entity_collection) -> Scene:... 
 
-class Schema:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.object_type_id: str = str() 
-        self.project_schema_id: str = str() 
-        self.statuses: SchemaStatus = SchemaStatus 
-        self.type_id: str = str() 
-        self.types: SchemaType = SchemaType 
 
+class Schema:
+    project_schema_id: str = str() 
+    type_id: str = str() 
+    statuses: SchemaStatus = SchemaStatus 
+    object_type_id: str = str() 
+    id: str = str() 
+    types: SchemaType = SchemaType 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Schema:... 
 
-class SchemaStatus:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.schema_id: str = str() 
-        self.sort: int = int() 
-        self.status_id: str = str() 
-        self.task_status: Status = Status 
 
+class SchemaStatus:
+    sort: int = int() 
+    schema_id: str = str() 
+    task_status: Status = Status 
+    status_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> SchemaStatus:... 
 
-class SchemaType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.schema_id: str = str() 
-        self.sort: int = int() 
-        self.task_type: Type = Type 
-        self.type_id: str = str() 
 
+class SchemaType:
+    sort: int = int() 
+    schema_id: str = str() 
+    task_type: Type = Type 
+    type_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> SchemaType:... 
 
-class Scope:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
 
+class Scope:
+    name: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Scope:... 
 
-class SecurityRole(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.type: str = str() 
-        self.user_security_roles: UserSecurityRole = UserSecurityRole 
 
+class SecurityRole(Entity):
+    user_security_roles: UserSecurityRole = UserSecurityRole 
+    type: str = str() 
+    id: str = str() 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> SecurityRole:... 
     def by_id(self, target, *ids) -> Query(SecurityRole):... 
     def by_metadata(self, target, *dictionaries) -> Query(SecurityRole):... 
@@ -2505,59 +2599,60 @@ class SecurityRole(Entity):
     def not_by_id(self, target, *ids) -> Query(SecurityRole):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(SecurityRole):... 
 
-class Sequence(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.split_parts: SplitTaskPart = SplitTaskPart 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
+class Sequence(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Sequence:... 
     def by_assignee(self, target, *assignees) -> Query(Sequence):... 
     def by_id(self, target, *ids) -> Query(Sequence):... 
@@ -2597,99 +2692,103 @@ class Sequence(TypedContext):
     def unlink_inputs(self, entity_collection) -> Sequence:... 
     def unlink_outputs(self, entity_collection) -> Sequence:... 
 
-class SequenceComponent:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component_locations: ComponentLocation = ComponentLocation 
-        self.container: ContainerComponent = ContainerComponent 
-        self.container_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.file_type: str = str() 
-        self.id: str = str() 
-        self.members: Component = Component 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.padding: int = int() 
-        self.size: int = int() 
-        self.system_type: str = str() 
-        self.version: AssetVersion = AssetVersion 
-        self.version_id: str = str() 
 
+class SequenceComponent:
+    container: ContainerComponent = ContainerComponent 
+    name: str = str() 
+    component_locations: ComponentLocation = ComponentLocation 
+    file_type: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    container_id: str = str() 
+    version_id: str = str() 
+    padding: int = int() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    version: AssetVersion = AssetVersion 
+    system_type: str = str() 
+    members: Component = Component 
+    size: int = int() 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> SequenceComponent:... 
 
-class Setting:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.group: str = str() 
-        self.name: str = str() 
-        self.value: str = str() 
 
+class Setting:
+    group: str = str() 
+    name: str = str() 
+    value: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Setting:... 
 
-class SettingComponent:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.component_id: str = str() 
-        self.group: str = str() 
-        self.name: str = str() 
-        self.setting: Setting = Setting 
-        self.thumbnail_url: object 
-        self.url: object 
 
+class SettingComponent:
+    component_id: str = str() 
+    group: str = str() 
+    name: str = str() 
+    url: object 
+    component: Component = Component 
+    setting: Setting = Setting 
+    thumbnail_url: object 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> SettingComponent:... 
 
-class Shot(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.split_parts: SplitTaskPart = SplitTaskPart 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
+class Shot(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Shot:... 
     def by_assignee(self, target, *assignees) -> Query(Shot):... 
     def by_id(self, target, *ids) -> Query(Shot):... 
@@ -2729,22 +2828,24 @@ class Shot(TypedContext):
     def unlink_inputs(self, entity_collection) -> Shot:... 
     def unlink_outputs(self, entity_collection) -> Shot:... 
 
+
 class SplitTaskPart:
+    task: Task = Task 
+    end_date: str = str() 
+    task_id: str = str() 
+    label: str = str() 
+    id: str = str() 
+    start_date: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.label: str = str() 
-        self.start_date: str = str() 
-        self.task: Task = Task 
-        self.task_id: str = str() 
 
 
 class State(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.short: str = str() 
+    short: str = str() 
+    id: str = str() 
+    name: str = str() 
 
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> State:... 
     def by_id(self, target, *ids) -> Query(State):... 
     def by_metadata(self, target, *dictionaries) -> Query(State):... 
@@ -2762,16 +2863,17 @@ class State(Entity):
     def not_by_id(self, target, *ids) -> Query(State):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(State):... 
 
-class Status(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.color: str = str() 
-        self.id: str = str() 
-        self.is_active: bool = bool() 
-        self.name: str = str() 
-        self.sort: int = int() 
-        self.state: State = State 
-        self.tasks: Task = Task 
 
+class Status(Entity):
+    sort: int = int() 
+    tasks: Task = Task 
+    name: str = str() 
+    color: str = str() 
+    is_active: bool = bool() 
+    state: State = State 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Status:... 
     def by_id(self, target, *ids) -> Query(Status):... 
     def by_metadata(self, target, *dictionaries) -> Query(Status):... 
@@ -2791,96 +2893,100 @@ class Status(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Status):... 
     def not_by_name(self, target, *names) -> Query(Status):... 
 
-class StatusChange:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.date: str = str() 
-        self.from_status: Status = Status 
-        self.from_status_id: str = str() 
-        self.id: str = str() 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.status: Status = Status 
-        self.status_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
+class StatusChange:
+    status: Status = Status 
+    user_id: str = str() 
+    status_id: str = str() 
+    parent_type: str = str() 
+    parent_id: str = str() 
+    user: User = User 
+    from_status: Status = Status 
+    date: str = str() 
+    from_status_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> StatusChange:... 
 
+
 class StatusRule:
+    status: Status = Status 
+    status_rule_group_id: str = str() 
+    id: str = str() 
+    status_rule_group: StatusRuleGroup = StatusRuleGroup 
+    status_id: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.status: Status = Status 
-        self.status_id: str = str() 
-        self.status_rule_group: StatusRuleGroup = StatusRuleGroup 
-        self.status_rule_group_id: str = str() 
 
 
 class StatusRuleGroup:
+    status: Status = Status 
+    status_rules: StatusRule = StatusRule 
+    entity_type: str = str() 
+    status_id: str = str() 
+    role_id: str = str() 
+    schema_id: str = str() 
+    role: SecurityRole = SecurityRole 
+    id: str = str() 
+    schema: ProjectSchema = ProjectSchema 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.entity_type: str = str() 
-        self.id: str = str() 
-        self.role: SecurityRole = SecurityRole 
-        self.role_id: str = str() 
-        self.schema: ProjectSchema = ProjectSchema 
-        self.schema_id: str = str() 
-        self.status: Status = Status 
-        self.status_id: str = str() 
-        self.status_rules: StatusRule = StatusRule 
 
 
 class Task(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.split_parts: SplitTaskPart = SplitTaskPart 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
 
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Task:... 
     def by_assignee(self, target, *assignees) -> Query(Task):... 
     def by_id(self, target, *ids) -> Query(Task):... 
@@ -2920,32 +3026,35 @@ class Task(TypedContext):
     def unlink_inputs(self, entity_collection) -> Task:... 
     def unlink_outputs(self, entity_collection) -> Task:... 
 
-class TaskTemplate:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.items: TaskTemplateItem = TaskTemplateItem 
-        self.name: str = str() 
-        self.project_schema: ProjectSchema = ProjectSchema 
-        self.project_schema_id: str = str() 
 
+class TaskTemplate:
+    items: TaskTemplateItem = TaskTemplateItem 
+    project_schema_id: str = str() 
+    project_schema: ProjectSchema = ProjectSchema 
+    name: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> TaskTemplate:... 
 
-class TaskTemplateItem:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.task_type: Type = Type 
-        self.task_type_id: str = str() 
-        self.template: TaskTemplate = TaskTemplate 
-        self.template_id: str = str() 
 
+class TaskTemplateItem:
+    task_type: Type = Type 
+    template_id: str = str() 
+    id: str = str() 
+    task_type_id: str = str() 
+    template: TaskTemplate = TaskTemplate 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> TaskTemplateItem:... 
 
-class TaskTypeSchema(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.types: Type = Type 
 
+class TaskTypeSchema(Entity):
+    id: str = str() 
+    types: Type = Type 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> TaskTypeSchema:... 
     def by_id(self, target, *ids) -> Query(TaskTypeSchema):... 
     def by_metadata(self, target, *dictionaries) -> Query(TaskTypeSchema):... 
@@ -2963,26 +3072,28 @@ class TaskTypeSchema(Entity):
     def not_by_id(self, target, *ids) -> Query(TaskTypeSchema):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(TaskTypeSchema):... 
 
-class TaskTypeSchemaType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.task_type_schema_id: str = str() 
-        self.type_id: str = str() 
 
+class TaskTypeSchemaType:
+    task_type_schema_id: str = str() 
+    type_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> TaskTypeSchemaType:... 
 
-class Timelog(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.comment: str = str() 
-        self.context: Context = Context 
-        self.context_id: str = str() 
-        self.duration: float = float() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.start: str = str() 
-        self.time_zone_offset: float = float() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
+class Timelog(Entity):
+    comment: str = str() 
+    time_zone_offset: float = float() 
+    user_id: str = str() 
+    name: str = str() 
+    context_id: str = str() 
+    start: str = str() 
+    user: User = User 
+    context: Context = Context 
+    duration: float = float() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Timelog:... 
     def by_id(self, target, *ids) -> Query(Timelog):... 
     def by_lifespan(self, target, start=None, end=None) -> Query(Timelog):... 
@@ -3004,29 +3115,31 @@ class Timelog(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Timelog):... 
     def not_by_name(self, target, *names) -> Query(Timelog):... 
 
-class Timer:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.comment: str = str() 
-        self.context: Context = Context 
-        self.context_id: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.start: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
+class Timer:
+    comment: str = str() 
+    user_id: str = str() 
+    name: str = str() 
+    context_id: str = str() 
+    start: str = str() 
+    user: User = User 
+    context: Context = Context 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Timer:... 
 
-class Type(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.color: str = str() 
-        self.id: str = str() 
-        self.is_billable: bool = bool() 
-        self.name: str = str() 
-        self.sort: int = int() 
-        self.task_type_schemas: TaskTypeSchema = TaskTypeSchema 
-        self.tasks: Task = Task 
 
+class Type(Entity):
+    sort: int = int() 
+    tasks: Task = Task 
+    name: str = str() 
+    task_type_schemas: TaskTypeSchema = TaskTypeSchema 
+    color: str = str() 
+    is_billable: bool = bool() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> Type:... 
     def by_id(self, target, *ids) -> Query(Type):... 
     def by_metadata(self, target, *dictionaries) -> Query(Type):... 
@@ -3044,59 +3157,60 @@ class Type(Entity):
     def not_by_id(self, target, *ids) -> Query(Type):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Type):... 
 
-class TypedContext(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.split_parts: SplitTaskPart = SplitTaskPart 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_source_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
+class TypedContext(Entity):
+    sort: float = float() 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    created_by: User = User 
+    incoming_links: TypedContextLink = TypedContextLink 
+    thumbnail_source_id: str = str() 
+    children: Context = Context 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    end_date: str = str() 
+    status_id: str = str() 
+    _link: str = str() 
+    id: str = str() 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    start_date: str = str() 
+    metadata: typing.List = [Metadata] 
+    status: Status = Status 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    parent: Context = Context 
+    descendants: TypedContext = TypedContext 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    context_type: str = str() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    assets: Asset = Asset 
+    name: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    created_at: str = str() 
+    thumbnail: Component = Component 
+    project: Project = Project 
+    assignments: Appointment = Appointment 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> TypedContext:... 
     def by_assignee(self, target, *assignees) -> Query(TypedContext):... 
     def by_id(self, target, *ids) -> Query(TypedContext):... 
@@ -3136,17 +3250,18 @@ class TypedContext(Entity):
     def unlink_inputs(self, entity_collection) -> TypedContext:... 
     def unlink_outputs(self, entity_collection) -> TypedContext:... 
 
-class TypedContextLink(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.from: TypedContext = TypedContext 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.lag: float = float() 
-        self.metadata: typing.List = [Metadata] 
-        self.to: TypedContext = TypedContext 
-        self.to_id: str = str() 
-        self.type: str = str() 
 
+class TypedContextLink(Entity):
+    from: TypedContext = TypedContext 
+    lag: float = float() 
+    to_id: str = str() 
+    to: TypedContext = TypedContext 
+    from_id: str = str() 
+    type: str = str() 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> TypedContextLink:... 
     def by_id(self, target, *ids) -> Query(TypedContextLink):... 
     def by_metadata(self, target, *dictionaries) -> Query(TypedContextLink):... 
@@ -3164,23 +3279,24 @@ class TypedContextLink(Entity):
     def not_by_id(self, target, *ids) -> Query(TypedContextLink):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(TypedContextLink):... 
 
-class TypedContextList(List):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.category: ListCategory = ListCategory 
-        self.category_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.date: str = str() 
-        self.id: str = str() 
-        self.is_open: bool = bool() 
-        self.items: Task = Task 
-        self.name: str = str() 
-        self.owner: User = User 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.system_type: str = str() 
-        self.user_id: str = str() 
 
+class TypedContextList(List):
+    category: ListCategory = ListCategory 
+    project_id: str = str() 
+    user_id: str = str() 
+    name: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    items: Task = Task 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    project: Project = Project 
+    owner: User = User 
+    is_open: bool = bool() 
+    system_type: str = str() 
+    date: str = str() 
+    category_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> TypedContextList:... 
     def by_id(self, target, *ids) -> Query(TypedContextList):... 
     def by_metadata(self, target, *dictionaries) -> Query(TypedContextList):... 
@@ -3200,65 +3316,68 @@ class TypedContextList(List):
     def not_by_metadata(self, target, *dictionaries) -> Query(TypedContextList):... 
     def not_by_name(self, target, *names) -> Query(TypedContextList):... 
 
-class TypedContextStatusChange:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.date: str = str() 
-        self.from_status: Status = Status 
-        self.from_status_id: str = str() 
-        self.id: str = str() 
-        self.parent: TypedContext = TypedContext 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.status: Status = Status 
-        self.status_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
+class TypedContextStatusChange:
+    status: Status = Status 
+    user_id: str = str() 
+    parent: TypedContext = TypedContext 
+    status_id: str = str() 
+    parent_type: str = str() 
+    parent_id: str = str() 
+    user: User = User 
+    from_status: Status = Status 
+    date: str = str() 
+    from_status_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> TypedContextStatusChange:... 
 
+
 class TypedContextStatusRuleGroup:
+    status: Status = Status 
+    status_id: str = str() 
+    status_rules: StatusRule = StatusRule 
+    entity_type: str = str() 
+    object_type: ObjectType = ObjectType 
+    role_id: str = str() 
+    schema_id: str = str() 
+    role: SecurityRole = SecurityRole 
+    object_type_id: str = str() 
+    id: str = str() 
+    schema: ProjectSchema = ProjectSchema 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.entity_type: str = str() 
-        self.id: str = str() 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.role: SecurityRole = SecurityRole 
-        self.role_id: str = str() 
-        self.schema: ProjectSchema = ProjectSchema 
-        self.schema_id: str = str() 
-        self.status: Status = Status 
-        self.status_id: str = str() 
-        self.status_rules: StatusRule = StatusRule 
 
 
 class User(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assignments: Appointment = Appointment 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.dashboard_resources: DashboardResource = DashboardResource 
-        self.email: str = str() 
-        self.first_name: str = str() 
-        self.id: str = str() 
-        self.is_active: bool = bool() 
-        self.is_otp_enabled: bool = bool() 
-        self.is_totp_enabled: bool = bool() 
-        self.last_name: str = str() 
-        self.memberships: Membership = Membership 
-        self.metadata: typing.List = [Metadata] 
-        self.require_details_update: bool = bool() 
-        self.resource_type: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.timelogs: Timelog = Timelog 
-        self.user_security_roles: UserSecurityRole = UserSecurityRole 
-        self.user_type: UserType = UserType 
-        self.user_type_id: str = str() 
-        self.username: str = str() 
+    last_name: str = str() 
+    user_type: UserType = UserType 
+    user_type_id: str = str() 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    is_otp_enabled: bool = bool() 
+    assignments: Appointment = Appointment 
+    require_details_update: bool = bool() 
+    email: str = str() 
+    metadata: typing.List = [Metadata] 
+    username: str = str() 
+    user_security_roles: UserSecurityRole = UserSecurityRole 
+    thumbnail_id: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    is_active: bool = bool() 
+    first_name: str = str() 
+    dashboard_resources: DashboardResource = DashboardResource 
+    appointments: Appointment = Appointment 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail: Component = Component 
+    memberships: Membership = Membership 
+    is_totp_enabled: bool = bool() 
+    thumbnail_url: object 
+    allocations: Appointment = Appointment 
+    resource_type: str = str() 
 
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> User:... 
     def by_active_state(self, target, *states) -> Query(User):... 
     def by_id(self, target, *ids) -> Query(User):... 
@@ -3280,61 +3399,66 @@ class User(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(User):... 
     def not_by_name(self, target, *names) -> Query(User):... 
 
-class UserApplicationState:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.key: str = str() 
-        self.user_id: str = str() 
-        self.value: str = str() 
 
+class UserApplicationState:
+    user_id: str = str() 
+    key: str = str() 
+    value: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> UserApplicationState:... 
 
-class UserCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
-        self.user: User = User 
 
+class UserCustomAttributeLink:
+    to_entity_type: str = str() 
+    from_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    user: User = User 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> UserCustomAttributeLink:... 
 
-class UserCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
-        self.user: User = User 
 
+class UserCustomAttributeLinkFrom:
+    to_entity_type: str = str() 
+    from_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    user: User = User 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> UserCustomAttributeLinkFrom:... 
 
-class UserCustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
 
+class UserCustomAttributeValue:
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> UserCustomAttributeValue:... 
 
-class UserSecurityRole(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.is_all_open_projects: bool = bool() 
-        self.is_all_projects: bool = bool() 
-        self.security_role: SecurityRole = SecurityRole 
-        self.security_role_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
-        self.user_security_role_projects: UserSecurityRoleProject = UserSecurityRoleProject 
 
+class UserSecurityRole(Entity):
+    is_all_open_projects: bool = bool() 
+    user_id: str = str() 
+    is_all_projects: bool = bool() 
+    security_role_id: str = str() 
+    user_security_role_projects: UserSecurityRoleProject = UserSecurityRoleProject 
+    user: User = User 
+    security_role: SecurityRole = SecurityRole 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> UserSecurityRole:... 
     def by_id(self, target, *ids) -> Query(UserSecurityRole):... 
     def by_metadata(self, target, *dictionaries) -> Query(UserSecurityRole):... 
@@ -3352,14 +3476,15 @@ class UserSecurityRole(Entity):
     def not_by_id(self, target, *ids) -> Query(UserSecurityRole):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(UserSecurityRole):... 
 
-class UserSecurityRoleProject(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.user_security_role: UserSecurityRole = UserSecurityRole 
-        self.user_security_role_id: str = str() 
 
+class UserSecurityRoleProject(Entity):
+    project: Project = Project 
+    project_id: str = str() 
+    user_security_role: UserSecurityRole = UserSecurityRole 
+    user_security_role_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> UserSecurityRoleProject:... 
     def by_id(self, target, *ids) -> Query(UserSecurityRoleProject):... 
     def by_metadata(self, target, *dictionaries) -> Query(UserSecurityRoleProject):... 
@@ -3377,30 +3502,33 @@ class UserSecurityRoleProject(Entity):
     def not_by_id(self, target, *ids) -> Query(UserSecurityRoleProject):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(UserSecurityRoleProject):... 
 
-class UserType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
 
+class UserType:
+    id: str = str() 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> UserType:... 
 
+
 class UserView:
+    user_id:  =  
+    name: str = str() 
+    global: bool = bool() 
+    shared_with: Resource = Resource 
+    user: User = User 
+    id: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.global: bool = bool() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.shared_with: Resource = Resource 
-        self.user: User = User 
-        self.user_id:  =  
 
 
 class WorkflowSchema(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.overrides: ProjectSchemaOverride = ProjectSchemaOverride 
-        self.statuses: Status = Status 
+    overrides: ProjectSchemaOverride = ProjectSchemaOverride 
+    id: str = str() 
+    statuses: Status = Status 
+    name: str = str() 
 
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> WorkflowSchema:... 
     def by_id(self, target, *ids) -> Query(WorkflowSchema):... 
     def by_metadata(self, target, *dictionaries) -> Query(WorkflowSchema):... 
@@ -3418,10 +3546,12 @@ class WorkflowSchema(Entity):
     def not_by_id(self, target, *ids) -> Query(WorkflowSchema):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(WorkflowSchema):... 
 
-class WorkflowSchemaStatus:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.status_id: str = str() 
-        self.workflow_schema_id: str = str() 
 
+class WorkflowSchemaStatus:
+    workflow_schema_id: str = str() 
+    status_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
     def __getitem__(self, item: typing.Union[int, slice, str]) -> WorkflowSchemaStatus:... 
+
 
