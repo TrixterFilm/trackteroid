@@ -1,4 +1,4 @@
-import imp
+import importlib
 import logging
 import os
 import traceback
@@ -20,7 +20,7 @@ def _override_configuration():
 
         _LOG.info("Custom configuration specified in `{}`. Trying to load...".format(_custom_configuration))
         try:
-            custom_configuration = imp.load_source("configuration", _custom_configuration)
+            custom_configuration = importlib.load_source("configuration", _custom_configuration)
         except:
             raise RuntimeError(
                 "Failed to load custom configuration.\n{}".format("\n".join(traceback.format_exception(*sys.exc_info())))

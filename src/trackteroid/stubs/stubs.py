@@ -15,31 +15,7 @@ LOG = logging.getLogger("trackteroid.stubs")
 SESSION = ftrack_api.Session(auto_populate=True, auto_connect_event_hub=False)
 
 
-# TODO: for transition to python 3 lets get rid of it
-#  DEPRECATION: obsolete with Python 3.2, because os.makedirs offers the exist_ok keyword argument
-def make_dirs(path, mode=0777):
-    """ convenience function around os.make_dirs
-
-    Avoids the need to check if the path that will be created already exists.
-
-    Args:
-        path (str): directory path
-        mode (octal, optional): file mode
-
-    Returns:
-        bool - True if file exists or could be created. False if not.
-    """
-    try:
-        if not os.path.exists(path):
-            os.makedirs(path)
-            os.chmod(path, mode)
-        return True
-    except (OSError, AttributeError, TypeError):
-        LOG.error("Failed to create directory '%s'" % path, exc_info=True)
-    return False
-
-
-def make_file(path, mode=0777, default_content="", overwrite=False):
+def make_file(path, mode=0o777, default_content="", overwrite=False):
     """
     Create a file (if it does not yet exist).
     Args:
@@ -51,17 +27,17 @@ def make_file(path, mode=0777, default_content="", overwrite=False):
     Returns:
         bool - True if file exists or could be created. False if not.
     """
-    if not make_dirs(os.path.dirname(path), mode):
-        return False
-    try:
-        if not os.path.exists(path) or overwrite:
-            with open(path, 'w') as file_write:
-                file_write.write(default_content)
-            os.chmod(path, mode)
-        return True
-    except (OSError, AttributeError, TypeError):
-        LOG.error("Failed to create file '%s'" % path, exc_info=True)
-        return False
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    if os.path.exists(os.path.dirname(path)):
+        try:
+            if not os.path.exists(path) or overwrite:
+                with open(path, 'w') as file_write:
+                    file_write.write(default_content)
+                os.chmod(path, mode)
+            return True
+        except (OSError, AttributeError, TypeError):
+            LOG.error("Failed to create file '%s'" % path, exc_info=True)
+            return False
 
 
 class StubClassBuilder(object):
@@ -208,7 +184,7 @@ def get_stubs_from_schemas(include_custom_attributes=False):
         )
         for name, _ in element["properties"].items():
             if name == "custom_attributes":
-            # skip custom attributes as we will add them individually later
+                # skip custom attributes as we will add them individually later
                 continue
             items = _.get("items")
             ref = _.get("$ref", "")
@@ -254,10 +230,10 @@ def get_extended_entity_stubs(classes, stubs):
         if _cls:
             for method in inspect.getmembers(
                     _cls,
-                    predicate=lambda x: inspect.ismethod(x) and not x.__name__.startswith("__")):
+                    predicate=lambda x: (inspect.isfunction(x) or inspect.ismethod(x)) and not x.__name__.startswith(
+                        "__")):
 
-                # retrieve the proper function signature
-                specs = inspect.getargspec(method[1])
+                specs = inspect.getfullargspec(method[1])
                 varargs = specs.varargs or ""
                 if varargs:
                     varargs = ", *" + varargs
@@ -266,7 +242,7 @@ def get_extended_entity_stubs(classes, stubs):
                 args = specs.args or []
                 if specs.defaults:
                     for i, element in enumerate(specs.args[-len(specs.defaults):]):
-                        if isinstance(specs.defaults[i], basestring):
+                        if isinstance(specs.defaults[i], str):
                             kwargs.append("{}=\"{}\"".format(element, specs.defaults[i]))
                         else:
                             kwargs.append("{}={}".format(element, specs.defaults[i]))
@@ -322,7 +298,7 @@ def get_extended_entity_stubs(classes, stubs):
             #  that support filtering via Entity
             stub.add_method(
                 name="__getitem__",
-                arguments="self, item: typing.Union[int, slice, basestring]",
+                arguments="self, item: typing.Union[int, slice, str]",
                 keyword_arguments="",
                 return_type=stub_name
             )
@@ -370,5 +346,3 @@ def generate_entitites_stubs():
 
 if __name__ == '__main__':
     generate_entitites_stubs()
-
-

@@ -9,6 +9,3 @@ from .entities.schematypes import (
     PROJECT_SCHEMAS
 )
 from .constants import __VERSION__
-
-# for usage in stubsgenerator
-import entities
