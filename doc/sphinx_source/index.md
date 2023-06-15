@@ -42,5 +42,6 @@ installation.md
 quickstart.md
 configuration.md
 session.md
+query.md
 collections.md
 ```
