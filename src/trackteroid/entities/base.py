@@ -1401,6 +1401,9 @@ class EntityCollection(object):
             for relation_projection in relation_projections:
                 constructed_projections.append("{}.{}".format(relation_projection, outside_projection))
 
+        if not outside_projections:
+            constructed_projections.extend(relation_projections)
+
         self.fetch_attributes(*constructed_projections)
 
         return getattr(self, relative_type.__name__)
