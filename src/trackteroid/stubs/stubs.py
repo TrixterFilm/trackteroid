@@ -45,7 +45,8 @@ class StubClassBuilder(object):
 
     CLASS_TEMPLATE = "class {class_name}{class_bases}:\n"
     CLASS_MEMBER_TEMPLATE = "    {member_name}: {type} \n"
-    ATTRIBUTE_TEMPLATE = "        self.{attribute_name}: {type} \n"
+    INSTANCE_ATTRIBUTE_TEMPLATE = "        self.{attribute_name}: {type} \n"
+    CLASS_ATTRIBUTE_TEMPLATE = "    {attribute_name}: {type} \n"
     METHOD_TEMPLATE = "    def {method_name}({arguments}{keyword_arguments}) -> {return_type}:{ellipsis} \n"
 
     TYPE_MAP = {
@@ -73,12 +74,12 @@ class StubClassBuilder(object):
         self._set_class(name, bases)
 
     def __str__(self):
-        return "{}{}{}{}\n{}\n".format(
-            self._content["header"],
-            "".join(self._content["class_members"]),
-            self._content["constructor"],
-            "".join(sorted(self._content["attributes"])),
-            "".join(sorted(self._content["methods"]))
+        return (
+            f"{self._content['header']}"
+            f"{''.join(self._content['class_members'])}\n"
+            f"{self._content['constructor']}"
+            f"{''.join(sorted(self._content['attributes']))}"
+            f"{''.join(sorted(self._content['methods']))}\n\n"
         )
 
     def __add__(self, other):
@@ -177,11 +178,6 @@ def get_stubs_from_schemas(include_custom_attributes=False):
         # ensure we add the __init__ first, because the stub builder is limited
         # and expects we have that added, to use the proper indentation for the
         # attributes
-        stub.add_method(
-            name="__init__",
-            arguments="self, *args",
-            keyword_arguments="**kwargs",
-        )
         for name, _ in element["properties"].items():
             if name == "custom_attributes":
                 # skip custom attributes as we will add them individually later
@@ -194,15 +190,21 @@ def get_stubs_from_schemas(include_custom_attributes=False):
                 ref = "{}".format(ref)
             _type = _.get("type")
             if _type:
-                stub.add_attribute(name=name, type=_type, ref=ref)
+                stub.add_member(name=name, type=_type, ref=ref)
             else:
-                stub.add_attribute(name=name, type="any", ref=ref)
+                stub.add_member(name=name, type="any", ref=ref)
 
         if include_custom_attributes and "custom_attributes" in element["properties"].keys():
             item = SESSION.query("select custom_attributes from {}".format(stub.name)).first()
             if item:
                 for key in item["custom_attributes"].keys():
-                    stub.add_attribute(name="custom_" + key, type=_type, ref=ref)
+                    stub.add_member(name="custom_" + key, type=_type, ref=ref, cls_attribute=True)
+
+        stub.add_method(
+            name="__init__",
+            arguments="self, *args",
+            keyword_arguments="**kwargs",
+        )
 
         stubs.append(stub)
 
