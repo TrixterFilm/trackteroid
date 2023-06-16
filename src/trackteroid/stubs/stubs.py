@@ -225,9 +225,6 @@ def get_extended_entity_stubs(classes, stubs):
         _cls = class_map.get(stub_name)
         if _cls:
 
-            for cls_name in class_map.keys():
-                stub.add_member(name=cls_name, type=cls_name, ref=cls_name)
-
             stub.add_method(
                 name="__init__",
                 arguments="self, *args",
