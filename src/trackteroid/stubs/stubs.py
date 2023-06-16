@@ -308,6 +308,12 @@ def get_extended_entity_stubs(classes, stubs):
                 keyword_arguments="",
                 return_type=stub_name
             )
+            stub.add_method(
+                name="fetch_attributes",
+                arguments="self, projections: typing.List[typing.Union[str, Entity]]",
+                keyword_arguments="",
+                return_type=stub_name
+            )
         stubs.append(stub)
 
     return stubs
