@@ -31,7 +31,8 @@ class RelationshipDeclaration:
         )
 
     def __getattr__(self, item):
-        if not item.startswith("__"):
+        # TODO: what requests `shape`??
+        if not item.startswith("__") and item != "shape":
             self._chain.append(getattr(self._entities_module, item, item))
         return self
 

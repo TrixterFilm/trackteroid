@@ -1343,7 +1343,7 @@ class EntityCollection(object):
         _attributes = []
         for attribute in attributes:
             if isinstance(attribute, RelationshipDeclaration):
-                _attributes.append(attribute.resolve_path_for(self.entity_type))
+                _attributes.extend(attribute.resolve_path_for(self.entity_type, self.query.session, self.query.schema))
             else:
                 _attributes.append(attribute)
 
