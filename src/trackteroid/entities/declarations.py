@@ -43,10 +43,13 @@ class RelationshipDeclaration:
                     item.relationship(session=session, schema=schema)
                     relationship = entity_type.relationship.get(item)
                     if not relationship:
-                        _LOG.warning("Unable to retrieve relationship of `{}` for `{}`".format(
-                            entity_type,
-                            item
-                        ))
+                        _LOG.warning(
+                            "Unable to retrieve relationship between target entity type `{}` and entity type `{}`."
+                            "You should consider providing via the configurable `RELATIONSHIP_RESOLVER`.".format(
+                                entity_type.__class__.__name__,
+                                item.__name__
+                            )
+                        )
                         continue
                     if not isinstance(relationship.relation, list):
                         relationships.append([self._filter_re.sub("", relationship.relation)])
