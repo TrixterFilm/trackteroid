@@ -200,12 +200,6 @@ def get_stubs_from_schemas(include_custom_attributes=False):
                 for key in item["custom_attributes"].keys():
                     stub.add_member(name="custom_" + key, type=_type, ref=ref, cls_attribute=True)
 
-        stub.add_method(
-            name="__init__",
-            arguments="self, *args",
-            keyword_arguments="**kwargs",
-        )
-
         stubs.append(stub)
 
     return stubs
@@ -230,6 +224,16 @@ def get_extended_entity_stubs(classes, stubs):
     for stub_name, stub in stubs_map.items():
         _cls = class_map.get(stub_name)
         if _cls:
+
+            for cls_name in class_map.keys():
+                stub.add_member(name=cls_name, type=cls_name, ref=cls_name)
+
+            stub.add_method(
+                name="__init__",
+                arguments="self, *args",
+                keyword_arguments="**kwargs",
+            )
+
             for method in inspect.getmembers(
                     _cls,
                     predicate=lambda x: (inspect.isfunction(x) or inspect.ismethod(x)) and not x.__name__.startswith(
@@ -328,8 +332,15 @@ def generate_entitites_stubs():
     package_name, package_root = os.path.basename(entities_path), os.path.dirname(entities_path)
     sys.path.insert(0, package_root)
     entities = getattr(__import__(package_name), "entities")
+    declarations = getattr(__import__(package_name), "declarations")
 
-    classes = inspect.getmembers(entities, predicate=inspect.isclass)
+    classes = inspect.getmembers(
+        entities,
+        predicate=lambda entity:
+            inspect.isclass(entity)
+            and issubclass(entity, (entities.Entity, declarations.ForwardDeclaration))
+            and " " not in entity.__name__  # TODO: why do we get members with whitespace in name?
+    )
 
     stubs = STUBS_HEADER
     stubs += "from .base import Entity\n"
