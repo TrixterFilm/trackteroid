@@ -11,10 +11,11 @@ from ..configuration import LOGGING_NAMESPACE
 _LOG = logging.getLogger("{}.declarations".format(LOGGING_NAMESPACE))
 
 
-class ForwardDeclaration(object): pass
+class ForwardDeclaration:
+    pass
 
 
-class RelationshipDeclaration(object):
+class RelationshipDeclaration:
     """ a declaration for a used relationship that needs resolution
 
     """
@@ -60,8 +61,6 @@ class RelationshipDeclaration(object):
         return [".".join(_) for _ in itertools.product(*relationships)]
 
 
-
-
 class ForwardDeclareCompare(type):
     def __eq__(self, other):
         if other and inspect.isclass(other) and issubclass(other, ForwardDeclaration):
@@ -74,6 +73,9 @@ class ForwardDeclareCompare(type):
 
     def __getattr__(self, item):
         return RelationshipDeclaration(parent=self, child=item)
+
+    def __hash__(self):
+        return hash(self.__class__.__name__)
 
 
 # TODO: we need to auto-regenerate this when the schema changes

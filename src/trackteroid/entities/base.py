@@ -117,7 +117,7 @@ class Relationship(dict):
         from_cache = _RELATIONSHIPS_CACHE.get(self._cache_key, {})
 
         for key, value in from_cache.items():
-            if key and (key.__name__ == item.__name__):
+            if key and (key == item):
                 return value
         return super(Relationship, self).__getitem__(item)
 
@@ -1585,14 +1585,12 @@ class EntityCollection(object):
         return self._session
 
 
-class _EntityBase(object):
+class _EntityBase(object, metaclass=ForwardDeclareCompare):
 
     relationship = Relationship()
     projections = ["id"]
     _ftrack_entity = None
     log = None
-
-    __metaclass__ = ForwardDeclareCompare
 
     def __new__(cls, *args, **kwargs):
         """ make it possible to swap the Entity class with the given class
