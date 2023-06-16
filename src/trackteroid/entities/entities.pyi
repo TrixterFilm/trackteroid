@@ -3,21 +3,30 @@ import typing
 from .base import Entity
 from ..query import Query
 
-class Appointment(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.context: Context = Context 
-        self.context_id: str = str() 
-        self.id: str = str() 
-        self.resource: Resource = Resource 
-        self.resource_id: str = str() 
-        self.type: str = str() 
+class ApiKey:
+    prefix: str = str() 
+    identifier: str = str() 
+    id: str = str() 
+    resource_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Appointment:... 
+
+
+class Appointment(Entity):
+    resource: Resource = Resource 
+    resource_id: str = str() 
+    context_id: str = str() 
+    context: Context = Context 
+    type: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Appointment:... 
     def by_id(self, target, *ids) -> Query(Appointment):... 
     def by_metadata(self, target, *dictionaries) -> Query(Appointment):... 
     def create(self) -> Appointment:... 
     def create_batch(self, *attributes) -> Appointment:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Appointment:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Appointment:... 
     def get_all(self, projections=None) -> Appointment:... 
@@ -29,21 +38,24 @@ class Appointment(Entity):
     def not_by_id(self, target, *ids) -> Query(Appointment):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Appointment):... 
 
-class Asset(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.context_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.id: str = str() 
-        self.latest_version: AssetVersion = AssetVersion 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.parent: Context = Context 
-        self.type: AssetType = AssetType 
-        self.type_id: str = str() 
-        self.versions: AssetVersion = AssetVersion 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Asset:... 
+class Asset(Entity):
+    ancestors: TypedContext = TypedContext 
+    name: str = str() 
+    parent: Context = Context 
+    type_id: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    context_id: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    versions: AssetVersion = AssetVersion 
+    latest_version: AssetVersion = AssetVersion 
+    project_id: str = str() 
+    type: AssetType = AssetType 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Asset:... 
     def by_id(self, target, *ids) -> Query(Asset):... 
     def by_metadata(self, target, *dictionaries) -> Query(Asset):... 
     def by_name(self, target, *names) -> Query(Asset):... 
@@ -51,6 +63,7 @@ class Asset(Entity):
     def create(self, name, type) -> Asset:... 
     def create_batch(self, *attributes) -> Asset:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Asset:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Asset:... 
     def get_all(self, projections=None) -> Asset:... 
@@ -64,58 +77,61 @@ class Asset(Entity):
     def not_by_name(self, target, *names) -> Query(Asset):... 
     def not_by_type(self, target, *types) -> Query(Asset):... 
 
-class AssetBuild(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetBuild:... 
+class AssetBuild(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetBuild:... 
     def by_assignee(self, target, *assignees) -> Query(AssetBuild):... 
     def by_id(self, target, *ids) -> Query(AssetBuild):... 
     def by_incoming_link(self, target, *ids) -> Query(AssetBuild):... 
@@ -130,6 +146,7 @@ class AssetBuild(TypedContext):
     def create(self) -> AssetBuild:... 
     def create_batch(self, *attributes) -> AssetBuild:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetBuild:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> AssetBuild:... 
     def get_all(self, projections=None) -> AssetBuild:... 
@@ -154,144 +171,64 @@ class AssetBuild(TypedContext):
     def unlink_inputs(self, entity_collection) -> AssetBuild:... 
     def unlink_outputs(self, entity_collection) -> AssetBuild:... 
 
-class AssetCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.asset: Asset = Asset 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetCustomAttributeLink:... 
+class AssetCustomAttributeLink:
+    to_entity_type: str = str() 
+    from_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    asset: Asset = Asset 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetCustomAttributeLink:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetCustomAttributeLink:... 
+
 
 class AssetCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.asset: Asset = Asset 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
+    to_entity_type: str = str() 
+    from_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    asset: Asset = Asset 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetCustomAttributeLinkFrom:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetCustomAttributeLinkFrom:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetCustomAttributeLinkFrom:... 
+
 
 class AssetCustomAttributeValue:
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetCustomAttributeValue:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetCustomAttributeValue:... 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetCustomAttributeValue:... 
-
-class AssetGroup(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
-
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetGroup:... 
-    def by_assignee(self, target, *assignees) -> Query(AssetGroup):... 
-    def by_id(self, target, *ids) -> Query(AssetGroup):... 
-    def by_incoming_link(self, target, *ids) -> Query(AssetGroup):... 
-    def by_lifespan(self, target, start=None, end=None) -> Query(AssetGroup):... 
-    def by_metadata(self, target, *dictionaries) -> Query(AssetGroup):... 
-    def by_name(self, target, *names) -> Query(AssetGroup):... 
-    def by_outgoing_link(self, target, *ids) -> Query(AssetGroup):... 
-    def by_state(self, target, *states) -> Query(AssetGroup):... 
-    def by_status(self, target, *statuses) -> Query(AssetGroup):... 
-    def by_status_change_time(self, target, start=None, end=None) -> Query(AssetGroup):... 
-    def by_type(self, target, *types) -> Query(AssetGroup):... 
-    def create(self) -> AssetGroup:... 
-    def create_batch(self, *attributes) -> AssetGroup:... 
-    def delete(self) -> None:... 
-    def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
-    def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> AssetGroup:... 
-    def get_all(self, projections=None) -> AssetGroup:... 
-    def get_first(self, projections=None) -> AssetGroup:... 
-    def get_inputs(self, projections=None) -> AssetGroup:... 
-    def get_one(self, projections=None) -> AssetGroup:... 
-    def get_outputs(self, projections=None) -> AssetGroup:... 
-    def inject(self, filter) -> Query(AssetGroup):... 
-    def link_inputs(self, entity_collection) -> AssetGroup:... 
-    def link_outputs(self, entity_collection) -> AssetGroup:... 
-    def not_by_assignee(self, target, *assignees) -> Query(AssetGroup):... 
-    def not_by_id(self, target, *ids) -> Query(AssetGroup):... 
-    def not_by_incoming_link(self, target, *ids) -> Query(AssetGroup):... 
-    def not_by_lifespan(self, target, start=None, end=None) -> Query(AssetGroup):... 
-    def not_by_metadata(self, target, *dictionaries) -> Query(AssetGroup):... 
-    def not_by_name(self, target, *names) -> Query(AssetGroup):... 
-    def not_by_outgoing_link(self, target, *ids) -> Query(AssetGroup):... 
-    def not_by_state(self, target, *states) -> Query(AssetGroup):... 
-    def not_by_status(self, target, *statuses) -> Query(AssetGroup):... 
-    def not_by_status_change_time(self, target, start=None, end=None) -> Query(AssetGroup):... 
-    def not_by_type(self, target, *types) -> Query(AssetGroup):... 
-    def unlink_inputs(self, entity_collection) -> AssetGroup:... 
-    def unlink_outputs(self, entity_collection) -> AssetGroup:... 
 
 class AssetType(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.assets: Asset = Asset 
-        self.component: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.short: str = str() 
+    short: str = str() 
+    component: str = str() 
+    assets: Asset = Asset 
+    name: str = str() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetType:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetType:... 
     def by_id(self, target, *ids) -> Query(AssetType):... 
     def by_metadata(self, target, *dictionaries) -> Query(AssetType):... 
     def create(self) -> AssetType:... 
     def create_batch(self, *attributes) -> AssetType:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetType:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> AssetType:... 
     def get_all(self, projections=None) -> AssetType:... 
@@ -303,41 +240,43 @@ class AssetType(Entity):
     def not_by_id(self, target, *ids) -> Query(AssetType):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(AssetType):... 
 
-class AssetVersion(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.asset: Asset = Asset 
-        self.asset_id: str = str() 
-        self.comment: str = str() 
-        self.components: Component = Component 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: AssetVersionLink = AssetVersionLink 
-        self.is_latest_version: bool = bool() 
-        self.is_published: bool = bool() 
-        self.link: str = str() 
-        self.lists: AssetVersionList = AssetVersionList 
-        self.metadata: typing.List = [Metadata] 
-        self.notes: Note = Note 
-        self.outgoing_links: AssetVersionLink = AssetVersionLink 
-        self.review_session_objects: ReviewSessionObject = ReviewSessionObject 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.task: Task = Task 
-        self.task_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.used_in_versions: AssetVersion = AssetVersion 
-        self.user: User = User 
-        self.user_id: str = str() 
-        self.uses_versions: AssetVersion = AssetVersion 
-        self.version: int = int() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetVersion:... 
+class AssetVersion(Entity):
+    comment: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: AssetVersionLink = AssetVersionLink 
+    id: str = str() 
+    asset_id: str = str() 
+    user_id: str = str() 
+    version: int = int() 
+    asset: Asset = Asset 
+    project_id: str = str() 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    status: Status = Status 
+    components: Component = Component 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    lists: AssetVersionList = AssetVersionList 
+    uses_versions: AssetVersion = AssetVersion 
+    link: str = str() 
+    user: User = User 
+    date: str = str() 
+    used_in_versions: AssetVersion = AssetVersion 
+    task: Task = Task 
+    task_id: str = str() 
+    review_session_objects: ReviewSessionObject = ReviewSessionObject 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    notes: Note = Note 
+    thumbnail_url: object 
+    is_latest_version: bool = bool() 
+    outgoing_links: AssetVersionLink = AssetVersionLink 
+    is_published: bool = bool() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersion:... 
     def by_id(self, target, *ids) -> Query(AssetVersion):... 
     def by_incoming_link(self, target, *ids) -> Query(AssetVersion):... 
     def by_metadata(self, target, *dictionaries) -> Query(AssetVersion):... 
@@ -354,6 +293,7 @@ class AssetVersion(Entity):
     def create(self, task) -> AssetVersion:... 
     def create_batch(self, *attributes) -> AssetVersion:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetVersion:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> AssetVersion:... 
     def get_all(self, projections=None) -> AssetVersion:... 
@@ -380,55 +320,65 @@ class AssetVersion(Entity):
     def unlink_inputs(self, entity_collection) -> AssetVersion:... 
     def unlink_outputs(self, entity_collection) -> AssetVersion:... 
 
-class AssetVersionCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.asset_version: AssetVersion = AssetVersion 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetVersionCustomAttributeLink:... 
+class AssetVersionCustomAttributeLink:
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    asset_version: AssetVersion = AssetVersion 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionCustomAttributeLink:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetVersionCustomAttributeLink:... 
+
 
 class AssetVersionCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.asset_version: AssetVersion = AssetVersion 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    asset_version: AssetVersion = AssetVersion 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetVersionCustomAttributeLinkFrom:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionCustomAttributeLinkFrom:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetVersionCustomAttributeLinkFrom:... 
+
 
 class AssetVersionCustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetVersionCustomAttributeValue:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionCustomAttributeValue:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetVersionCustomAttributeValue:... 
+
 
 class AssetVersionLink(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.from: AssetVersion = AssetVersion 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.metadata: typing.List = [Metadata] 
-        self.to: AssetVersion = AssetVersion 
-        self.to_id: str = str() 
+    from: AssetVersion = AssetVersion 
+    to_id: str = str() 
+    to: AssetVersion = AssetVersion 
+    from_id: str = str() 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetVersionLink:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionLink:... 
     def by_id(self, target, *ids) -> Query(AssetVersionLink):... 
     def by_metadata(self, target, *dictionaries) -> Query(AssetVersionLink):... 
     def create(self) -> AssetVersionLink:... 
     def create_batch(self, *attributes) -> AssetVersionLink:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetVersionLink:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> AssetVersionLink:... 
     def get_all(self, projections=None) -> AssetVersionLink:... 
@@ -440,30 +390,32 @@ class AssetVersionLink(Entity):
     def not_by_id(self, target, *ids) -> Query(AssetVersionLink):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(AssetVersionLink):... 
 
-class AssetVersionList(List):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.category: ListCategory = ListCategory 
-        self.category_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.date: str = str() 
-        self.id: str = str() 
-        self.is_open: bool = bool() 
-        self.items: AssetVersion = AssetVersion 
-        self.name: str = str() 
-        self.owner: User = User 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.system_type: str = str() 
-        self.user_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetVersionList:... 
+class AssetVersionList(List):
+    category: ListCategory = ListCategory 
+    project_id: str = str() 
+    user_id: str = str() 
+    name: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    items: AssetVersion = AssetVersion 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    project: Project = Project 
+    owner: User = User 
+    is_open: bool = bool() 
+    system_type: str = str() 
+    date: str = str() 
+    category_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionList:... 
     def by_id(self, target, *ids) -> Query(AssetVersionList):... 
     def by_metadata(self, target, *dictionaries) -> Query(AssetVersionList):... 
     def by_name(self, target, *names) -> Query(AssetVersionList):... 
     def create(self, task) -> AssetVersionList:... 
     def create_batch(self, *attributes) -> AssetVersionList:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetVersionList:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> AssetVersionList:... 
     def get_all(self, projections=None) -> AssetVersionList:... 
@@ -476,255 +428,128 @@ class AssetVersionList(List):
     def not_by_metadata(self, target, *dictionaries) -> Query(AssetVersionList):... 
     def not_by_name(self, target, *names) -> Query(AssetVersionList):... 
 
+
 class AssetVersionStatusChange:
+    status: Status = Status 
+    user_id: str = str() 
+    parent: AssetVersion = AssetVersion 
+    status_id: str = str() 
+    parent_type: str = str() 
+    parent_id: str = str() 
+    user: User = User 
+    from_status: Status = Status 
+    date: str = str() 
+    from_status_id: str = str() 
+    id: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.date: str = str() 
-        self.from_status: Status = Status 
-        self.from_status_id: str = str() 
-        self.id: str = str() 
-        self.parent: AssetVersion = AssetVersion 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.status: Status = Status 
-        self.status_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> AssetVersionStatusChange:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> AssetVersionStatusChange:... 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> AssetVersionStatusChange:... 
 
-class Bid(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
+class AssetVersionStatusRuleGroup:
+    status: Status = Status 
+    status_rules: StatusRule = StatusRule 
+    status_id: str = str() 
+    entity_type: str = str() 
+    role_id: str = str() 
+    schema_id: str = str() 
+    role: SecurityRole = SecurityRole 
+    id: str = str() 
+    schema: ProjectSchema = ProjectSchema 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Bid:... 
-    def by_assignee(self, target, *assignees) -> Query(Bid):... 
-    def by_id(self, target, *ids) -> Query(Bid):... 
-    def by_incoming_link(self, target, *ids) -> Query(Bid):... 
-    def by_lifespan(self, target, start=None, end=None) -> Query(Bid):... 
-    def by_metadata(self, target, *dictionaries) -> Query(Bid):... 
-    def by_name(self, target, *names) -> Query(Bid):... 
-    def by_outgoing_link(self, target, *ids) -> Query(Bid):... 
-    def by_state(self, target, *states) -> Query(Bid):... 
-    def by_status(self, target, *statuses) -> Query(Bid):... 
-    def by_status_change_time(self, target, start=None, end=None) -> Query(Bid):... 
-    def by_type(self, target, *types) -> Query(Bid):... 
-    def create(self) -> Bid:... 
-    def create_batch(self, *attributes) -> Bid:... 
-    def delete(self) -> None:... 
-    def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
-    def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Bid:... 
-    def get_all(self, projections=None) -> Bid:... 
-    def get_first(self, projections=None) -> Bid:... 
-    def get_inputs(self, projections=None) -> Bid:... 
-    def get_one(self, projections=None) -> Bid:... 
-    def get_outputs(self, projections=None) -> Bid:... 
-    def inject(self, filter) -> Query(Bid):... 
-    def link_inputs(self, entity_collection) -> Bid:... 
-    def link_outputs(self, entity_collection) -> Bid:... 
-    def not_by_assignee(self, target, *assignees) -> Query(Bid):... 
-    def not_by_id(self, target, *ids) -> Query(Bid):... 
-    def not_by_incoming_link(self, target, *ids) -> Query(Bid):... 
-    def not_by_lifespan(self, target, start=None, end=None) -> Query(Bid):... 
-    def not_by_metadata(self, target, *dictionaries) -> Query(Bid):... 
-    def not_by_name(self, target, *names) -> Query(Bid):... 
-    def not_by_outgoing_link(self, target, *ids) -> Query(Bid):... 
-    def not_by_state(self, target, *states) -> Query(Bid):... 
-    def not_by_status(self, target, *statuses) -> Query(Bid):... 
-    def not_by_status_change_time(self, target, start=None, end=None) -> Query(Bid):... 
-    def not_by_type(self, target, *types) -> Query(Bid):... 
-    def unlink_inputs(self, entity_collection) -> Bid:... 
-    def unlink_outputs(self, entity_collection) -> Bid:... 
+
+
+class BaseUser:
+    first_name: str = str() 
+    last_name: str = str() 
+    dashboard_resources: DashboardResource = DashboardResource 
+    thumbnail_id: str = str() 
+    email: str = str() 
+    id: str = str() 
+    assignments: Appointment = Appointment 
+    appointments: Appointment = Appointment 
+    thumbnail_url: object 
+    allocations: Appointment = Appointment 
+    thumbnail: Component = Component 
+    resource_type: str = str() 
+
+
 
 class CalendarEvent:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.calendar_event_resources: CalendarEventResource = CalendarEventResource 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.effort: float = float() 
-        self.end: str = str() 
-        self.estimate: float = float() 
-        self.everyone: bool = bool() 
-        self.forecast: bool = bool() 
-        self.id: str = str() 
-        self.leave: bool = bool() 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.start: str = str() 
-        self.type: Type = Type 
-        self.type_id: str = str() 
+    calendar_event_resources: CalendarEventResource = CalendarEventResource 
+    everyone: bool = bool() 
+    end: str = str() 
+    name: str = str() 
+    type_id: str = str() 
+    leave: bool = bool() 
+    created_at: str = str() 
+    created_by: User = User 
+    forecast: bool = bool() 
+    project: Project = Project 
+    start: str = str() 
+    effort: float = float() 
+    created_by_id: str = str() 
+    estimate: float = float() 
+    project_id: str = str() 
+    type: Type = Type 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> CalendarEvent:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> CalendarEvent:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> CalendarEvent:... 
+
 
 class CalendarEventResource:
+    resource: Resource = Resource 
+    resource_id: str = str() 
+    calendar_event_id: str = str() 
+    created_at: str = str() 
+    created_by: User = User 
+    calendar_event: CalendarEvent = CalendarEvent 
+    created_by_id: str = str() 
+    id: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.calendar_event: CalendarEvent = CalendarEvent 
-        self.calendar_event_id: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.id: str = str() 
-        self.resource: Resource = Resource 
-        self.resource_id: str = str() 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> CalendarEventResource:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> CalendarEventResource:... 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> CalendarEventResource:... 
 
-class Chapter(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
+class Collaborator:
+    created_from_shared_url: str = str() 
+    first_name: str = str() 
+    last_name: str = str() 
+    assignments: Appointment = Appointment 
+    thumbnail_id: str = str() 
+    thumbnail: Component = Component 
+    id: str = str() 
+    dashboard_resources: DashboardResource = DashboardResource 
+    appointments: Appointment = Appointment 
+    thumbnail_url: object 
+    allocations: Appointment = Appointment 
+    email: str = str() 
+    resource_type: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Chapter:... 
-    def by_assignee(self, target, *assignees) -> Query(Chapter):... 
-    def by_id(self, target, *ids) -> Query(Chapter):... 
-    def by_incoming_link(self, target, *ids) -> Query(Chapter):... 
-    def by_lifespan(self, target, start=None, end=None) -> Query(Chapter):... 
-    def by_metadata(self, target, *dictionaries) -> Query(Chapter):... 
-    def by_name(self, target, *names) -> Query(Chapter):... 
-    def by_outgoing_link(self, target, *ids) -> Query(Chapter):... 
-    def by_state(self, target, *states) -> Query(Chapter):... 
-    def by_status(self, target, *statuses) -> Query(Chapter):... 
-    def by_status_change_time(self, target, start=None, end=None) -> Query(Chapter):... 
-    def by_type(self, target, *types) -> Query(Chapter):... 
-    def create(self) -> Chapter:... 
-    def create_batch(self, *attributes) -> Chapter:... 
-    def delete(self) -> None:... 
-    def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
-    def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Chapter:... 
-    def get_all(self, projections=None) -> Chapter:... 
-    def get_first(self, projections=None) -> Chapter:... 
-    def get_inputs(self, projections=None) -> Chapter:... 
-    def get_one(self, projections=None) -> Chapter:... 
-    def get_outputs(self, projections=None) -> Chapter:... 
-    def inject(self, filter) -> Query(Chapter):... 
-    def link_inputs(self, entity_collection) -> Chapter:... 
-    def link_outputs(self, entity_collection) -> Chapter:... 
-    def not_by_assignee(self, target, *assignees) -> Query(Chapter):... 
-    def not_by_id(self, target, *ids) -> Query(Chapter):... 
-    def not_by_incoming_link(self, target, *ids) -> Query(Chapter):... 
-    def not_by_lifespan(self, target, start=None, end=None) -> Query(Chapter):... 
-    def not_by_metadata(self, target, *dictionaries) -> Query(Chapter):... 
-    def not_by_name(self, target, *names) -> Query(Chapter):... 
-    def not_by_outgoing_link(self, target, *ids) -> Query(Chapter):... 
-    def not_by_state(self, target, *states) -> Query(Chapter):... 
-    def not_by_status(self, target, *statuses) -> Query(Chapter):... 
-    def not_by_status_change_time(self, target, start=None, end=None) -> Query(Chapter):... 
-    def not_by_type(self, target, *types) -> Query(Chapter):... 
-    def unlink_inputs(self, entity_collection) -> Chapter:... 
-    def unlink_outputs(self, entity_collection) -> Chapter:... 
+
 
 class Component(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component_locations: ComponentLocation = ComponentLocation 
-        self.container: ContainerComponent = ContainerComponent 
-        self.container_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.file_type: str = str() 
-        self.id: str = str() 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.size: int = int() 
-        self.system_type: str = str() 
-        self.version: AssetVersion = AssetVersion 
-        self.version_id: str = str() 
+    container: ContainerComponent = ContainerComponent 
+    name: str = str() 
+    component_locations: ComponentLocation = ComponentLocation 
+    file_type: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    container_id: str = str() 
+    version_id: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    version: AssetVersion = AssetVersion 
+    system_type: str = str() 
+    size: int = int() 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Component:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Component:... 
     def by_file_type(self, target, *file_types) -> Query(Component):... 
     def by_id(self, target, *ids) -> Query(Component):... 
     def by_location(self, target, *component_locations) -> Query(Component):... 
@@ -737,6 +562,7 @@ class Component(Entity):
     def create(self) -> Component:... 
     def create_batch(self, *attributes) -> Component:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Component:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Component:... 
     def get_all(self, projections=None) -> Component:... 
@@ -755,41 +581,48 @@ class Component(Entity):
     def not_by_system_type(self, target, *system_types) -> Query(Component):... 
     def not_by_version(self, target, *versions) -> Query(Component):... 
 
-class ComponentCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ComponentCustomAttributeLink:... 
+class ComponentCustomAttributeLink:
+    to_entity_type: str = str() 
+    component: Component = Component 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ComponentCustomAttributeLink:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ComponentCustomAttributeLink:... 
+
 
 class ComponentCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
+    to_entity_type: str = str() 
+    component: Component = Component 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ComponentCustomAttributeLinkFrom:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ComponentCustomAttributeLinkFrom:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ComponentCustomAttributeLinkFrom:... 
+
 
 class ComponentLocation(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.component_id: str = str() 
-        self.id: str = str() 
-        self.location: Location = Location 
-        self.location_id: str = str() 
-        self.resource_identifier: str = str() 
-        self.url: object 
+    component_id: str = str() 
+    url: object 
+    component: Component = Component 
+    resource_identifier: str = str() 
+    location: Location = Location 
+    location_id: str = str() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ComponentLocation:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ComponentLocation:... 
     def by_id(self, target, *ids) -> Query(ComponentLocation):... 
     def by_metadata(self, target, *dictionaries) -> Query(ComponentLocation):... 
     def by_name(self, target, *names) -> Query(ComponentLocation):... 
@@ -798,6 +631,7 @@ class ComponentLocation(Entity):
     def create(self) -> ComponentLocation:... 
     def create_batch(self, *attributes) -> ComponentLocation:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ComponentLocation:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> ComponentLocation:... 
     def get_all(self, projections=None) -> ComponentLocation:... 
@@ -812,24 +646,25 @@ class ComponentLocation(Entity):
     def not_by_resource_identifier(self, target, *resource_identifiers) -> Query(ComponentLocation):... 
     def not_by_version(self, target, *versions) -> Query(ComponentLocation):... 
 
-class ContainerComponent(Component):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component_locations: ComponentLocation = ComponentLocation 
-        self.container: ContainerComponent = ContainerComponent 
-        self.container_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.file_type: str = str() 
-        self.id: str = str() 
-        self.members: Component = Component 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.size: int = int() 
-        self.system_type: str = str() 
-        self.version: AssetVersion = AssetVersion 
-        self.version_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ContainerComponent:... 
+class ContainerComponent(Component):
+    container: ContainerComponent = ContainerComponent 
+    name: str = str() 
+    component_locations: ComponentLocation = ComponentLocation 
+    file_type: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    container_id: str = str() 
+    version_id: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    version: AssetVersion = AssetVersion 
+    system_type: str = str() 
+    members: Component = Component 
+    metadata: typing.List = [Metadata] 
+    id: str = str() 
+    size: int = int() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ContainerComponent:... 
     def by_file_type(self, target, *file_types) -> Query(ContainerComponent):... 
     def by_id(self, target, *ids) -> Query(ContainerComponent):... 
     def by_location(self, target, *component_locations) -> Query(ContainerComponent):... 
@@ -842,6 +677,7 @@ class ContainerComponent(Component):
     def create(self) -> ContainerComponent:... 
     def create_batch(self, *attributes) -> ContainerComponent:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ContainerComponent:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> ContainerComponent:... 
     def get_all(self, projections=None) -> ContainerComponent:... 
@@ -860,40 +696,42 @@ class ContainerComponent(Component):
     def not_by_system_type(self, target, *system_types) -> Query(ContainerComponent):... 
     def not_by_version(self, target, *versions) -> Query(ContainerComponent):... 
 
-class Context(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.id: str = str() 
-        self.link: str = str() 
-        self.managers: Manager = Manager 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.timelogs: Timelog = Timelog 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Context:... 
+class Context(Entity):
+    created_at: str = str() 
+    managers: Manager = Manager 
+    created_by: User = User 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    _link: str = str() 
+    children: Context = Context 
+    parent_id: str = str() 
+    project_id: str = str() 
+    thumbnail: Component = Component 
+    scopes: Scope = Scope 
+    parent: Context = Context 
+    thumbnail_id: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    name: str = str() 
+    assets: Asset = Asset 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    notes: Note = Note 
+    assignments: Appointment = Appointment 
+    thumbnail_url: object 
+    allocations: Appointment = Appointment 
+    created_by_id: str = str() 
+    context_type: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Context:... 
     def by_id(self, target, *ids) -> Query(Context):... 
     def by_metadata(self, target, *dictionaries) -> Query(Context):... 
     def create(self) -> Context:... 
     def create_batch(self, *attributes) -> Context:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Context:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Context:... 
     def get_all(self, projections=None) -> Context:... 
@@ -905,223 +743,247 @@ class Context(Entity):
     def not_by_id(self, target, *ids) -> Query(Context):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Context):... 
 
-class ContextCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.context: Context = Context 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ContextCustomAttributeLink:... 
+class ContextCustomAttributeLink:
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    context: Context = Context 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ContextCustomAttributeLink:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ContextCustomAttributeLink:... 
+
 
 class ContextCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.context: Context = Context 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    context: Context = Context 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ContextCustomAttributeLinkFrom:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ContextCustomAttributeLinkFrom:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ContextCustomAttributeLinkFrom:... 
+
 
 class ContextCustomAttributeValue:
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
+
     def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ContextCustomAttributeValue:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ContextCustomAttributeValue:... 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ContextCustomAttributeValue:... 
-
-class Conversation:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.id: str = str() 
-        self.messages: Message = Message 
-        self.participants: Participant = Participant 
-
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Conversation:... 
 
 class CustomAttributeConfiguration:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.config: str = str() 
-        self.core: bool = bool() 
-        self.default: typing.Any = None 
-        self.entity_type: str = str() 
-        self.group: CustomAttributeGroup = CustomAttributeGroup 
-        self.group_id: str = str() 
-        self.id: str = str() 
-        self.is_hierarchical: bool = bool() 
-        self.key: str = str() 
-        self.label: str = str() 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.project_id: str = str() 
-        self.read_security_roles: SecurityRole = SecurityRole 
-        self.sort: int = int() 
-        self.type: CustomAttributeType = CustomAttributeType 
-        self.type_id: str = str() 
-        self.values: CustomAttributeValue = CustomAttributeValue 
-        self.write_security_roles: SecurityRole = SecurityRole 
+    sort: int = int() 
+    core: bool = bool() 
+    group_id: str = str() 
+    group: CustomAttributeGroup = CustomAttributeGroup 
+    key: str = str() 
+    type_id: str = str() 
+    default: typing.Any = None 
+    type: CustomAttributeType = CustomAttributeType 
+    object_type: ObjectType = ObjectType 
+    label: str = str() 
+    read_security_roles: SecurityRole = SecurityRole 
+    entity_type: str = str() 
+    values: CustomAttributeValue = CustomAttributeValue 
+    object_type_id: str = str() 
+    write_security_roles: SecurityRole = SecurityRole 
+    is_hierarchical: bool = bool() 
+    project_id: str = str() 
+    config: str = str() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> CustomAttributeConfiguration:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeConfiguration:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> CustomAttributeConfiguration:... 
+
 
 class CustomAttributeGroup:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.custom_attribute_configurations: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.id: str = str() 
-        self.name: str = str() 
+    custom_attribute_configurations: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    id: str = str() 
+    name: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> CustomAttributeGroup:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeGroup:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> CustomAttributeGroup:... 
+
 
 class CustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_id: str = str() 
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> CustomAttributeLink:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeLink:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> CustomAttributeLink:... 
+
 
 class CustomAttributeLinkConfiguration:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.config: str = str() 
-        self.core: bool = bool() 
-        self.entity_type: str = str() 
-        self.entity_type_to: str = str() 
-        self.group: CustomAttributeGroup = CustomAttributeGroup 
-        self.group_id: str = str() 
-        self.id: str = str() 
-        self.key: str = str() 
-        self.label: str = str() 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.object_type_id_to: str = str() 
-        self.object_type_to: ObjectType = ObjectType 
-        self.one_to_one: bool = bool() 
-        self.project_id: str = str() 
-        self.read_security_roles: SecurityRole = SecurityRole 
-        self.sort: int = int() 
-        self.write_security_roles: SecurityRole = SecurityRole 
+    sort: int = int() 
+    core: bool = bool() 
+    group_id: str = str() 
+    group: CustomAttributeGroup = CustomAttributeGroup 
+    key: str = str() 
+    one_to_one: bool = bool() 
+    object_type: ObjectType = ObjectType 
+    object_type_id_to: str = str() 
+    entity_type_to: str = str() 
+    label: str = str() 
+    read_security_roles: SecurityRole = SecurityRole 
+    entity_type: str = str() 
+    object_type_id: str = str() 
+    write_security_roles: SecurityRole = SecurityRole 
+    object_type_to: ObjectType = ObjectType 
+    project_id: str = str() 
+    config: str = str() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> CustomAttributeLinkConfiguration:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeLinkConfiguration:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> CustomAttributeLinkConfiguration:... 
+
 
 class CustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
+    to_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> CustomAttributeLinkFrom:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeLinkFrom:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> CustomAttributeLinkFrom:... 
+
 
 class CustomAttributeType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.core: bool = bool() 
-        self.custom_attribute_configurations: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.form_config: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
+    form_config: str = str() 
+    core: bool = bool() 
+    id: str = str() 
+    name: str = str() 
+    custom_attribute_configurations: CustomAttributeConfiguration = CustomAttributeConfiguration 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> CustomAttributeType:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeType:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> CustomAttributeType:... 
+
 
 class CustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.value: typing.Any = None 
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> CustomAttributeValue:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomAttributeValue:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> CustomAttributeValue:... 
+
 
 class CustomConfigurationBase:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.config: str = str() 
-        self.core: bool = bool() 
-        self.entity_type: str = str() 
-        self.group: CustomAttributeGroup = CustomAttributeGroup 
-        self.group_id: str = str() 
-        self.id: str = str() 
-        self.key: str = str() 
-        self.label: str = str() 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.project_id: str = str() 
-        self.read_security_roles: SecurityRole = SecurityRole 
-        self.sort: int = int() 
-        self.write_security_roles: SecurityRole = SecurityRole 
+    sort: int = int() 
+    core: bool = bool() 
+    group_id: str = str() 
+    group: CustomAttributeGroup = CustomAttributeGroup 
+    object_type_id: str = str() 
+    entity_type: str = str() 
+    object_type: ObjectType = ObjectType 
+    label: str = str() 
+    read_security_roles: SecurityRole = SecurityRole 
+    key: str = str() 
+    write_security_roles: SecurityRole = SecurityRole 
+    project_id: str = str() 
+    config: str = str() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> CustomConfigurationBase:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> CustomConfigurationBase:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> CustomConfigurationBase:... 
+
 
 class Dashboard:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.dashboard_resources: DashboardResource = DashboardResource 
-        self.id: str = str() 
-        self.is_shared_with_everyone: bool = bool() 
-        self.name: str = str() 
-        self.widgets: DashboardWidget = DashboardWidget 
+    name: str = str() 
+    created_by: User = User 
+    dashboard_resources: DashboardResource = DashboardResource 
+    widgets: DashboardWidget = DashboardWidget 
+    created_by_id: str = str() 
+    is_shared_with_everyone: bool = bool() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Dashboard:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Dashboard:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Dashboard:... 
+
 
 class DashboardResource:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.dashboard: Dashboard = Dashboard 
-        self.dashboard_id: str = str() 
-        self.is_shared_with_everyone: bool = bool() 
-        self.resource: Resource = Resource 
-        self.resource_id: str = str() 
+    dashboard_id: str = str() 
+    resource: Resource = Resource 
+    dashboard: Dashboard = Dashboard 
+    resource_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> DashboardResource:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> DashboardResource:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> DashboardResource:... 
+
 
 class DashboardWidget:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.config: str = str() 
-        self.dashboard: Dashboard = Dashboard 
-        self.dashboard_id: str = str() 
-        self.id: str = str() 
-        self.sort: float = float() 
-        self.type: str = str() 
+    sort: float = float() 
+    type: str = str() 
+    dashboard_id: str = str() 
+    dashboard: Dashboard = Dashboard 
+    config: str = str() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> DashboardWidget:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> DashboardWidget:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> DashboardWidget:... 
+
 
 class Disk:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.projects: Project = Project 
-        self.unix: str = str() 
-        self.windows: str = str() 
+    windows: str = str() 
+    unix: str = str() 
+    id: str = str() 
+    projects: Project = Project 
+    name: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Disk:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Disk:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Disk:... 
+
 
 class EntitySetting(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.group: str = str() 
-        self.name: str = str() 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.value: str = str() 
+    parent_id: str = str() 
+    parent_type: str = str() 
+    name: str = str() 
+    value: str = str() 
+    group: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> EntitySetting:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> EntitySetting:... 
     def by_id(self, target, *ids) -> Query(EntitySetting):... 
     def by_metadata(self, target, *dictionaries) -> Query(EntitySetting):... 
     def create(self) -> EntitySetting:... 
     def create_batch(self, *attributes) -> EntitySetting:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> EntitySetting:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> EntitySetting:... 
     def get_all(self, projections=None) -> EntitySetting:... 
@@ -1133,148 +995,61 @@ class EntitySetting(Entity):
     def not_by_id(self, target, *ids) -> Query(EntitySetting):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(EntitySetting):... 
 
-class Epic(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
-
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Epic:... 
-    def by_assignee(self, target, *assignees) -> Query(Epic):... 
-    def by_id(self, target, *ids) -> Query(Epic):... 
-    def by_incoming_link(self, target, *ids) -> Query(Epic):... 
-    def by_lifespan(self, target, start=None, end=None) -> Query(Epic):... 
-    def by_metadata(self, target, *dictionaries) -> Query(Epic):... 
-    def by_name(self, target, *names) -> Query(Epic):... 
-    def by_outgoing_link(self, target, *ids) -> Query(Epic):... 
-    def by_state(self, target, *states) -> Query(Epic):... 
-    def by_status(self, target, *statuses) -> Query(Epic):... 
-    def by_status_change_time(self, target, start=None, end=None) -> Query(Epic):... 
-    def by_type(self, target, *types) -> Query(Epic):... 
-    def create(self) -> Epic:... 
-    def create_batch(self, *attributes) -> Epic:... 
-    def delete(self) -> None:... 
-    def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
-    def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Epic:... 
-    def get_all(self, projections=None) -> Epic:... 
-    def get_first(self, projections=None) -> Epic:... 
-    def get_inputs(self, projections=None) -> Epic:... 
-    def get_one(self, projections=None) -> Epic:... 
-    def get_outputs(self, projections=None) -> Epic:... 
-    def inject(self, filter) -> Query(Epic):... 
-    def link_inputs(self, entity_collection) -> Epic:... 
-    def link_outputs(self, entity_collection) -> Epic:... 
-    def not_by_assignee(self, target, *assignees) -> Query(Epic):... 
-    def not_by_id(self, target, *ids) -> Query(Epic):... 
-    def not_by_incoming_link(self, target, *ids) -> Query(Epic):... 
-    def not_by_lifespan(self, target, start=None, end=None) -> Query(Epic):... 
-    def not_by_metadata(self, target, *dictionaries) -> Query(Epic):... 
-    def not_by_name(self, target, *names) -> Query(Epic):... 
-    def not_by_outgoing_link(self, target, *ids) -> Query(Epic):... 
-    def not_by_state(self, target, *states) -> Query(Epic):... 
-    def not_by_status(self, target, *statuses) -> Query(Epic):... 
-    def not_by_status_change_time(self, target, start=None, end=None) -> Query(Epic):... 
-    def not_by_type(self, target, *types) -> Query(Epic):... 
-    def unlink_inputs(self, entity_collection) -> Epic:... 
-    def unlink_outputs(self, entity_collection) -> Epic:... 
 
 class Episode(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Episode:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Episode:... 
     def by_assignee(self, target, *assignees) -> Query(Episode):... 
     def by_id(self, target, *ids) -> Query(Episode):... 
     def by_incoming_link(self, target, *ids) -> Query(Episode):... 
@@ -1289,6 +1064,7 @@ class Episode(TypedContext):
     def create(self) -> Episode:... 
     def create_batch(self, *attributes) -> Episode:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Episode:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Episode:... 
     def get_all(self, projections=None) -> Episode:... 
@@ -1313,22 +1089,23 @@ class Episode(TypedContext):
     def unlink_inputs(self, entity_collection) -> Episode:... 
     def unlink_outputs(self, entity_collection) -> Episode:... 
 
-class Event(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.action: str = str() 
-        self.created_at: str = str() 
-        self.data: str = str() 
-        self.feeds: Feed = Feed 
-        self.id: int = int() 
-        self.insert: str = str() 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Event:... 
+class Event(Entity):
+    insert: str = str() 
+    user_id: str = str() 
+    created_at: str = str() 
+    parent_type: str = str() 
+    project: Project = Project 
+    parent_id: str = str() 
+    user: User = User 
+    action: str = str() 
+    feeds: Feed = Feed 
+    project_id: str = str() 
+    data: str = str() 
+    id: int = int() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Event:... 
     def by_action(self, target, *actions) -> Query(Event):... 
     def by_data(self, target, *datas) -> Query(Event):... 
     def by_id(self, target, *ids) -> Query(Event):... 
@@ -1337,6 +1114,7 @@ class Event(Entity):
     def create(self) -> Event:... 
     def create_batch(self, *attributes) -> Event:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Event:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Event:... 
     def get_all(self, projections=None) -> Event:... 
@@ -1351,36 +1129,39 @@ class Event(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Event):... 
     def not_by_name(self, target, *names) -> Query(Event):... 
 
-class Feed:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.cluster_id: str = str() 
-        self.created_at: str = str() 
-        self.distance: int = int() 
-        self.event: Event = Event 
-        self.id: str = str() 
-        self.owner_id: str = str() 
-        self.relation: str = str() 
-        self.social_id: int = int() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Feed:... 
+class Feed:
+    distance: int = int() 
+    created_at: str = str() 
+    id: str = str() 
+    relation: str = str() 
+    social_id: int = int() 
+    cluster_id: str = str() 
+    event: Event = Event 
+    owner_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Feed:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Feed:... 
+
 
 class FileComponent(Component):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component_locations: ComponentLocation = ComponentLocation 
-        self.container: ContainerComponent = ContainerComponent 
-        self.container_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.file_type: str = str() 
-        self.id: str = str() 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.size: int = int() 
-        self.system_type: str = str() 
-        self.version: AssetVersion = AssetVersion 
-        self.version_id: str = str() 
+    container: ContainerComponent = ContainerComponent 
+    name: str = str() 
+    component_locations: ComponentLocation = ComponentLocation 
+    file_type: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    container_id: str = str() 
+    version_id: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    version: AssetVersion = AssetVersion 
+    system_type: str = str() 
+    metadata: typing.List = [Metadata] 
+    id: str = str() 
+    size: int = int() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> FileComponent:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> FileComponent:... 
     def by_file_type(self, target, *file_types) -> Query(FileComponent):... 
     def by_id(self, target, *ids) -> Query(FileComponent):... 
     def by_location(self, target, *component_locations) -> Query(FileComponent):... 
@@ -1393,6 +1174,7 @@ class FileComponent(Component):
     def create(self) -> FileComponent:... 
     def create_batch(self, *attributes) -> FileComponent:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> FileComponent:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> FileComponent:... 
     def get_all(self, projections=None) -> FileComponent:... 
@@ -1411,58 +1193,61 @@ class FileComponent(Component):
     def not_by_system_type(self, target, *system_types) -> Query(FileComponent):... 
     def not_by_version(self, target, *versions) -> Query(FileComponent):... 
 
-class Folder(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Folder:... 
+class Folder(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Folder:... 
     def by_assignee(self, target, *assignees) -> Query(Folder):... 
     def by_id(self, target, *ids) -> Query(Folder):... 
     def by_incoming_link(self, target, *ids) -> Query(Folder):... 
@@ -1477,6 +1262,7 @@ class Folder(TypedContext):
     def create(self) -> Folder:... 
     def create_batch(self, *attributes) -> Folder:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Folder:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Folder:... 
     def get_all(self, projections=None) -> Folder:... 
@@ -1501,31 +1287,33 @@ class Folder(TypedContext):
     def unlink_inputs(self, entity_collection) -> Folder:... 
     def unlink_outputs(self, entity_collection) -> Folder:... 
 
-class Group(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assignments: Appointment = Appointment 
-        self.children: Group = Group 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.dashboard_resources: DashboardResource = DashboardResource 
-        self.id: str = str() 
-        self.link: str = str() 
-        self.local: bool = bool() 
-        self.memberships: Membership = Membership 
-        self.name: str = str() 
-        self.parent: Group = Group 
-        self.parent_id: str = str() 
-        self.resource_type: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Group:... 
+class Group(Entity):
+    assignments: Appointment = Appointment 
+    name: str = str() 
+    parent: Group = Group 
+    parent_id: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    children: Group = Group 
+    memberships: Membership = Membership 
+    dashboard_resources: DashboardResource = DashboardResource 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    allocations: Appointment = Appointment 
+    local: bool = bool() 
+    id: str = str() 
+    resource_type: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Group:... 
     def by_id(self, target, *ids) -> Query(Group):... 
     def by_metadata(self, target, *dictionaries) -> Query(Group):... 
     def by_name(self, target, *names) -> Query(Group):... 
     def create(self) -> Group:... 
     def create_batch(self, *attributes) -> Group:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Group:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Group:... 
     def get_all(self, projections=None) -> Group:... 
@@ -1538,43 +1326,238 @@ class Group(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Group):... 
     def not_by_name(self, target, *names) -> Query(Group):... 
 
-class GroupCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_id: str = str() 
-        self.group: Group = Group 
-        self.id: str = str() 
-        self.to_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> GroupCustomAttributeLink:... 
+class GroupCustomAttributeLink:
+    to_entity_type: str = str() 
+    group: Group = Group 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> GroupCustomAttributeLink:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> GroupCustomAttributeLink:... 
+
 
 class GroupCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.group: Group = Group 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
+    to_entity_type: str = str() 
+    group: Group = Group 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> GroupCustomAttributeLinkFrom:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> GroupCustomAttributeLinkFrom:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> GroupCustomAttributeLinkFrom:... 
+
+
+class Image(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Image:... 
+    def by_assignee(self, target, *assignees) -> Query(Image):... 
+    def by_id(self, target, *ids) -> Query(Image):... 
+    def by_incoming_link(self, target, *ids) -> Query(Image):... 
+    def by_lifespan(self, target, start=None, end=None) -> Query(Image):... 
+    def by_metadata(self, target, *dictionaries) -> Query(Image):... 
+    def by_name(self, target, *names) -> Query(Image):... 
+    def by_outgoing_link(self, target, *ids) -> Query(Image):... 
+    def by_state(self, target, *states) -> Query(Image):... 
+    def by_status(self, target, *statuses) -> Query(Image):... 
+    def by_status_change_time(self, target, start=None, end=None) -> Query(Image):... 
+    def by_type(self, target, *types) -> Query(Image):... 
+    def create(self) -> Image:... 
+    def create_batch(self, *attributes) -> Image:... 
+    def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Image:... 
+    def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
+    def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Image:... 
+    def get_all(self, projections=None) -> Image:... 
+    def get_first(self, projections=None) -> Image:... 
+    def get_inputs(self, projections=None) -> Image:... 
+    def get_one(self, projections=None) -> Image:... 
+    def get_outputs(self, projections=None) -> Image:... 
+    def inject(self, filter) -> Query(Image):... 
+    def link_inputs(self, entity_collection) -> Image:... 
+    def link_outputs(self, entity_collection) -> Image:... 
+    def not_by_assignee(self, target, *assignees) -> Query(Image):... 
+    def not_by_id(self, target, *ids) -> Query(Image):... 
+    def not_by_incoming_link(self, target, *ids) -> Query(Image):... 
+    def not_by_lifespan(self, target, start=None, end=None) -> Query(Image):... 
+    def not_by_metadata(self, target, *dictionaries) -> Query(Image):... 
+    def not_by_name(self, target, *names) -> Query(Image):... 
+    def not_by_outgoing_link(self, target, *ids) -> Query(Image):... 
+    def not_by_state(self, target, *states) -> Query(Image):... 
+    def not_by_status(self, target, *statuses) -> Query(Image):... 
+    def not_by_status_change_time(self, target, start=None, end=None) -> Query(Image):... 
+    def not_by_type(self, target, *types) -> Query(Image):... 
+    def unlink_inputs(self, entity_collection) -> Image:... 
+    def unlink_outputs(self, entity_collection) -> Image:... 
+
+
+class Information(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Information:... 
+    def by_assignee(self, target, *assignees) -> Query(Information):... 
+    def by_id(self, target, *ids) -> Query(Information):... 
+    def by_incoming_link(self, target, *ids) -> Query(Information):... 
+    def by_lifespan(self, target, start=None, end=None) -> Query(Information):... 
+    def by_metadata(self, target, *dictionaries) -> Query(Information):... 
+    def by_name(self, target, *names) -> Query(Information):... 
+    def by_outgoing_link(self, target, *ids) -> Query(Information):... 
+    def by_state(self, target, *states) -> Query(Information):... 
+    def by_status(self, target, *statuses) -> Query(Information):... 
+    def by_status_change_time(self, target, start=None, end=None) -> Query(Information):... 
+    def by_type(self, target, *types) -> Query(Information):... 
+    def create(self) -> Information:... 
+    def create_batch(self, *attributes) -> Information:... 
+    def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Information:... 
+    def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
+    def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Information:... 
+    def get_all(self, projections=None) -> Information:... 
+    def get_first(self, projections=None) -> Information:... 
+    def get_inputs(self, projections=None) -> Information:... 
+    def get_one(self, projections=None) -> Information:... 
+    def get_outputs(self, projections=None) -> Information:... 
+    def inject(self, filter) -> Query(Information):... 
+    def link_inputs(self, entity_collection) -> Information:... 
+    def link_outputs(self, entity_collection) -> Information:... 
+    def not_by_assignee(self, target, *assignees) -> Query(Information):... 
+    def not_by_id(self, target, *ids) -> Query(Information):... 
+    def not_by_incoming_link(self, target, *ids) -> Query(Information):... 
+    def not_by_lifespan(self, target, start=None, end=None) -> Query(Information):... 
+    def not_by_metadata(self, target, *dictionaries) -> Query(Information):... 
+    def not_by_name(self, target, *names) -> Query(Information):... 
+    def not_by_outgoing_link(self, target, *ids) -> Query(Information):... 
+    def not_by_state(self, target, *states) -> Query(Information):... 
+    def not_by_status(self, target, *statuses) -> Query(Information):... 
+    def not_by_status_change_time(self, target, start=None, end=None) -> Query(Information):... 
+    def not_by_type(self, target, *types) -> Query(Information):... 
+    def unlink_inputs(self, entity_collection) -> Information:... 
+    def unlink_outputs(self, entity_collection) -> Information:... 
+
 
 class Job(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.created_at: str = str() 
-        self.data: str = str() 
-        self.finished_at: str = str() 
-        self.id: str = str() 
-        self.job_components: JobComponent = JobComponent 
-        self.status: str = str() 
-        self.type: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
+    status: str = str() 
+    user_id: str = str() 
+    finished_at: str = str() 
+    created_at: str = str() 
+    data: str = str() 
+    user: User = User 
+    type: str = str() 
+    id: str = str() 
+    job_components: JobComponent = JobComponent 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Job:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Job:... 
     def by_creation_date(self, target, creation_date) -> Query(Job):... 
     def by_data(self, target, *dictionaries) -> Query(Job):... 
     def by_finish_date(self, target, finish_date) -> Query(Job):... 
@@ -1586,6 +1569,7 @@ class Job(Entity):
     def create(self) -> Job:... 
     def create_batch(self, *attributes) -> Job:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Job:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Job:... 
     def get_all(self, projections=None) -> Job:... 
@@ -1603,39 +1587,43 @@ class Job(Entity):
     def not_by_name(self, target, *names) -> Query(Job):... 
     def not_by_status(self, target, *status) -> Query(Job):... 
 
-class JobComponent:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.component_id: str = str() 
-        self.job: Job = Job 
-        self.job_id: str = str() 
-        self.url: object 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> JobComponent:... 
+class JobComponent:
+    url: object 
+    job: Job = Job 
+    component_id: str = str() 
+    component: Component = Component 
+    job_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> JobComponent:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> JobComponent:... 
+
 
 class List(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.category: ListCategory = ListCategory 
-        self.category_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.date: str = str() 
-        self.id: str = str() 
-        self.is_open: bool = bool() 
-        self.name: str = str() 
-        self.owner: User = User 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.system_type: str = str() 
-        self.user_id: str = str() 
+    category: ListCategory = ListCategory 
+    category_id: str = str() 
+    user_id: str = str() 
+    name: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    project: Project = Project 
+    date: str = str() 
+    is_open: bool = bool() 
+    system_type: str = str() 
+    owner: User = User 
+    project_id: str = str() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> List:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> List:... 
     def by_id(self, target, *ids) -> Query(List):... 
     def by_metadata(self, target, *dictionaries) -> Query(List):... 
     def by_name(self, target, *names) -> Query(List):... 
     def create(self) -> List:... 
     def create_batch(self, *attributes) -> List:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> List:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> List:... 
     def get_all(self, projections=None) -> List:... 
@@ -1648,19 +1636,21 @@ class List(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(List):... 
     def not_by_name(self, target, *names) -> Query(List):... 
 
-class ListCategory(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.lists: List = List 
-        self.name: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ListCategory:... 
+class ListCategory(Entity):
+    id: str = str() 
+    lists: List = List 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ListCategory:... 
     def by_id(self, target, *ids) -> Query(ListCategory):... 
     def by_metadata(self, target, *dictionaries) -> Query(ListCategory):... 
     def by_name(self, target, *names) -> Query(ListCategory):... 
     def create(self) -> ListCategory:... 
     def create_batch(self, *attributes) -> ListCategory:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ListCategory:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> ListCategory:... 
     def get_all(self, projections=None) -> ListCategory:... 
@@ -1673,74 +1663,88 @@ class ListCategory(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(ListCategory):... 
     def not_by_name(self, target, *names) -> Query(ListCategory):... 
 
-class ListCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.list: List = List 
-        self.to_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ListCustomAttributeLink:... 
+class ListCustomAttributeLink:
+    to_entity_type: str = str() 
+    list: List = List 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ListCustomAttributeLink:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ListCustomAttributeLink:... 
+
 
 class ListCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.list: List = List 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
+    to_entity_type: str = str() 
+    list: List = List 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    from_entity_type: str = str() 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ListCustomAttributeLinkFrom:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ListCustomAttributeLinkFrom:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ListCustomAttributeLinkFrom:... 
+
 
 class ListCustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ListCustomAttributeValue:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ListCustomAttributeValue:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ListCustomAttributeValue:... 
+
 
 class ListObject:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.entity_id: str = str() 
-        self.id: str = str() 
-        self.list: List = List 
-        self.list_id: str = str() 
+    entity_id: str = str() 
+    list: List = List 
+    id: str = str() 
+    list_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ListObject:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ListObject:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ListObject:... 
+
 
 class ListObjectCustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ListObjectCustomAttributeValue:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ListObjectCustomAttributeValue:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ListObjectCustomAttributeValue:... 
+
 
 class Location(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.description: str = str() 
-        self.id: str = str() 
-        self.label: str = str() 
-        self.location_components: ComponentLocation = ComponentLocation 
-        self.name: str = str() 
+    label: str = str() 
+    location_components: ComponentLocation = ComponentLocation 
+    id: str = str() 
+    name: str = str() 
+    description: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Location:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Location:... 
     def by_id(self, target, *ids) -> Query(Location):... 
     def by_metadata(self, target, *dictionaries) -> Query(Location):... 
     def by_name(self, target, *names) -> Query(Location):... 
     def create(self) -> Location:... 
     def create_batch(self, *attributes) -> Location:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Location:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Location:... 
     def get_all(self, projections=None) -> Location:... 
@@ -1753,39 +1757,45 @@ class Location(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Location):... 
     def not_by_name(self, target, *names) -> Query(Location):... 
 
-class Manager:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.context: Context = Context 
-        self.context_id: str = str() 
-        self.id: str = str() 
-        self.type: ManagerType = ManagerType 
-        self.type_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Manager:... 
+class Manager:
+    user_id: str = str() 
+    type_id: str = str() 
+    context_id: str = str() 
+    user: User = User 
+    context: Context = Context 
+    type: ManagerType = ManagerType 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Manager:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Manager:... 
+
 
 class ManagerType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
+    id: str = str() 
+    name: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ManagerType:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ManagerType:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ManagerType:... 
+
 
 class Membership(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.group: Group = Group 
-        self.group_id: str = str() 
-        self.id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
+    user_id: str = str() 
+    group_id: str = str() 
+    group: Group = Group 
+    id: str = str() 
+    user: User = User 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Membership:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Membership:... 
     def by_id(self, target, *ids) -> Query(Membership):... 
     def by_metadata(self, target, *dictionaries) -> Query(Membership):... 
     def create(self) -> Membership:... 
     def create_batch(self, *attributes) -> Membership:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Membership:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Membership:... 
     def get_all(self, projections=None) -> Membership:... 
@@ -1797,31 +1807,21 @@ class Membership(Entity):
     def not_by_id(self, target, *ids) -> Query(Membership):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Membership):... 
 
-class Message:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.conversation: Conversation = Conversation 
-        self.conversation_id: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.id: str = str() 
-        self.text: str = str() 
-
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Message:... 
 
 class Metadata(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.key: str = str() 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.value: str = str() 
+    parent_id: str = str() 
+    parent_type: str = str() 
+    key: str = str() 
+    value: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Metadata:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Metadata:... 
     def by_id(self, target, *ids) -> Query(Metadata):... 
     def by_metadata(self, target, *dictionaries) -> Query(Metadata):... 
     def create(self) -> Metadata:... 
     def create_batch(self, *attributes) -> Metadata:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Metadata:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Metadata:... 
     def get_all(self, projections=None) -> Metadata:... 
@@ -1833,58 +1833,61 @@ class Metadata(Entity):
     def not_by_id(self, target, *ids) -> Query(Metadata):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Metadata):... 
 
-class Milestone(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Milestone:... 
+class Milestone(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Milestone:... 
     def by_assignee(self, target, *assignees) -> Query(Milestone):... 
     def by_id(self, target, *ids) -> Query(Milestone):... 
     def by_incoming_link(self, target, *ids) -> Query(Milestone):... 
@@ -1899,6 +1902,7 @@ class Milestone(TypedContext):
     def create(self) -> Milestone:... 
     def create_batch(self, *attributes) -> Milestone:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Milestone:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Milestone:... 
     def get_all(self, projections=None) -> Milestone:... 
@@ -1923,37 +1927,42 @@ class Milestone(TypedContext):
     def unlink_inputs(self, entity_collection) -> Milestone:... 
     def unlink_outputs(self, entity_collection) -> Milestone:... 
 
-class Note(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.author: User = User 
-        self.category: NoteCategory = NoteCategory 
-        self.category_id: str = str() 
-        self.completed_at: str = str() 
-        self.completed_by: User = User 
-        self.completed_by_id: str = str() 
-        self.content: str = str() 
-        self.date: str = str() 
-        self.id: str = str() 
-        self.in_reply_to: Note = Note 
-        self.in_reply_to_id: str = str() 
-        self.is_todo: bool = bool() 
-        self.metadata: typing.List = [Metadata] 
-        self.note_components: NoteComponent = NoteComponent 
-        self.note_label_links: NoteLabelLink = NoteLabelLink 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.recipients: Recipient = Recipient 
-        self.replies: Note = Note 
-        self.thread_activity: str = str() 
-        self.user_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Note:... 
+class Note(Entity):
+    in_reply_to_id: str = str() 
+    parent_type: str = str() 
+    completed_at: str = str() 
+    thread_activity: str = str() 
+    replies: Note = Note 
+    id: str = str() 
+    category: NoteCategory = NoteCategory 
+    user_id: str = str() 
+    author: BaseUser = BaseUser 
+    note_components: NoteComponent = NoteComponent 
+    content: str = str() 
+    parent_id: str = str() 
+    project_id: str = str() 
+    metadata: typing.List = [Metadata] 
+    note_label_links: NoteLabelLink = NoteLabelLink 
+    recipients: Recipient = Recipient 
+    completed_by_id: str = str() 
+    completed_by: User = User 
+    date: str = str() 
+    in_reply_to: Note = Note 
+    project: Project = Project 
+    is_todo: bool = bool() 
+    category_id: str = str() 
+    frame_number: int = int() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Note:... 
     def by_id(self, target, *ids) -> Query(Note):... 
     def by_metadata(self, target, *dictionaries) -> Query(Note):... 
     def by_name(self, target, *names) -> Query(Note):... 
     def create(self) -> Note:... 
     def create_batch(self, *attributes) -> Note:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Note:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Note:... 
     def get_all(self, projections=None) -> Note:... 
@@ -1966,20 +1975,33 @@ class Note(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Note):... 
     def not_by_name(self, target, *names) -> Query(Note):... 
 
-class NoteCategory(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.color: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.sort: int = int() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> NoteCategory:... 
+class NoteAnnotationComponent:
+    component_id: str = str() 
+    url: object 
+    component: Component = Component 
+    note: Note = Note 
+    thumbnail_url: object 
+    data: object 
+    note_id: str = str() 
+
+
+
+class NoteCategory(Entity):
+    sort: int = int() 
+    color: str = str() 
+    id: str = str() 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> NoteCategory:... 
     def by_id(self, target, *ids) -> Query(NoteCategory):... 
     def by_metadata(self, target, *dictionaries) -> Query(NoteCategory):... 
     def by_name(self, target, *names) -> Query(NoteCategory):... 
     def create(self) -> NoteCategory:... 
     def create_batch(self, *attributes) -> NoteCategory:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> NoteCategory:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> NoteCategory:... 
     def get_all(self, projections=None) -> NoteCategory:... 
@@ -1992,16 +2014,17 @@ class NoteCategory(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(NoteCategory):... 
     def not_by_name(self, target, *names) -> Query(NoteCategory):... 
 
-class NoteComponent(Component):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.component_id: str = str() 
-        self.note: Note = Note 
-        self.note_id: str = str() 
-        self.thumbnail_url: object 
-        self.url: object 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> NoteComponent:... 
+class NoteComponent(Component):
+    component_id: str = str() 
+    url: object 
+    component: Component = Component 
+    note: Note = Note 
+    note_id: str = str() 
+    thumbnail_url: object 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> NoteComponent:... 
     def by_file_type(self, target, *file_types) -> Query(NoteComponent):... 
     def by_id(self, target, *ids) -> Query(NoteComponent):... 
     def by_location(self, target, *component_locations) -> Query(NoteComponent):... 
@@ -2014,6 +2037,7 @@ class NoteComponent(Component):
     def create(self) -> NoteComponent:... 
     def create_batch(self, *attributes) -> NoteComponent:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> NoteComponent:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> NoteComponent:... 
     def get_all(self, projections=None) -> NoteComponent:... 
@@ -2032,20 +2056,22 @@ class NoteComponent(Component):
     def not_by_system_type(self, target, *system_types) -> Query(NoteComponent):... 
     def not_by_version(self, target, *versions) -> Query(NoteComponent):... 
 
-class NoteLabel(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.color: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.sort: int = int() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> NoteLabel:... 
+class NoteLabel(Entity):
+    sort: int = int() 
+    color: str = str() 
+    id: str = str() 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> NoteLabel:... 
     def by_id(self, target, *ids) -> Query(NoteLabel):... 
     def by_metadata(self, target, *dictionaries) -> Query(NoteLabel):... 
     def by_name(self, target, *names) -> Query(NoteLabel):... 
     def create(self) -> NoteLabel:... 
     def create_batch(self, *attributes) -> NoteLabel:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> NoteLabel:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> NoteLabel:... 
     def get_all(self, projections=None) -> NoteLabel:... 
@@ -2058,36 +2084,41 @@ class NoteLabel(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(NoteLabel):... 
     def not_by_name(self, target, *names) -> Query(NoteLabel):... 
 
-class NoteLabelLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.label: NoteLabel = NoteLabel 
-        self.label_id: str = str() 
-        self.note: Note = Note 
-        self.note_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> NoteLabelLink:... 
+class NoteLabelLink:
+    note: Note = Note 
+    label_id: str = str() 
+    note_id: str = str() 
+    label: NoteLabel = NoteLabel 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> NoteLabelLink:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> NoteLabelLink:... 
+
 
 class ObjectType(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.icon: str = str() 
-        self.id: str = str() 
-        self.is_leaf: bool = bool() 
-        self.is_schedulable: bool = bool() 
-        self.is_statusable: bool = bool() 
-        self.is_taskable: bool = bool() 
-        self.is_time_reportable: bool = bool() 
-        self.is_typeable: bool = bool() 
-        self.name: str = str() 
-        self.project_schemas: ProjectSchema = ProjectSchema 
-        self.sort: int = int() 
-        self.tasks: Task = Task 
+    sort: int = int() 
+    is_leaf: bool = bool() 
+    tasks: Task = Task 
+    is_typeable: bool = bool() 
+    project_schemas: ProjectSchema = ProjectSchema 
+    is_time_reportable: bool = bool() 
+    is_schedulable: bool = bool() 
+    is_prioritizable: bool = bool() 
+    is_statusable: bool = bool() 
+    is_taskable: bool = bool() 
+    icon: str = str() 
+    id: str = str() 
+    name: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ObjectType:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ObjectType:... 
     def by_id(self, target, *ids) -> Query(ObjectType):... 
     def by_metadata(self, target, *dictionaries) -> Query(ObjectType):... 
     def create(self) -> ObjectType:... 
     def create_batch(self, *attributes) -> ObjectType:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ObjectType:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> ObjectType:... 
     def get_all(self, projections=None) -> ObjectType:... 
@@ -2099,74 +2130,67 @@ class ObjectType(Entity):
     def not_by_id(self, target, *ids) -> Query(ObjectType):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(ObjectType):... 
 
-class Participant:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.conversation: Conversation = Conversation 
-        self.conversation_id: str = str() 
-        self.id: str = str() 
-        self.last_visit: str = str() 
-        self.resource: Resource = Resource 
-        self.resource_id: str = str() 
-
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Participant:... 
 
 class Priority:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.color: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.sort: int = int() 
-        self.tasks: Task = Task 
-        self.value: float = float() 
+    sort: int = int() 
+    tasks: Task = Task 
+    name: str = str() 
+    color: str = str() 
+    value: float = float() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Priority:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Priority:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Priority:... 
+
 
 class Project(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.calendar_events: CalendarEvent = CalendarEvent 
-        self.children: Context = Context 
-        self.color: str = str() 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.disk: Disk = Disk 
-        self.disk_id: str = str() 
-        self.end_date: str = str() 
-        self.full_name: str = str() 
-        self.id: str = str() 
-        self.is_global: bool = bool() 
-        self.is_private: bool = bool() 
-        self.link: str = str() 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.project_id: str = str() 
-        self.project_schema: ProjectSchema = ProjectSchema 
-        self.project_schema_id: str = str() 
-        self.review_sessions: ReviewSession = ReviewSession 
-        self.root: str = str() 
-        self.scopes: Scope = Scope 
-        self.start_date: str = str() 
-        self.status: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.timelogs: Timelog = Timelog 
-        self.user_security_role_projects: UserSecurityRoleProject = UserSecurityRoleProject 
+    created_at: str = str() 
+    managers: Manager = Manager 
+    calendar_events: CalendarEvent = CalendarEvent 
+    color: str = str() 
+    disk_id: str = str() 
+    full_name: str = str() 
+    disk: Disk = Disk 
+    children: Context = Context 
+    timelogs: Timelog = Timelog 
+    end_date: str = str() 
+    parent_id: str = str() 
+    created_by: User = User 
+    id: str = str() 
+    user_security_role_projects: UserSecurityRoleProject = UserSecurityRoleProject 
+    start_date: str = str() 
+    project_id: str = str() 
+    project_schema: ProjectSchema = ProjectSchema 
+    metadata: typing.List = [Metadata] 
+    status: str = str() 
+    scopes: Scope = Scope 
+    project_schema_id: str = str() 
+    parent: Context = Context 
+    descendants: TypedContext = TypedContext 
+    thumbnail_id: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    review_sessions: ReviewSession = ReviewSession 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    review_session_folders: ReviewSessionFolder = ReviewSessionFolder 
+    is_private: bool = bool() 
+    assets: Asset = Asset 
+    is_global: bool = bool() 
+    name: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    notes: Note = Note 
+    thumbnail: Component = Component 
+    assignments: Appointment = Appointment 
+    thumbnail_url: object 
+    allocations: Appointment = Appointment 
+    created_by_id: str = str() 
+    _link: str = str() 
+    root: str = str() 
+    context_type: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Project:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Project:... 
     def by_id(self, target, *ids) -> Query(Project):... 
     def by_lifespan(self, target, start=None, end=None) -> Query(Project):... 
     def by_metadata(self, target, *dictionaries) -> Query(Project):... 
@@ -2175,6 +2199,7 @@ class Project(Entity):
     def create(self, name, project_schema) -> Project:... 
     def create_batch(self, *attributes) -> Project:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Project:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Project:... 
     def get_all(self, projections=None) -> Project:... 
@@ -2189,32 +2214,34 @@ class Project(Entity):
     def not_by_name(self, target, *names) -> Query(Project):... 
     def not_by_status(self, target, status) -> Query(Project):... 
 
-class ProjectSchema(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._overrides: ProjectSchemaOverride = ProjectSchemaOverride 
-        self._schemas: Schema = Schema 
-        self._task_type_schema: TaskTypeSchema = TaskTypeSchema 
-        self._task_workflow: WorkflowSchema = WorkflowSchema 
-        self._version_workflow: WorkflowSchema = WorkflowSchema 
-        self.asset_version_workflow_schema: WorkflowSchema = WorkflowSchema 
-        self.asset_version_workflow_schema_id: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.object_type_schemas: Schema = Schema 
-        self.object_types: ObjectType = ObjectType 
-        self.task_templates: TaskTemplate = TaskTemplate 
-        self.task_type_schema: TaskTypeSchema = TaskTypeSchema 
-        self.task_type_schema_id: str = str() 
-        self.task_workflow_schema: WorkflowSchema = WorkflowSchema 
-        self.task_workflow_schema_id: str = str() 
-        self.task_workflow_schema_overrides: ProjectSchemaOverride = ProjectSchemaOverride 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ProjectSchema:... 
+class ProjectSchema(Entity):
+    _task_workflow: WorkflowSchema = WorkflowSchema 
+    asset_version_workflow_schema_id: str = str() 
+    _schemas: Schema = Schema 
+    task_workflow_schema_id: str = str() 
+    _overrides: ProjectSchemaOverride = ProjectSchemaOverride 
+    _task_type_schema: TaskTypeSchema = TaskTypeSchema 
+    task_workflow_schema: WorkflowSchema = WorkflowSchema 
+    object_types: ObjectType = ObjectType 
+    _version_workflow: WorkflowSchema = WorkflowSchema 
+    asset_version_workflow_schema: WorkflowSchema = WorkflowSchema 
+    id: str = str() 
+    task_workflow_schema_overrides: ProjectSchemaOverride = ProjectSchemaOverride 
+    task_type_schema_id: str = str() 
+    task_type_schema: TaskTypeSchema = TaskTypeSchema 
+    task_templates: TaskTemplate = TaskTemplate 
+    object_type_schemas: Schema = Schema 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ProjectSchema:... 
     def by_id(self, target, *ids) -> Query(ProjectSchema):... 
     def by_metadata(self, target, *dictionaries) -> Query(ProjectSchema):... 
     def create(self) -> ProjectSchema:... 
     def create_batch(self, *attributes) -> ProjectSchema:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ProjectSchema:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> ProjectSchema:... 
     def get_all(self, projections=None) -> ProjectSchema:... 
@@ -2226,40 +2253,46 @@ class ProjectSchema(Entity):
     def not_by_id(self, target, *ids) -> Query(ProjectSchema):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(ProjectSchema):... 
 
-class ProjectSchemaObjectType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.project_schema: ProjectSchema = ProjectSchema 
-        self.project_schema_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ProjectSchemaObjectType:... 
+class ProjectSchemaObjectType:
+    object_type: ObjectType = ObjectType 
+    project_schema_id: str = str() 
+    project_schema: ProjectSchema = ProjectSchema 
+    object_type_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ProjectSchemaObjectType:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ProjectSchemaObjectType:... 
+
 
 class ProjectSchemaOverride:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.project_schema_id: str = str() 
-        self.type_id: str = str() 
-        self.workflow_schema: WorkflowSchema = WorkflowSchema 
-        self.workflow_schema_id: str = str() 
+    project_schema_id: str = str() 
+    workflow_schema_id: str = str() 
+    workflow_schema: WorkflowSchema = WorkflowSchema 
+    id: str = str() 
+    type_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ProjectSchemaOverride:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ProjectSchemaOverride:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ProjectSchemaOverride:... 
+
 
 class Recipient(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.note: Note = Note 
-        self.note_id: str = str() 
-        self.recipient: Resource = Resource 
-        self.resource_id: str = str() 
-        self.text_mentioned: str = str() 
-        self.user: User = User 
+    note_id: str = str() 
+    resource_id: str = str() 
+    text_mentioned: str = str() 
+    note: Note = Note 
+    user: User = User 
+    recipient: Resource = Resource 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Recipient:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Recipient:... 
     def by_id(self, target, *ids) -> Query(Recipient):... 
     def by_metadata(self, target, *dictionaries) -> Query(Recipient):... 
     def create(self) -> Recipient:... 
     def create_batch(self, *attributes) -> Recipient:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Recipient:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Recipient:... 
     def get_all(self, projections=None) -> Recipient:... 
@@ -2271,21 +2304,23 @@ class Recipient(Entity):
     def not_by_id(self, target, *ids) -> Query(Recipient):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Recipient):... 
 
-class Resource(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assignments: Appointment = Appointment 
-        self.dashboard_resources: DashboardResource = DashboardResource 
-        self.id: str = str() 
-        self.resource_type: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Resource:... 
+class Resource(Entity):
+    assignments: Appointment = Appointment 
+    dashboard_resources: DashboardResource = DashboardResource 
+    appointments: Appointment = Appointment 
+    allocations: Appointment = Appointment 
+    id: str = str() 
+    resource_type: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Resource:... 
     def by_id(self, target, *ids) -> Query(Resource):... 
     def by_metadata(self, target, *dictionaries) -> Query(Resource):... 
     def create(self) -> Resource:... 
     def create_batch(self, *attributes) -> Resource:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Resource:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Resource:... 
     def get_all(self, projections=None) -> Resource:... 
@@ -2297,38 +2332,42 @@ class Resource(Entity):
     def not_by_id(self, target, *ids) -> Query(Resource):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Resource):... 
 
-class ReviewSession(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.availability: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.is_moderated: bool = bool() 
-        self.is_open: bool = bool() 
-        self.name: str = str() 
-        self.passphrase: str = str() 
-        self.passphrase_enabled: bool = bool() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.review_session_invitees: ReviewSessionInvitee = ReviewSessionInvitee 
-        self.review_session_objects: ReviewSessionObject = ReviewSessionObject 
-        self.settings: EntitySetting = EntitySetting 
-        self.shareable_url_enabled: bool = bool() 
-        self.start_date: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ReviewSession:... 
+class ReviewSession(Entity):
+    passphrase_enabled: bool = bool() 
+    is_open: bool = bool() 
+    review_session_folder: ReviewSessionFolder = ReviewSessionFolder 
+    passphrase: str = str() 
+    id: str = str() 
+    shareable_url_enabled: bool = bool() 
+    review_session_invitees: ReviewSessionInvitee = ReviewSessionInvitee 
+    created_by: User = User 
+    availability: str = str() 
+    project_id: str = str() 
+    start_date: str = str() 
+    description: str = str() 
+    end_date: str = str() 
+    thumbnail_id: str = str() 
+    review_session_folder_id: str = str() 
+    name: str = str() 
+    review_session_objects: ReviewSessionObject = ReviewSessionObject 
+    settings: EntitySetting = EntitySetting 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    thumbnail_url: object 
+    is_moderated: bool = bool() 
+    created_by_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ReviewSession:... 
     def by_id(self, target, *ids) -> Query(ReviewSession):... 
     def by_metadata(self, target, *dictionaries) -> Query(ReviewSession):... 
     def by_name(self, target, *names) -> Query(ReviewSession):... 
     def create(self, name, project_schema) -> ReviewSession:... 
     def create_batch(self, *attributes) -> ReviewSession:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ReviewSession:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> ReviewSession:... 
     def get_all(self, projections=None) -> ReviewSession:... 
@@ -2341,26 +2380,39 @@ class ReviewSession(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(ReviewSession):... 
     def not_by_name(self, target, *names) -> Query(ReviewSession):... 
 
-class ReviewSessionInvitee(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.created_from_shared_url: bool = bool() 
-        self.email: str = str() 
-        self.id: str = str() 
-        self.last_sent_at: str = str() 
-        self.name: str = str() 
-        self.review_session: ReviewSession = ReviewSession 
-        self.review_session_id: str = str() 
-        self.statuses: ReviewSessionObjectStatus = ReviewSessionObjectStatus 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ReviewSessionInvitee:... 
+class ReviewSessionFolder:
+    project: Project = Project 
+    id: str = str() 
+    project_id: str = str() 
+    name: str = str() 
+    review_sessions: ReviewSession = ReviewSession 
+
+
+
+class ReviewSessionInvitee(Entity):
+    created_from_shared_url: bool = bool() 
+    resource: Resource = Resource 
+    name: str = str() 
+    resource_id: str = str() 
+    created_at: str = str() 
+    created_by: User = User 
+    id: str = str() 
+    review_session_id: str = str() 
+    last_sent_at: str = str() 
+    created_by_id: str = str() 
+    email: str = str() 
+    statuses: ReviewSessionObjectStatus = ReviewSessionObjectStatus 
+    review_session: ReviewSession = ReviewSession 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ReviewSessionInvitee:... 
     def by_id(self, target, *ids) -> Query(ReviewSessionInvitee):... 
     def by_metadata(self, target, *dictionaries) -> Query(ReviewSessionInvitee):... 
     def create(self) -> ReviewSessionInvitee:... 
     def create_batch(self, *attributes) -> ReviewSessionInvitee:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ReviewSessionInvitee:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> ReviewSessionInvitee:... 
     def get_all(self, projections=None) -> ReviewSessionInvitee:... 
@@ -2372,27 +2424,30 @@ class ReviewSessionInvitee(Entity):
     def not_by_id(self, target, *ids) -> Query(ReviewSessionInvitee):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(ReviewSessionInvitee):... 
 
-class ReviewSessionObject(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.asset_version: AssetVersion = AssetVersion 
-        self.created_at: str = str() 
-        self.description: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.review_session: ReviewSession = ReviewSession 
-        self.review_session_id: str = str() 
-        self.sort_order: float = float() 
-        self.statuses: ReviewSessionObjectStatus = ReviewSessionObjectStatus 
-        self.version: str = str() 
-        self.version_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ReviewSessionObject:... 
+class ReviewSessionObject(Entity):
+    name: str = str() 
+    created_at: str = str() 
+    description: str = str() 
+    version_id: str = str() 
+    id: str = str() 
+    review_session_id: str = str() 
+    version: str = str() 
+    notes: Note = Note 
+    asset_version: AssetVersion = AssetVersion 
+    sort_order: float = float() 
+    annotations: ReviewSessionObjectAnnotation = ReviewSessionObjectAnnotation 
+    statuses: ReviewSessionObjectStatus = ReviewSessionObjectStatus 
+    review_session: ReviewSession = ReviewSession 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ReviewSessionObject:... 
     def by_id(self, target, *ids) -> Query(ReviewSessionObject):... 
     def by_metadata(self, target, *dictionaries) -> Query(ReviewSessionObject):... 
     def create(self) -> ReviewSessionObject:... 
     def create_batch(self, *attributes) -> ReviewSessionObject:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ReviewSessionObject:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> ReviewSessionObject:... 
     def get_all(self, projections=None) -> ReviewSessionObject:... 
@@ -2404,22 +2459,48 @@ class ReviewSessionObject(Entity):
     def not_by_id(self, target, *ids) -> Query(ReviewSessionObject):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(ReviewSessionObject):... 
 
-class ReviewSessionObjectStatus(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.created_at: str = str() 
-        self.id: str = str() 
-        self.invitee: ReviewSessionInvitee = ReviewSessionInvitee 
-        self.review_session_invitee_id: str = str() 
-        self.review_session_object: ReviewSessionObject = ReviewSessionObject 
-        self.review_session_object_id: str = str() 
-        self.status: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> ReviewSessionObjectStatus:... 
+class ReviewSessionObjectAnnotation:
+    created_at: str = str() 
+    review_session_object_id: str = str() 
+    updated_at: str = str() 
+    id: str = str() 
+    review_session_object: ReviewSessionObject = ReviewSessionObject 
+    data: str = str() 
+    frame_number: int = int() 
+
+
+
+class ReviewSessionObjectAnnotationComponent:
+    component_id: str = str() 
+    url: object 
+    review_session_object_id: str = str() 
+    component: Component = Component 
+    thumbnail_url: object 
+    review_session_object: ReviewSessionObject = ReviewSessionObject 
+    frame_number: str = str() 
+
+
+
+class ReviewSessionObjectStatus(Entity):
+    status: str = str() 
+    review_session_object_id: str = str() 
+    resource: Resource = Resource 
+    resource_id: str = str() 
+    created_at: str = str() 
+    invitee: ReviewSessionInvitee = ReviewSessionInvitee 
+    review_session_object: ReviewSessionObject = ReviewSessionObject 
+    review_session_invitee_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> ReviewSessionObjectStatus:... 
     def by_id(self, target, *ids) -> Query(ReviewSessionObjectStatus):... 
     def by_metadata(self, target, *dictionaries) -> Query(ReviewSessionObjectStatus):... 
     def create(self) -> ReviewSessionObjectStatus:... 
     def create_batch(self, *attributes) -> ReviewSessionObjectStatus:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> ReviewSessionObjectStatus:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> ReviewSessionObjectStatus:... 
     def get_all(self, projections=None) -> ReviewSessionObjectStatus:... 
@@ -2431,55 +2512,159 @@ class ReviewSessionObjectStatus(Entity):
     def not_by_id(self, target, *ids) -> Query(ReviewSessionObjectStatus):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(ReviewSessionObjectStatus):... 
 
-class Schema:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.object_type_id: str = str() 
-        self.project_schema_id: str = str() 
-        self.statuses: SchemaStatus = SchemaStatus 
-        self.type_id: str = str() 
-        self.types: SchemaType = SchemaType 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Schema:... 
+class Scene(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Scene:... 
+    def by_assignee(self, target, *assignees) -> Query(Scene):... 
+    def by_id(self, target, *ids) -> Query(Scene):... 
+    def by_incoming_link(self, target, *ids) -> Query(Scene):... 
+    def by_lifespan(self, target, start=None, end=None) -> Query(Scene):... 
+    def by_metadata(self, target, *dictionaries) -> Query(Scene):... 
+    def by_name(self, target, *names) -> Query(Scene):... 
+    def by_outgoing_link(self, target, *ids) -> Query(Scene):... 
+    def by_state(self, target, *states) -> Query(Scene):... 
+    def by_status(self, target, *statuses) -> Query(Scene):... 
+    def by_status_change_time(self, target, start=None, end=None) -> Query(Scene):... 
+    def by_type(self, target, *types) -> Query(Scene):... 
+    def create(self) -> Scene:... 
+    def create_batch(self, *attributes) -> Scene:... 
+    def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Scene:... 
+    def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
+    def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Scene:... 
+    def get_all(self, projections=None) -> Scene:... 
+    def get_first(self, projections=None) -> Scene:... 
+    def get_inputs(self, projections=None) -> Scene:... 
+    def get_one(self, projections=None) -> Scene:... 
+    def get_outputs(self, projections=None) -> Scene:... 
+    def inject(self, filter) -> Query(Scene):... 
+    def link_inputs(self, entity_collection) -> Scene:... 
+    def link_outputs(self, entity_collection) -> Scene:... 
+    def not_by_assignee(self, target, *assignees) -> Query(Scene):... 
+    def not_by_id(self, target, *ids) -> Query(Scene):... 
+    def not_by_incoming_link(self, target, *ids) -> Query(Scene):... 
+    def not_by_lifespan(self, target, start=None, end=None) -> Query(Scene):... 
+    def not_by_metadata(self, target, *dictionaries) -> Query(Scene):... 
+    def not_by_name(self, target, *names) -> Query(Scene):... 
+    def not_by_outgoing_link(self, target, *ids) -> Query(Scene):... 
+    def not_by_state(self, target, *states) -> Query(Scene):... 
+    def not_by_status(self, target, *statuses) -> Query(Scene):... 
+    def not_by_status_change_time(self, target, start=None, end=None) -> Query(Scene):... 
+    def not_by_type(self, target, *types) -> Query(Scene):... 
+    def unlink_inputs(self, entity_collection) -> Scene:... 
+    def unlink_outputs(self, entity_collection) -> Scene:... 
+
+
+class Schema:
+    project_schema_id: str = str() 
+    type_id: str = str() 
+    statuses: SchemaStatus = SchemaStatus 
+    object_type_id: str = str() 
+    id: str = str() 
+    types: SchemaType = SchemaType 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Schema:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Schema:... 
+
 
 class SchemaStatus:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.schema_id: str = str() 
-        self.sort: int = int() 
-        self.status_id: str = str() 
-        self.task_status: Status = Status 
+    sort: int = int() 
+    schema_id: str = str() 
+    task_status: Status = Status 
+    status_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> SchemaStatus:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> SchemaStatus:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> SchemaStatus:... 
+
 
 class SchemaType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.schema_id: str = str() 
-        self.sort: int = int() 
-        self.task_type: Type = Type 
-        self.type_id: str = str() 
+    sort: int = int() 
+    schema_id: str = str() 
+    task_type: Type = Type 
+    type_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> SchemaType:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> SchemaType:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> SchemaType:... 
+
 
 class Scope:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
+    name: str = str() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Scope:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Scope:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Scope:... 
+
 
 class SecurityRole(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.type: str = str() 
-        self.user_security_roles: UserSecurityRole = UserSecurityRole 
+    user_security_roles: UserSecurityRole = UserSecurityRole 
+    type: str = str() 
+    id: str = str() 
+    name: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> SecurityRole:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> SecurityRole:... 
     def by_id(self, target, *ids) -> Query(SecurityRole):... 
     def by_metadata(self, target, *dictionaries) -> Query(SecurityRole):... 
     def create(self) -> SecurityRole:... 
     def create_batch(self, *attributes) -> SecurityRole:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> SecurityRole:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> SecurityRole:... 
     def get_all(self, projections=None) -> SecurityRole:... 
@@ -2491,58 +2676,61 @@ class SecurityRole(Entity):
     def not_by_id(self, target, *ids) -> Query(SecurityRole):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(SecurityRole):... 
 
-class Sequence(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Sequence:... 
+class Sequence(TypedContext):
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Sequence:... 
     def by_assignee(self, target, *assignees) -> Query(Sequence):... 
     def by_id(self, target, *ids) -> Query(Sequence):... 
     def by_incoming_link(self, target, *ids) -> Query(Sequence):... 
@@ -2557,6 +2745,7 @@ class Sequence(TypedContext):
     def create(self, name) -> Sequence:... 
     def create_batch(self, *attributes) -> Sequence:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Sequence:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Sequence:... 
     def get_all(self, projections=None) -> Sequence:... 
@@ -2581,98 +2770,107 @@ class Sequence(TypedContext):
     def unlink_inputs(self, entity_collection) -> Sequence:... 
     def unlink_outputs(self, entity_collection) -> Sequence:... 
 
-class SequenceComponent:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component_locations: ComponentLocation = ComponentLocation 
-        self.container: ContainerComponent = ContainerComponent 
-        self.container_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.file_type: str = str() 
-        self.id: str = str() 
-        self.members: Component = Component 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.padding: int = int() 
-        self.size: int = int() 
-        self.system_type: str = str() 
-        self.version: AssetVersion = AssetVersion 
-        self.version_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> SequenceComponent:... 
+class SequenceComponent:
+    container: ContainerComponent = ContainerComponent 
+    name: str = str() 
+    component_locations: ComponentLocation = ComponentLocation 
+    file_type: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    container_id: str = str() 
+    version_id: str = str() 
+    padding: int = int() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    version: AssetVersion = AssetVersion 
+    system_type: str = str() 
+    members: Component = Component 
+    size: int = int() 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> SequenceComponent:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> SequenceComponent:... 
+
 
 class Setting:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.group: str = str() 
-        self.name: str = str() 
-        self.value: str = str() 
+    group: str = str() 
+    name: str = str() 
+    value: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Setting:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Setting:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Setting:... 
+
 
 class SettingComponent:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.component: Component = Component 
-        self.component_id: str = str() 
-        self.group: str = str() 
-        self.name: str = str() 
-        self.setting: Setting = Setting 
-        self.thumbnail_url: object 
-        self.url: object 
+    component_id: str = str() 
+    group: str = str() 
+    name: str = str() 
+    url: object 
+    component: Component = Component 
+    setting: Setting = Setting 
+    thumbnail_url: object 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> SettingComponent:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> SettingComponent:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> SettingComponent:... 
+
 
 class Shot(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Shot:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Shot:... 
     def by_assignee(self, target, *assignees) -> Query(Shot):... 
     def by_id(self, target, *ids) -> Query(Shot):... 
     def by_incoming_link(self, target, *ids) -> Query(Shot):... 
@@ -2687,6 +2885,7 @@ class Shot(TypedContext):
     def create(self, name) -> Shot:... 
     def create_batch(self, *attributes) -> Shot:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Shot:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Shot:... 
     def get_all(self, projections=None) -> Shot:... 
@@ -2711,18 +2910,30 @@ class Shot(TypedContext):
     def unlink_inputs(self, entity_collection) -> Shot:... 
     def unlink_outputs(self, entity_collection) -> Shot:... 
 
-class State(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.short: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> State:... 
+class SplitTaskPart:
+    task: Task = Task 
+    end_date: str = str() 
+    task_id: str = str() 
+    label: str = str() 
+    id: str = str() 
+    start_date: str = str() 
+
+
+
+class State(Entity):
+    short: str = str() 
+    id: str = str() 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> State:... 
     def by_id(self, target, *ids) -> Query(State):... 
     def by_metadata(self, target, *dictionaries) -> Query(State):... 
     def create(self) -> State:... 
     def create_batch(self, *attributes) -> State:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> State:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> State:... 
     def get_all(self, projections=None) -> State:... 
@@ -2734,23 +2945,25 @@ class State(Entity):
     def not_by_id(self, target, *ids) -> Query(State):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(State):... 
 
-class Status(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.color: str = str() 
-        self.id: str = str() 
-        self.is_active: bool = bool() 
-        self.name: str = str() 
-        self.sort: int = int() 
-        self.state: State = State 
-        self.tasks: Task = Task 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Status:... 
+class Status(Entity):
+    sort: int = int() 
+    tasks: Task = Task 
+    name: str = str() 
+    color: str = str() 
+    is_active: bool = bool() 
+    state: State = State 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Status:... 
     def by_id(self, target, *ids) -> Query(Status):... 
     def by_metadata(self, target, *dictionaries) -> Query(Status):... 
     def by_name(self, target, *names) -> Query(Status):... 
     def create(self) -> Status:... 
     def create_batch(self, *attributes) -> Status:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Status:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Status:... 
     def get_all(self, projections=None) -> Status:... 
@@ -2763,73 +2976,100 @@ class Status(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Status):... 
     def not_by_name(self, target, *names) -> Query(Status):... 
 
-class StatusChange:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.date: str = str() 
-        self.from_status: Status = Status 
-        self.from_status_id: str = str() 
-        self.id: str = str() 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.status: Status = Status 
-        self.status_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> StatusChange:... 
+class StatusChange:
+    status: Status = Status 
+    user_id: str = str() 
+    status_id: str = str() 
+    parent_type: str = str() 
+    parent_id: str = str() 
+    user: User = User 
+    from_status: Status = Status 
+    date: str = str() 
+    from_status_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> StatusChange:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> StatusChange:... 
+
+
+class StatusRule:
+    status: Status = Status 
+    status_rule_group_id: str = str() 
+    id: str = str() 
+    status_rule_group: StatusRuleGroup = StatusRuleGroup 
+    status_id: str = str() 
+
+
+
+class StatusRuleGroup:
+    status: Status = Status 
+    status_rules: StatusRule = StatusRule 
+    entity_type: str = str() 
+    status_id: str = str() 
+    role_id: str = str() 
+    schema_id: str = str() 
+    role: SecurityRole = SecurityRole 
+    id: str = str() 
+    schema: ProjectSchema = ProjectSchema 
+
+
 
 class Task(TypedContext):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
+    status: Status = Status 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    _link: str = str() 
+    incoming_links: TypedContextLink = TypedContextLink 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    parent: Context = Context 
+    assignments: Appointment = Appointment 
+    descendants: TypedContext = TypedContext 
+    created_by: User = User 
+    children: Context = Context 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    start_date: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    thumbnail: Component = Component 
+    metadata: typing.List = [Metadata] 
+    sort: float = float() 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    end_date: str = str() 
+    status_id: str = str() 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    name: str = str() 
+    assets: Asset = Asset 
+    context_type: str = str() 
+    created_at: str = str() 
+    thumbnail_source_id: str = str() 
+    project: Project = Project 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Task:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Task:... 
     def by_assignee(self, target, *assignees) -> Query(Task):... 
     def by_id(self, target, *ids) -> Query(Task):... 
     def by_incoming_link(self, target, *ids) -> Query(Task):... 
@@ -2844,6 +3084,7 @@ class Task(TypedContext):
     def create(self, name, task_type) -> Task:... 
     def create_batch(self, *attributes) -> Task:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Task:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Task:... 
     def get_all(self, projections=None) -> Task:... 
@@ -2868,38 +3109,44 @@ class Task(TypedContext):
     def unlink_inputs(self, entity_collection) -> Task:... 
     def unlink_outputs(self, entity_collection) -> Task:... 
 
-class TaskTemplate:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.items: TaskTemplateItem = TaskTemplateItem 
-        self.name: str = str() 
-        self.project_schema: ProjectSchema = ProjectSchema 
-        self.project_schema_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> TaskTemplate:... 
+class TaskTemplate:
+    items: TaskTemplateItem = TaskTemplateItem 
+    project_schema_id: str = str() 
+    project_schema: ProjectSchema = ProjectSchema 
+    name: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> TaskTemplate:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> TaskTemplate:... 
+
 
 class TaskTemplateItem:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.task_type: Type = Type 
-        self.task_type_id: str = str() 
-        self.template: TaskTemplate = TaskTemplate 
-        self.template_id: str = str() 
+    task_type: Type = Type 
+    template_id: str = str() 
+    id: str = str() 
+    task_type_id: str = str() 
+    template: TaskTemplate = TaskTemplate 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> TaskTemplateItem:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> TaskTemplateItem:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> TaskTemplateItem:... 
+
 
 class TaskTypeSchema(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.types: Type = Type 
+    id: str = str() 
+    types: Type = Type 
+    name: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> TaskTypeSchema:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> TaskTypeSchema:... 
     def by_id(self, target, *ids) -> Query(TaskTypeSchema):... 
     def by_metadata(self, target, *dictionaries) -> Query(TaskTypeSchema):... 
     def create(self) -> TaskTypeSchema:... 
     def create_batch(self, *attributes) -> TaskTypeSchema:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> TaskTypeSchema:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> TaskTypeSchema:... 
     def get_all(self, projections=None) -> TaskTypeSchema:... 
@@ -2911,27 +3158,30 @@ class TaskTypeSchema(Entity):
     def not_by_id(self, target, *ids) -> Query(TaskTypeSchema):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(TaskTypeSchema):... 
 
-class TaskTypeSchemaType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.task_type_schema_id: str = str() 
-        self.type_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> TaskTypeSchemaType:... 
+class TaskTypeSchemaType:
+    task_type_schema_id: str = str() 
+    type_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> TaskTypeSchemaType:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> TaskTypeSchemaType:... 
+
 
 class Timelog(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.comment: str = str() 
-        self.context: Context = Context 
-        self.context_id: str = str() 
-        self.duration: float = float() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.start: str = str() 
-        self.time_zone_offset: float = float() 
-        self.user: User = User 
-        self.user_id: str = str() 
+    comment: str = str() 
+    time_zone_offset: float = float() 
+    user_id: str = str() 
+    name: str = str() 
+    context_id: str = str() 
+    start: str = str() 
+    user: User = User 
+    context: Context = Context 
+    duration: float = float() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Timelog:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Timelog:... 
     def by_id(self, target, *ids) -> Query(Timelog):... 
     def by_lifespan(self, target, start=None, end=None) -> Query(Timelog):... 
     def by_metadata(self, target, *dictionaries) -> Query(Timelog):... 
@@ -2939,6 +3189,7 @@ class Timelog(Entity):
     def create(self) -> Timelog:... 
     def create_batch(self, *attributes) -> Timelog:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Timelog:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Timelog:... 
     def get_all(self, projections=None) -> Timelog:... 
@@ -2952,35 +3203,39 @@ class Timelog(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(Timelog):... 
     def not_by_name(self, target, *names) -> Query(Timelog):... 
 
-class Timer:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.comment: str = str() 
-        self.context: Context = Context 
-        self.context_id: str = str() 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.start: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Timer:... 
+class Timer:
+    comment: str = str() 
+    user_id: str = str() 
+    name: str = str() 
+    context_id: str = str() 
+    start: str = str() 
+    user: User = User 
+    context: Context = Context 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Timer:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Timer:... 
+
 
 class Type(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.color: str = str() 
-        self.id: str = str() 
-        self.is_billable: bool = bool() 
-        self.name: str = str() 
-        self.sort: int = int() 
-        self.task_type_schemas: TaskTypeSchema = TaskTypeSchema 
-        self.tasks: Task = Task 
+    sort: int = int() 
+    tasks: Task = Task 
+    name: str = str() 
+    task_type_schemas: TaskTypeSchema = TaskTypeSchema 
+    color: str = str() 
+    is_billable: bool = bool() 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> Type:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> Type:... 
     def by_id(self, target, *ids) -> Query(Type):... 
     def by_metadata(self, target, *dictionaries) -> Query(Type):... 
     def create(self) -> Type:... 
     def create_batch(self, *attributes) -> Type:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> Type:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> Type:... 
     def get_all(self, projections=None) -> Type:... 
@@ -2992,58 +3247,61 @@ class Type(Entity):
     def not_by_id(self, target, *ids) -> Query(Type):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(Type):... 
 
-class TypedContext(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self._link: str = str() 
-        self.allocations: Appointment = Appointment 
-        self.ancestors: TypedContext = TypedContext 
-        self.appointments: Appointment = Appointment 
-        self.assets: Asset = Asset 
-        self.assignments: Appointment = Appointment 
-        self.bid: float = float() 
-        self.bid_time_logged_difference: float = float() 
-        self.children: Context = Context 
-        self.context_type: str = str() 
-        self.created_at: str = str() 
-        self.created_by: User = User 
-        self.created_by_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.descendants: TypedContext = TypedContext 
-        self.description: str = str() 
-        self.end_date: str = str() 
-        self.id: str = str() 
-        self.incoming_links: TypedContextLink = TypedContextLink 
-        self.link: str = str() 
-        self.lists: TypedContextList = TypedContextList 
-        self.managers: Manager = Manager 
-        self.metadata: typing.List = [Metadata] 
-        self.name: str = str() 
-        self.notes: Note = Note 
-        self.object_type: ObjectType = ObjectType 
-        self.object_type_id: str = str() 
-        self.outgoing_links: TypedContextLink = TypedContextLink 
-        self.parent: Context = Context 
-        self.parent_id: str = str() 
-        self.priority: Priority = Priority 
-        self.priority_id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.scopes: Scope = Scope 
-        self.sort: float = float() 
-        self.start_date: str = str() 
-        self.status: Status = Status 
-        self.status_changes: StatusChange = StatusChange 
-        self.status_id: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.time_logged: float = float() 
-        self.timelogs: Timelog = Timelog 
-        self.type: Type = Type 
-        self.type_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> TypedContext:... 
+class TypedContext(Entity):
+    sort: float = float() 
+    managers: Manager = Manager 
+    type_id: str = str() 
+    priority_id: str = str() 
+    status_changes: StatusChange = StatusChange 
+    created_by: User = User 
+    incoming_links: TypedContextLink = TypedContextLink 
+    thumbnail_source_id: str = str() 
+    children: Context = Context 
+    timelogs: Timelog = Timelog 
+    ancestors: TypedContext = TypedContext 
+    end_date: str = str() 
+    status_id: str = str() 
+    _link: str = str() 
+    id: str = str() 
+    priority: Priority = Priority 
+    parent_id: str = str() 
+    project_id: str = str() 
+    type: Type = Type 
+    start_date: str = str() 
+    metadata: typing.List = [Metadata] 
+    status: Status = Status 
+    scopes: Scope = Scope 
+    object_type: ObjectType = ObjectType 
+    description: str = str() 
+    parent: Context = Context 
+    descendants: TypedContext = TypedContext 
+    thumbnail_id: str = str() 
+    bid: float = float() 
+    context_type: str = str() 
+    lists: TypedContextList = TypedContextList 
+    appointments: Appointment = Appointment 
+    link: str = str() 
+    time_logged: float = float() 
+    bid_time_logged_difference: float = float() 
+    assets: Asset = Asset 
+    name: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    created_at: str = str() 
+    thumbnail: Component = Component 
+    project: Project = Project 
+    assignments: Appointment = Appointment 
+    thumbnail_url: object 
+    split_parts: SplitTaskPart = SplitTaskPart 
+    object_type_id: str = str() 
+    created_by_id: str = str() 
+    outgoing_links: TypedContextLink = TypedContextLink 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    notes: Note = Note 
+    allocations: Appointment = Appointment 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> TypedContext:... 
     def by_assignee(self, target, *assignees) -> Query(TypedContext):... 
     def by_id(self, target, *ids) -> Query(TypedContext):... 
     def by_incoming_link(self, target, *ids) -> Query(TypedContext):... 
@@ -3058,6 +3316,7 @@ class TypedContext(Entity):
     def create(self) -> TypedContext:... 
     def create_batch(self, *attributes) -> TypedContext:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> TypedContext:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> TypedContext:... 
     def get_all(self, projections=None) -> TypedContext:... 
@@ -3082,21 +3341,25 @@ class TypedContext(Entity):
     def unlink_inputs(self, entity_collection) -> TypedContext:... 
     def unlink_outputs(self, entity_collection) -> TypedContext:... 
 
-class TypedContextLink(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.from: TypedContext = TypedContext 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.metadata: typing.List = [Metadata] 
-        self.to: TypedContext = TypedContext 
-        self.to_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> TypedContextLink:... 
+class TypedContextLink(Entity):
+    from: TypedContext = TypedContext 
+    lag: float = float() 
+    to_id: str = str() 
+    to: TypedContext = TypedContext 
+    from_id: str = str() 
+    type: str = str() 
+    id: str = str() 
+    metadata: typing.List = [Metadata] 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> TypedContextLink:... 
     def by_id(self, target, *ids) -> Query(TypedContextLink):... 
     def by_metadata(self, target, *dictionaries) -> Query(TypedContextLink):... 
     def create(self) -> TypedContextLink:... 
     def create_batch(self, *attributes) -> TypedContextLink:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> TypedContextLink:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> TypedContextLink:... 
     def get_all(self, projections=None) -> TypedContextLink:... 
@@ -3108,30 +3371,32 @@ class TypedContextLink(Entity):
     def not_by_id(self, target, *ids) -> Query(TypedContextLink):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(TypedContextLink):... 
 
-class TypedContextList(List):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.category: ListCategory = ListCategory 
-        self.category_id: str = str() 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.date: str = str() 
-        self.id: str = str() 
-        self.is_open: bool = bool() 
-        self.items: Task = Task 
-        self.name: str = str() 
-        self.owner: User = User 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.system_type: str = str() 
-        self.user_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> TypedContextList:... 
+class TypedContextList(List):
+    category: ListCategory = ListCategory 
+    project_id: str = str() 
+    user_id: str = str() 
+    name: str = str() 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    items: Task = Task 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    project: Project = Project 
+    owner: User = User 
+    is_open: bool = bool() 
+    system_type: str = str() 
+    date: str = str() 
+    category_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> TypedContextList:... 
     def by_id(self, target, *ids) -> Query(TypedContextList):... 
     def by_metadata(self, target, *dictionaries) -> Query(TypedContextList):... 
     def by_name(self, target, *names) -> Query(TypedContextList):... 
     def create(self) -> TypedContextList:... 
     def create_batch(self, *attributes) -> TypedContextList:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> TypedContextList:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> TypedContextList:... 
     def get_all(self, projections=None) -> TypedContextList:... 
@@ -3144,51 +3409,69 @@ class TypedContextList(List):
     def not_by_metadata(self, target, *dictionaries) -> Query(TypedContextList):... 
     def not_by_name(self, target, *names) -> Query(TypedContextList):... 
 
-class TypedContextStatusChange:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.date: str = str() 
-        self.from_status: Status = Status 
-        self.from_status_id: str = str() 
-        self.id: str = str() 
-        self.parent: TypedContext = TypedContext 
-        self.parent_id: str = str() 
-        self.parent_type: str = str() 
-        self.status: Status = Status 
-        self.status_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> TypedContextStatusChange:... 
+class TypedContextStatusChange:
+    status: Status = Status 
+    user_id: str = str() 
+    parent: TypedContext = TypedContext 
+    status_id: str = str() 
+    parent_type: str = str() 
+    parent_id: str = str() 
+    user: User = User 
+    from_status: Status = Status 
+    date: str = str() 
+    from_status_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> TypedContextStatusChange:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> TypedContextStatusChange:... 
+
+
+class TypedContextStatusRuleGroup:
+    status: Status = Status 
+    status_id: str = str() 
+    status_rules: StatusRule = StatusRule 
+    entity_type: str = str() 
+    object_type: ObjectType = ObjectType 
+    role_id: str = str() 
+    schema_id: str = str() 
+    role: SecurityRole = SecurityRole 
+    object_type_id: str = str() 
+    id: str = str() 
+    schema: ProjectSchema = ProjectSchema 
+
+
 
 class User(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.allocations: Appointment = Appointment 
-        self.appointments: Appointment = Appointment 
-        self.assignments: Appointment = Appointment 
-        self.custom_attribute_links: typing.List = [CustomAttributeLink] 
-        self.custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
-        self.dashboard_resources: DashboardResource = DashboardResource 
-        self.email: str = str() 
-        self.first_name: str = str() 
-        self.id: str = str() 
-        self.is_active: bool = bool() 
-        self.is_otp_enabled: bool = bool() 
-        self.is_totp_enabled: bool = bool() 
-        self.last_name: str = str() 
-        self.memberships: Membership = Membership 
-        self.metadata: typing.List = [Metadata] 
-        self.require_details_update: bool = bool() 
-        self.resource_type: str = str() 
-        self.thumbnail: Component = Component 
-        self.thumbnail_id: str = str() 
-        self.thumbnail_url: object 
-        self.timelogs: Timelog = Timelog 
-        self.user_security_roles: UserSecurityRole = UserSecurityRole 
-        self.user_type: UserType = UserType 
-        self.user_type_id:  =  
-        self.username: str = str() 
+    last_name: str = str() 
+    user_type: UserType = UserType 
+    user_type_id: str = str() 
+    id: str = str() 
+    timelogs: Timelog = Timelog 
+    is_otp_enabled: bool = bool() 
+    assignments: Appointment = Appointment 
+    require_details_update: bool = bool() 
+    email: str = str() 
+    metadata: typing.List = [Metadata] 
+    username: str = str() 
+    user_security_roles: UserSecurityRole = UserSecurityRole 
+    thumbnail_id: str = str() 
+    custom_attribute_links_from: typing.List = [CustomAttributeLinkFrom] 
+    is_active: bool = bool() 
+    first_name: str = str() 
+    dashboard_resources: DashboardResource = DashboardResource 
+    appointments: Appointment = Appointment 
+    custom_attribute_links: typing.List = [CustomAttributeLink] 
+    thumbnail: Component = Component 
+    memberships: Membership = Membership 
+    is_totp_enabled: bool = bool() 
+    thumbnail_url: object 
+    allocations: Appointment = Appointment 
+    resource_type: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> User:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> User:... 
     def by_active_state(self, target, *states) -> Query(User):... 
     def by_id(self, target, *ids) -> Query(User):... 
     def by_metadata(self, target, *dictionaries) -> Query(User):... 
@@ -3196,6 +3479,7 @@ class User(Entity):
     def create(self) -> User:... 
     def create_batch(self, *attributes) -> User:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> User:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> User:... 
     def get_all(self, projections=None) -> User:... 
@@ -3209,65 +3493,77 @@ class User(Entity):
     def not_by_metadata(self, target, *dictionaries) -> Query(User):... 
     def not_by_name(self, target, *names) -> Query(User):... 
 
-class UserApplicationState:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.key: str = str() 
-        self.user_id: str = str() 
-        self.value: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> UserApplicationState:... 
+class UserApplicationState:
+    user_id: str = str() 
+    key: str = str() 
+    value: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> UserApplicationState:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> UserApplicationState:... 
+
 
 class UserCustomAttributeLink:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_id: str = str() 
-        self.user: User = User 
+    to_entity_type: str = str() 
+    from_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    user: User = User 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> UserCustomAttributeLink:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> UserCustomAttributeLink:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> UserCustomAttributeLink:... 
+
 
 class UserCustomAttributeLinkFrom:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
-        self.configuration_id: str = str() 
-        self.from_entity_type: str = str() 
-        self.from_id: str = str() 
-        self.id: str = str() 
-        self.to_entity_type: str = str() 
-        self.to_id: str = str() 
-        self.user: User = User 
+    to_entity_type: str = str() 
+    from_entity_type: str = str() 
+    configuration_id: str = str() 
+    to_id: str = str() 
+    user: User = User 
+    configuration: CustomAttributeLinkConfiguration = CustomAttributeLinkConfiguration 
+    id: str = str() 
+    from_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> UserCustomAttributeLinkFrom:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> UserCustomAttributeLinkFrom:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> UserCustomAttributeLinkFrom:... 
+
 
 class UserCustomAttributeValue:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
-        self.configuration_id: str = str() 
-        self.entity_id: str = str() 
-        self.key: str = str() 
-        self.value: typing.Any = None 
+    entity_id: str = str() 
+    configuration: CustomAttributeConfiguration = CustomAttributeConfiguration 
+    configuration_id: str = str() 
+    value: typing.Any = None 
+    key: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> UserCustomAttributeValue:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> UserCustomAttributeValue:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> UserCustomAttributeValue:... 
+
 
 class UserSecurityRole(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.is_all_open_projects: bool = bool() 
-        self.is_all_projects: bool = bool() 
-        self.security_role: SecurityRole = SecurityRole 
-        self.security_role_id: str = str() 
-        self.user: User = User 
-        self.user_id: str = str() 
-        self.user_security_role_projects: UserSecurityRoleProject = UserSecurityRoleProject 
+    is_all_open_projects: bool = bool() 
+    user_id: str = str() 
+    is_all_projects: bool = bool() 
+    security_role_id: str = str() 
+    user_security_role_projects: UserSecurityRoleProject = UserSecurityRoleProject 
+    user: User = User 
+    security_role: SecurityRole = SecurityRole 
+    id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> UserSecurityRole:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> UserSecurityRole:... 
     def by_id(self, target, *ids) -> Query(UserSecurityRole):... 
     def by_metadata(self, target, *dictionaries) -> Query(UserSecurityRole):... 
     def create(self) -> UserSecurityRole:... 
     def create_batch(self, *attributes) -> UserSecurityRole:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> UserSecurityRole:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> UserSecurityRole:... 
     def get_all(self, projections=None) -> UserSecurityRole:... 
@@ -3279,20 +3575,22 @@ class UserSecurityRole(Entity):
     def not_by_id(self, target, *ids) -> Query(UserSecurityRole):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(UserSecurityRole):... 
 
-class UserSecurityRoleProject(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.project: Project = Project 
-        self.project_id: str = str() 
-        self.user_security_role: UserSecurityRole = UserSecurityRole 
-        self.user_security_role_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> UserSecurityRoleProject:... 
+class UserSecurityRoleProject(Entity):
+    project: Project = Project 
+    project_id: str = str() 
+    user_security_role: UserSecurityRole = UserSecurityRole 
+    user_security_role_id: str = str() 
+    id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> UserSecurityRoleProject:... 
     def by_id(self, target, *ids) -> Query(UserSecurityRoleProject):... 
     def by_metadata(self, target, *dictionaries) -> Query(UserSecurityRoleProject):... 
     def create(self) -> UserSecurityRoleProject:... 
     def create_batch(self, *attributes) -> UserSecurityRoleProject:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> UserSecurityRoleProject:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> UserSecurityRoleProject:... 
     def get_all(self, projections=None) -> UserSecurityRoleProject:... 
@@ -3304,26 +3602,40 @@ class UserSecurityRoleProject(Entity):
     def not_by_id(self, target, *ids) -> Query(UserSecurityRoleProject):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(UserSecurityRoleProject):... 
 
-class UserType:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> UserType:... 
+class UserType:
+    id: str = str() 
+    name: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> UserType:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> UserType:... 
+
+
+class UserView:
+    user_id:  =  
+    name: str = str() 
+    global: bool = bool() 
+    shared_with: Resource = Resource 
+    user: User = User 
+    id: str = str() 
+
+
 
 class WorkflowSchema(Entity):
-    def __init__(self, *args, **kwargs) -> None: 
-        self.id: str = str() 
-        self.name: str = str() 
-        self.overrides: ProjectSchemaOverride = ProjectSchemaOverride 
-        self.statuses: Status = Status 
+    overrides: ProjectSchemaOverride = ProjectSchemaOverride 
+    id: str = str() 
+    statuses: Status = Status 
+    name: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> WorkflowSchema:... 
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> WorkflowSchema:... 
     def by_id(self, target, *ids) -> Query(WorkflowSchema):... 
     def by_metadata(self, target, *dictionaries) -> Query(WorkflowSchema):... 
     def create(self) -> WorkflowSchema:... 
     def create_batch(self, *attributes) -> WorkflowSchema:... 
     def delete(self) -> None:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> WorkflowSchema:... 
     def from_entity_type(cls, name, ftrack_entity=None) -> typing.Any:... 
     def get(self, projections=None, limit=None, offset=0, order="ascending", order_by=None) -> WorkflowSchema:... 
     def get_all(self, projections=None) -> WorkflowSchema:... 
@@ -3335,10 +3647,13 @@ class WorkflowSchema(Entity):
     def not_by_id(self, target, *ids) -> Query(WorkflowSchema):... 
     def not_by_metadata(self, target, *dictionaries) -> Query(WorkflowSchema):... 
 
-class WorkflowSchemaStatus:
-    def __init__(self, *args, **kwargs) -> None: 
-        self.status_id: str = str() 
-        self.workflow_schema_id: str = str() 
 
-    def __getitem__(self, item: typing.Union[int, slice, basestring]) -> WorkflowSchemaStatus:... 
+class WorkflowSchemaStatus:
+    workflow_schema_id: str = str() 
+    status_id: str = str() 
+
+    def __init__(self, *args, **kwargs) -> None: 
+    def __getitem__(self, item: typing.Union[int, slice, str]) -> WorkflowSchemaStatus:... 
+    def fetch_attributes(self, projections: typing.List[typing.Union[str, Entity]]) -> WorkflowSchemaStatus:... 
+
 

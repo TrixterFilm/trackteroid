@@ -60,7 +60,7 @@ class Relationship(dict):
 
     def _infer_from_session_schema(self, session):
         def _to_class(classname):
-            return getattr(sys.modules[__name__], classname)
+            return getattr(sys.modules[__name__], classname, None)
 
         # TODO: check for actual available types
         if self._entity_type_name and self._entity_type_name != "_EntityBase":
@@ -117,7 +117,7 @@ class Relationship(dict):
         from_cache = _RELATIONSHIPS_CACHE.get(self._cache_key, {})
 
         for key, value in from_cache.items():
-            if key.__name__ == item.__name__:
+            if key and (key == item):
                 return value
         return super(Relationship, self).__getitem__(item)
 
@@ -337,7 +337,7 @@ class EntityCollection(object):
         self._session = session
 
         self._schema_types_map = {
-            "string": (str, unicode),
+            "string": (str),
             "number": (float,),
             "boolean": (bool,),
             "integer": (int,),
@@ -345,7 +345,7 @@ class EntityCollection(object):
         }
 
     def __contains__(self, other):
-        if isinstance(other, basestring):
+        if isinstance(other, str):
             return other in self.keys()
         elif isinstance(other, Entity):
             return other in self.values()
@@ -361,7 +361,7 @@ class EntityCollection(object):
 
     def __getattr__(self, item):
         # TODO: clean after we have tests for this functionality
-        if self and item in self.values()[0].ftrack_entity.keys():
+        if self and item in list(self.values())[0].ftrack_entity.keys():
             entities = []
             values = []
             entity_type = None
@@ -457,8 +457,8 @@ class EntityCollection(object):
     def __getitem__(self, item):
         if isinstance(item, (int, slice)):
             # no one needs to know that internally we store the id as the key!
-            return self.from_entities(self.values()[item])
-        elif isinstance(item, basestring):
+            return self.from_entities(list(self.values())[item])
+        elif isinstance(item, str):
             return self.from_entities(self._entities[item])
         elif issubclass(item, Entity):
             return self.resolve_subtype(item)
@@ -514,9 +514,9 @@ class EntityCollection(object):
 
             if isinstance(value, (list, tuple, EntityCollection)) \
                     and len(self) == 1 \
-                    and self._entities.values()[0].ftrack_entity[key].__class__.__name__ == "Collection":
+                    and list(self._entities.values())[0].ftrack_entity[key].__class__.__name__ == "Collection":
                 if isinstance(value, EntityCollection):
-                    self.values()[0].ftrack_entity[key] = [_.ftrack_entity for _ in value.values()]
+                    list(self.values())[0].ftrack_entity[key] = [_.ftrack_entity for _ in value.values()]
             else:
                 for idx, entity in enumerate(self.values()):
                     if key.startswith("custom_"):
@@ -539,7 +539,7 @@ class EntityCollection(object):
                                     entity.ftrack_entity[key][_key] = _value
                     else:
                         if isinstance(value, EntityCollection):
-                            entity.ftrack_entity[key] = value.values()[idx].ftrack_entity
+                            entity.ftrack_entity[key] = list(value.values())[idx].ftrack_entity
                         elif isinstance(value, (list, tuple)):
                             entity.ftrack_entity[key] = value[idx]
                         else:
@@ -594,7 +594,7 @@ class EntityCollection(object):
         else:
             entity_type = getattr(importlib.import_module("..entities", __name__), entity_type.__name__)
 
-        matched_types = self.filter(lambda x: x.values()[0].ftrack_entity.entity_type == entity_type.__name__)
+        matched_types = self.filter(lambda x: list(x.values())[0].ftrack_entity.entity_type == entity_type.__name__)
         return self.from_entities(
             [
                 Entity.from_entity_type(entity_type.__name__, ftrack_entity=_.ftrack_entity) for _ in
@@ -928,7 +928,7 @@ class EntityCollection(object):
         groups = {}
 
         for entity in self:
-            temp[predicate(entity)].append(entity.values()[0])
+            temp[predicate(entity)].append(list(entity.values())[0])
 
         for group, entities in temp.items():
             groups[group] = self.from_entities(entities)
@@ -1105,14 +1105,14 @@ class EntityCollection(object):
             EntityCollection:
 
         """
-        entities = self.values()
+        entities = list(self.values())
         for collection in collections:
             if not collection:
                 continue  # avoid merging EmptyCollections
             self._validate_collection_type(collection)
             for entity in collection:
-                if entity.values()[0] not in entities:
-                    entities.append(entity.values()[0])
+                if list(entity.values())[0] not in entities:
+                    entities.append(list(entity.values())[0])
 
         return self.from_entities(entities)
 
@@ -1197,8 +1197,8 @@ class EntityCollection(object):
         #
         # if self.entity_type != collection.entity_type:
         #     is_valid = False
-        #     if (self.values() and collection.values()) and self.values()[0].__class__.__name__ in parent_types:
-        #         if issubclass(collection.values()[0].__class__, self.values()[0].__class__):
+        #     if (self.values() and collection.values()) and list(self.values())[0].__class__.__name__ in parent_types:
+        #         if issubclass(list(collection.values())[0].__class__, list(self.values())[0].__class__):
         #             is_valid = True
         #
         # if not is_valid:
@@ -1255,7 +1255,7 @@ class EntityCollection(object):
                 flat = {}
                 if len(iterable.keys()) == 1:
                     # we are on a non branching level
-                    key = iterable.keys()[0]
+                    key = list(iterable.keys())[0]
                     # append to the existing path as we don't need to branch
                     path += "." + key if path else key # only insert dot in existing path
                     # get the downstream dict recursively
@@ -1282,7 +1282,7 @@ class EntityCollection(object):
                         if len(_.keys()) == 1:
                             # if the childs are not branching we extract the values
                             # and set them with the correct key
-                            flat[key + "." + _.keys()[0]] = _.values()[0]
+                            flat[key + "." + list(_.keys())[0]] = list(_.values())[0]
                         else:
                             # otherwise we will create a new branch
                             flat[key] = _
@@ -1343,7 +1343,7 @@ class EntityCollection(object):
         _attributes = []
         for attribute in attributes:
             if isinstance(attribute, RelationshipDeclaration):
-                _attributes.append(attribute.resolve_path_for(self.entity_type))
+                _attributes.extend(attribute.resolve_path_for(self.entity_type, self.query.session, self.query.schema))
             else:
                 _attributes.append(attribute)
 
@@ -1401,6 +1401,9 @@ class EntityCollection(object):
             for relation_projection in relation_projections:
                 constructed_projections.append("{}.{}".format(relation_projection, outside_projection))
 
+        if not outside_projections:
+            constructed_projections.extend(relation_projections)
+
         self.fetch_attributes(*constructed_projections)
 
         return getattr(self, relative_type.__name__)
@@ -1425,7 +1428,8 @@ class EntityCollection(object):
         _User = getattr(importlib.import_module("..entities", __name__), "User")
 
         if not ftrack_note_entity.get("author"):
-            ftrack_note_entity["author"] = _Query(_User, session=self._session).by_name(self._session.api_user).get_one().values()[0].ftrack_entity
+            ftrack_note_entity["author"] = list(_Query(_User, session=self._session).by_name(
+                self._session.api_user).get_one().values())[0].ftrack_entity
 
         recipients = ftrack_note_entity.get("recipients", [])
         if not recipients:
@@ -1439,7 +1443,7 @@ class EntityCollection(object):
                     note_id=ftrack_note_entity["id"],
                     resource_id=resource_id
                 )
-                ftrack_note_entity["recipients"].append(recipient.values()[0].ftrack_entity)
+                ftrack_note_entity["recipients"].append(list(recipient.values())[0].ftrack_entity)
 
         # The parent source is a sibling collection, reuse it's parent attrs
         if parent_source.entity_type.__name__ == "Note":
@@ -1493,7 +1497,7 @@ class EntityCollection(object):
             this = self
             parent_relation = kwargs.get("parent_relation", None) or this._entity.relationship.parent or "parent"
 
-            if parent_relation in this.values()[0].ftrack_entity.keys():
+            if parent_relation in list(this.values())[0].ftrack_entity.keys():
                 if not all(getattr(this, parent_relation)):
                     this.fetch_attributes(parent_relation)
 
@@ -1510,7 +1514,7 @@ class EntityCollection(object):
             assert len(parent) == 1, "Ambiguous context. Multiple parents found."
 
             kwargs.update(
-                {parent_relation: parent.values()[0].ftrack_entity}
+                {parent_relation: list(parent.values())[0].ftrack_entity}
             )
 
         assert isinstance(kwargs, dict), "pre_create method returned something that is not a dict"
@@ -1581,14 +1585,12 @@ class EntityCollection(object):
         return self._session
 
 
-class _EntityBase(object):
+class _EntityBase(object, metaclass=ForwardDeclareCompare):
 
     relationship = Relationship()
     projections = ["id"]
     _ftrack_entity = None
     log = None
-
-    __metaclass__ = ForwardDeclareCompare
 
     def __new__(cls, *args, **kwargs):
         """ make it possible to swap the Entity class with the given class
@@ -1634,7 +1636,7 @@ class _EntityBase(object):
 
             return target_collection
 
-        return super(_EntityBase, cls).__new__(cls, *args, **kwargs)
+        return super(_EntityBase, cls).__new__(cls)
 
     def __init__(self, _cls=None, ftrack_entity=None, **kwargs):
         self.ftrack_entity = ftrack_entity

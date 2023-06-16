@@ -11,10 +11,11 @@ from ..configuration import LOGGING_NAMESPACE
 _LOG = logging.getLogger("{}.declarations".format(LOGGING_NAMESPACE))
 
 
-class ForwardDeclaration(object): pass
+class ForwardDeclaration:
+    pass
 
 
-class RelationshipDeclaration(object):
+class RelationshipDeclaration:
     """ a declaration for a used relationship that needs resolution
 
     """
@@ -25,12 +26,13 @@ class RelationshipDeclaration(object):
         self._chain.extend(
             [
                 getattr(self._entities_module, parent.__name__, parent),
-                getattr(self._entities_module, child.__name__ if not isinstance(child, basestring) else child, child)
+                getattr(self._entities_module, child.__name__ if not isinstance(child, str) else child, child)
             ]
         )
 
     def __getattr__(self, item):
-        if not item.startswith("__"):
+        # TODO: what requests `shape`??
+        if not item.startswith("__") and item != "shape":
             self._chain.append(getattr(self._entities_module, item, item))
         return self
 
@@ -38,14 +40,17 @@ class RelationshipDeclaration(object):
         relationships = []
         for item in self._chain:
             if item:
-                if not isinstance(item, basestring):
+                if not isinstance(item, str):
                     item.relationship(session=session, schema=schema)
                     relationship = entity_type.relationship.get(item)
                     if not relationship:
-                        _LOG.warning("Unable to retrieve relationship of `{}` for `{}`".format(
-                            entity_type,
-                            item
-                        ))
+                        _LOG.warning(
+                            "Unable to retrieve relationship between target entity type `{}` and entity type `{}`."
+                            "You should consider providing via the configurable `RELATIONSHIP_RESOLVER`.".format(
+                                entity_type.__class__.__name__,
+                                item.__name__
+                            )
+                        )
                         continue
                     if not isinstance(relationship.relation, list):
                         relationships.append([self._filter_re.sub("", relationship.relation)])
@@ -60,8 +65,6 @@ class RelationshipDeclaration(object):
         return [".".join(_) for _ in itertools.product(*relationships)]
 
 
-
-
 class ForwardDeclareCompare(type):
     def __eq__(self, other):
         if other and inspect.isclass(other) and issubclass(other, ForwardDeclaration):
@@ -74,6 +77,9 @@ class ForwardDeclareCompare(type):
 
     def __getattr__(self, item):
         return RelationshipDeclaration(parent=self, child=item)
+
+    def __hash__(self):
+        return hash(self.__class__.__name__)
 
 
 # TODO: we need to auto-regenerate this when the schema changes

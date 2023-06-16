@@ -15,7 +15,7 @@ def build_partial_query(target, arguments, attribute):
         pattern_match_expressions = []
         non_pattern_elements = []
         for element in arguments:
-            if isinstance(element, basestring) and "%" in element:
+            if isinstance(element, str) and "%" in element:
                 pattern_match_expressions.append(
                         "{} like \"{}\"".format(attribute, element)
                 )

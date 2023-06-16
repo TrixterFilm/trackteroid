@@ -3,6 +3,9 @@ from typing import *
 
 class ForwardDeclaration: ...
 
+class RelationshipDeclaration:
+    def __init__(self, parent: Union[Type['Entity'], Type[ForwardDeclareCompare]], child: Union[Type['Entity'], Type[ForwardDeclareCompare], str]): ...
+
 class ForwardDeclareCompare(type):
     def __eq__(self, other: Union[Type['Entity'], Type[ForwardDeclaration]]) -> bool: ...
 

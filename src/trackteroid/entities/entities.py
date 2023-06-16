@@ -35,7 +35,7 @@ class AssetVersion(Entity):
         )
         assert isinstance(kwargs["task"], EntityCollection), "Argument 'task' expects a value of EntityCollection[Task]"
 
-        kwargs["task"] = kwargs["task"].values()[0].ftrack_entity
+        kwargs["task"] = list(kwargs["task"].values())[0].ftrack_entity
 
         return kwargs
 
@@ -402,7 +402,7 @@ class ComponentLocation(Entity):
         super(ComponentLocation, self).pre_create(**kwargs)
 
         if "location" in kwargs:
-            kwargs["location"] = kwargs["location"].values()[0].ftrack_entity
+            kwargs["location"] = list(kwargs["location"].values())[0].ftrack_entity
         else:
             kwargs.setdefault("location_id", "cb268ecc-8809-11e3-a7e2-20c9d081909b")  # unmanaged location
 
@@ -563,7 +563,7 @@ class Appointment(Entity):
                 "Argument 'resource' expects a value of EntityCollection[User]"
             assert len(kwargs["resource"]) == 1, "'resource' can only be an EntityCollection with one entity."
 
-            kwargs["resource"] = kwargs["resource"].values()[0].ftrack_entity
+            kwargs["resource"] = list(kwargs["resource"].values())[0].ftrack_entity
 
         return kwargs
 
@@ -642,7 +642,7 @@ class Note(Entity):
         if author:
             assert isinstance(author, EntityCollection) and len(author) == 1,\
                 "`author` must be a single element EntityCollection."
-            author = author.values()[0]
+            author = list(author.values())[0]
             assert isinstance(author, User), "`author` collection must contain an element of type User."
             kwargs["author"] = author.ftrack_entity
 
@@ -650,7 +650,7 @@ class Note(Entity):
         if category:
             assert isinstance(category, EntityCollection) and len(category) == 1, \
                 "`category` must be a single element EntityCollection."
-            category = category.values()[0]
+            category = list(category.values())[0]
             # Querying a NodeCategory trough the Ftrack API returns a
             # dynamic NoteLabel class, hence this type is also valid
             assert isinstance(category, (NoteCategory, NoteLabel)), \
@@ -727,7 +727,7 @@ class ReviewSessionObject(Entity):
 
         if "asset_version" in kwargs:
             assert isinstance(kwargs["asset_version"], EntityCollection), "Argument 'asset_version' expects a value of EntityCollection[AssetVersion]"
-            kwargs["asset_version"] = kwargs["asset_version"].values()[0].ftrack_entity
+            kwargs["asset_version"] = list(kwargs["asset_version"].values())[0].ftrack_entity
         return kwargs
 
 
@@ -894,7 +894,7 @@ class AssetVersionList(List):
         )
         assert isinstance(kwargs["project"], EntityCollection), "Argument 'project' expects a value of EntityCollection[Project]"
 
-        kwargs["project"] = kwargs["project"].values()[0].ftrack_entity
+        kwargs["project"] = list(kwargs["project"].values())[0].ftrack_entity
 
         assert "category" in kwargs, "category is a required keyword argument"
         assert len(kwargs["category"]) == 1, "Only one category can be linked to an AssetVersionList. You provided {}.".format(
@@ -902,7 +902,7 @@ class AssetVersionList(List):
         )
         assert isinstance(kwargs["category"], EntityCollection), "Argument 'category' expects a value of EntityCollection[ListCategory]"
 
-        kwargs["category"] = kwargs["category"].values()[0].ftrack_entity
+        kwargs["category"] = list(kwargs["category"].values())[0].ftrack_entity
 
         return kwargs
 
