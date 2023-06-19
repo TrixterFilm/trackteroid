@@ -3,7 +3,10 @@
 ```{include} collections/overview.md
 ```
 
-```{toctree}
-collections/entitycollection.md
-collections/emptycollection.md
+## EntityCollection
+```{include} collections/entitycollection.md
+```
+
+## EmptyCollection
+```{include} collections/emptycollection.md
 ```
