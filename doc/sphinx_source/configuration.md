@@ -138,7 +138,8 @@ If a target entity entry contains multiple values it presents an OR relationship
 Here's an example to illustrate how the overrides are applied using the SCHEMA object:
 ```python
 from pprint import pprint
-from trackteroid.query import SCHEMA
+
+from trackteroid import SCHEMA
 
 pprint(SCHEMA.default)
 # output: 
