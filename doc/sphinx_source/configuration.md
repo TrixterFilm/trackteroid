@@ -158,3 +158,15 @@ In the example, `SCHEMA.default` represents the default schema, which serves as 
 ```{warning}
 The relationships provided by your resolver take precedence over the relationships automatically derived from the Session/Database schema.
 ```
+
+## ALLOWED_FOR_DELETION_RESOLVER
+
+The _ALLOWED_FOR_DELETION_RESOLVER_ is a callable function that provides the ability to implement overrides for controlling the deletion of specific entity types. When invoked, this function receives the current session object and the name of the entity type that is being requested for deletion.
+Default Implementation:
+```python
+ALLOWED_FOR_DELETION_RESOLVER = lambda session, type_name: True
+```
+
+```{warning}
+While this function primarily serves as an **additional** security measure to prevent accidental deletions, it should not be relied upon as a substitute for proper API user access management in FTrack.
+```
