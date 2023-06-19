@@ -14,6 +14,25 @@ export TRACKTEROID_EXAMPLE=/path/to/my/trackteroid_user_config.py
 The subsequent section outlines the available configuration options within Trackteroid and explains how to customize them according to your preferences.
 Configuration entries are defined in ALL_CAPS style and can store constant values or callables.
 
+
+## ALLOWED_FOR_DELETION_RESOLVER
+
+The _ALLOWED_FOR_DELETION_RESOLVER_ is a callable function that provides the ability to implement overrides for controlling the deletion of specific entity types. When invoked, this function receives the current session object and the name of the entity type that is being requested for deletion.
+Default Implementation:
+```python
+ALLOWED_FOR_DELETION_RESOLVER = lambda session, type_name: True
+```
+
+```{warning}
+While this function primarily serves as an **additional** security measure to prevent accidental deletions, it should not be relied upon as a substitute for proper API user access management in FTrack.
+```
+
+
+## LOGGING NAMESPACE
+
+The logging namespace utilized by Trackteroid is set to `trackteroid` by default. This namespace serves as the primary identifier for logging purposes within Trackteroid. Modifying this namespace allows for seamless integration of the API into your existing codebase without the need for additional logging configuration setup.
+
+
 ## RELATIONSHIPS_RESOLVER
 
 The _RELATIONSHIPS_RESOLVER_ is a callable function that plays a crucial role in supplying relationship information that cannot be automatically derived by Trackteroid.
@@ -158,3 +177,10 @@ In the example, `SCHEMA.default` represents the default schema, which serves as 
 ```{warning}
 The relationships provided by your resolver take precedence over the relationships automatically derived from the Session/Database schema.
 ```
+
+
+## WARN_ON_INJECT 
+
+The _WARN_ON_INJECT_ variable can be set to either `True` or `False`, with the default value being `False`. When set to `True`, it enables the emission of a `logging.warning` message when the _inject_ query criterion is used.
+
+The _inject_ criterion serves as a workaround for situations where certain criteria implementations are missing. Enabling the _WARN_ON_INJECT_ option can be useful in identifying the usage of this criterion in your codebase and exploring potential alternative approaches that may exist.
