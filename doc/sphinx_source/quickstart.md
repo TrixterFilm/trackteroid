@@ -334,8 +334,10 @@ print(
 # output: ['Blocked']
 ```
 
-
 #### Fallback Concept
+
+```{include} collections/emptycollection.md
+```
 
 ## Authoring
 
