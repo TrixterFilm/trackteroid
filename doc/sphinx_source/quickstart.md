@@ -52,9 +52,8 @@ However, you also have the flexibility to initialize your own `Session` object a
 from trackteroid import (
     AssetVersion,
     Query,
-    SESSION,
+    SCHEMA
 )
-from trackteroid.query import SCHEMA
 from trackteroid.session import Session
 
 my_session = Session(server_url="<some_ftrack_server>")
@@ -219,6 +218,7 @@ The EntityCollection class provides higher-order methods that accept functions a
 The presented example highlights a subset of the transformation methods available.
 ```python
 from pprint import pprint
+
 from tracteroid import (
     Query,
     Asset,
@@ -309,10 +309,34 @@ print(f"(a + b) - ((a - b) + (b - a)) = {collection_a.intersection(collection_b)
 
 #### Fetching Attributes
 
+As Trackteroid's default Sessions disable the _autopolulate_ feature, it is possible to work with unprojected data. In such cases, you may need to fetch missing attributes when required. This can be accomplished using the `fetch_attributes` method on your collection.
+```python
+from trackteroid import (
+    Asset,
+    Query,
+    Task
+)
 
+# assuming you receive a collection from somewhere
+some_asset_collection = Query(Asset).by_name(Task, "%").get_all(limit=10)
+print(some_asset_collection)
+# output: EntityCollection[Asset]{10}
 
+print(
+    some_asset_collection.
+    fetch_attributes(Task.State.name, "versions").
+    filter(
+        lambda a: a.versions and a.Task.State.name[0] == "Blocked"
+    )
+    .Task.State.name
+)
+# output: ['Blocked']
+```
 
 #### Fallback Concept
+
+```{include} collections/emptycollection.md
+```
 
 ## Authoring
 
