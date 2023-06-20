@@ -354,7 +354,8 @@ class EntityCollection(object):
         "query",
         "_schema_types_map",
         "_current_iter_index",
-        "_session"
+        "_session",
+        "_source"
     ]
 
     def __init__(self, _cls=None, entities={}, session=None):
@@ -365,6 +366,7 @@ class EntityCollection(object):
         self._query = None
         self._current_iter_index = []
         self._session = session
+        self._source = None
 
         self._schema_types_map = {
             "string": (str),
@@ -397,7 +399,7 @@ class EntityCollection(object):
             entity_type = None
             for entity in self.values():
                 value = entity[item]
-                # resolve entitites in collections
+                # resolve entities in collections
                 if value.__class__.__name__ == "Collection":
                     for _ in value:
                         # wrap ftrack entity
@@ -417,7 +419,7 @@ class EntityCollection(object):
                     values.append(value)
 
             if entities:
-                return self.from_entities(entities)
+                return self.from_entities(entities, source=(item, self))
             elif entity_type:
                 return EmptyCollection(_type=entity_type, source=self, session=self._session)
             return values
@@ -451,13 +453,13 @@ class EntityCollection(object):
                     for token in some_relation.split("."):
                         _filter = None
                         # and also identify filters like with `parent[Shot]`
-                        _ = re.findall("\w+", token)
+                        _ = re.findall(r"\w+", token)
                         if len(_) == 2:
                             token, _filter = _
                         elif len(_) > 2:
                             raise ValueError("Unable to identify attribute and filter within token '{}'.".format(_))
 
-                        _collection = self if current == None else current
+                        _collection = self if current is None else current
                         current = getattr(_collection, token)
 
                         if NOT_SET in current:
@@ -473,7 +475,7 @@ class EntityCollection(object):
                         if _filter:
                             current = current[globals()[_filter]]
 
-                    if result == None:
+                    if result is None:
                         result = current
                     else:
                         result = result.union(current)
@@ -482,7 +484,6 @@ class EntityCollection(object):
 
         else:
             raise AttributeError("Attribute {} does not exist.".format(item))
-
 
     def __getitem__(self, item):
         if isinstance(item, (int, slice)):
@@ -537,46 +538,49 @@ class EntityCollection(object):
         # should we update this so we have the correct data locally?
         if key in self.MEMBERS:
             super(EntityCollection, self).__setattr__(key, value)
-        elif getattr(self, key, None) is not None:
-            compatible, reason = self._is_attribute_compatible_with_value(key, value)
-            if not compatible:
-                raise TypeError(reason)
-
-            if isinstance(value, (list, tuple, EntityCollection)) \
-                    and len(self) == 1 \
-                    and list(self._entities.values())[0].ftrack_entity[key].__class__.__name__ == "Collection":
-                if isinstance(value, EntityCollection):
-                    list(self.values())[0].ftrack_entity[key] = [_.ftrack_entity for _ in value.values()]
-            else:
-                for idx, entity in enumerate(self.values()):
-                    if key.startswith("custom_"):
-                        if isinstance(value, (list, tuple, EntityCollection)):
-                            entity.ftrack_entity["custom_attributes"][key.replace("custom_", "")] = value[idx]
-                        else:
-                            entity.ftrack_entity["custom_attributes"][key.replace("custom_", "")] = value
-                    elif entity.ftrack_entity[key].__class__.__name__ == "KeyValueMappedCollectionProxy":
-                        _should_capture = False
-                        if isinstance(value, (list, tuple)):
-                            if any(_ not in  value[idx].keys() for _ in entity.ftrack_entity[key]):
-                                _should_capture = True
-                            for _key, _value in value[idx].items():
-                                entity.ftrack_entity[key][_key] = _value
-                        else:
-                            if not len(value):
-                                entity.ftrack_entity[key] = value
-                            else:
-                                for _key, _value in value.items():
-                                    entity.ftrack_entity[key][_key] = _value
-                    else:
-                        if isinstance(value, EntityCollection):
-                            entity.ftrack_entity[key] = list(value.values())[idx].ftrack_entity
-                        elif isinstance(value, (list, tuple)):
-                            entity.ftrack_entity[key] = value[idx]
-                        else:
-                            entity.ftrack_entity[key] = value
-
         else:
-            raise AttributeError("Attribute {} does not exist.".format(key))
+            attribute = getattr(self, key, None)
+            if attribute is not None:
+                key, collection = attribute._source
+                compatible, reason = collection._is_attribute_compatible_with_value(key, value)
+                if not compatible:
+                    raise TypeError(reason)
+
+                if isinstance(value, (list, tuple, EntityCollection)) \
+                        and len(collection) == 1 \
+                        and list(collection._entities.values())[0].ftrack_entity[key].__class__.__name__ == "Collection":
+                    if isinstance(value, EntityCollection):
+                        list(collection.values())[0].ftrack_entity[key] = [_.ftrack_entity for _ in value.values()]
+                else:
+                    for idx, entity in enumerate(collection.values()):
+                        if key.startswith("custom_"):
+                            if isinstance(value, (list, tuple, EntityCollection)):
+                                entity.ftrack_entity["custom_attributes"][key.replace("custom_", "")] = value[idx]
+                            else:
+                                entity.ftrack_entity["custom_attributes"][key.replace("custom_", "")] = value
+                        elif entity.ftrack_entity[key].__class__.__name__ == "KeyValueMappedCollectionProxy":
+                            _should_capture = False
+                            if isinstance(value, (list, tuple)):
+                                if any(_ not in  value[idx].keys() for _ in entity.ftrack_entity[key]):
+                                    _should_capture = True
+                                for _key, _value in value[idx].items():
+                                    entity.ftrack_entity[key][_key] = _value
+                            else:
+                                if not len(value):
+                                    entity.ftrack_entity[key] = value
+                                else:
+                                    for _key, _value in value.items():
+                                        entity.ftrack_entity[key][_key] = _value
+                        else:
+                            if isinstance(value, EntityCollection):
+                                entity.ftrack_entity[key] = list(value.values())[idx].ftrack_entity
+                            elif isinstance(value, (list, tuple)):
+                                entity.ftrack_entity[key] = value[idx]
+                            else:
+                                entity.ftrack_entity[key] = value
+
+            else:
+                raise AttributeError("Attribute {} does not exist.".format(key))
 
     def __nonzero__(self):
         return len(self) > 0
@@ -801,7 +805,7 @@ class EntityCollection(object):
         if isinstance(value, (EntityCollection, tuple, list)):
             _reason = (
                 "When setting an attribute on a receiver collection, "
-                "we expect the given value to have the same amount of alements as our collection has entities"
+                "we expect the given value to have the same amount of elements as our collection has entities "
                 "or in case it is an iterable to have the same length."
             )
             if attribute_info.array:
@@ -821,11 +825,15 @@ class EntityCollection(object):
     @staticmethod
     def _get_value_type(value):
         if isinstance(value, (EntityCollection, EmptyCollection)):
-            return AttributeInfo(types=type(value._entity),
-                                 array=True)
+            return AttributeInfo(
+                types=type(value._entity),
+                array=True
+            )
         elif isinstance(value, (tuple, list)):
-            return AttributeInfo(types=type(value[0]),
-                                 array=True)
+            return AttributeInfo(
+                types=type(value[0]),
+                array=True
+            )
         else:
             return AttributeInfo(types=type(value))
 
@@ -889,7 +897,7 @@ class EntityCollection(object):
 
         Args:
             entities (Entity or list): Entity subclass or list of Entity subclasses
-            source (EntityCollection): In case entities is an empty list, it might be important
+            source (EntityCollection or tuple(str, EntityCollection)): store what source produced the new collection
             to preserve the source, from where the resulting EmptyCollection was generated from.
 
         Returns:
@@ -932,6 +940,7 @@ class EntityCollection(object):
 
         entities.query = self.query
         entities.query.valid = False
+        entities._source = source
         return entities
 
     def group(self, predicate):
