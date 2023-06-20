@@ -52,9 +52,8 @@ However, you also have the flexibility to initialize your own `Session` object a
 from trackteroid import (
     AssetVersion,
     Query,
-    SESSION,
+    SCHEMA
 )
-from trackteroid.query import SCHEMA
 from trackteroid.session import Session
 
 my_session = Session(server_url="<some_ftrack_server>")
