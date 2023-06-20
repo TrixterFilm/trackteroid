@@ -6,7 +6,7 @@
 
 Welcome to Trackteroid’s documentation. Get started with [Installation](installation.md) and then get an overview with the [Quickstart](quickstart.md). 
 
-Trackteroid depends on [Ftrack](https://www.ftrack.com/en/) and it's [Python API](https://ftrack-python-api.readthedocs.io/) a project management and production tracking software specifically designed for the media and entertainment industry. It is commonly used in the fields of film, television, animation, visual effects, and gaming.
+Trackteroid depends on [Ftrack](https://www.ftrack.com/en/) and its [Python API](https://ftrack-python-api.readthedocs.io/) a project management and production tracking software specifically designed for the media and entertainment industry. It is commonly used in the fields of film, television, animation, visual effects, and gaming.
 
 
 ## Motivation

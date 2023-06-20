@@ -219,7 +219,7 @@ The presented example highlights a subset of the transformation methods availabl
 ```python
 from pprint import pprint
 
-from tracteroid import (
+from trackteroid import (
     Query,
     Asset,
     AssetVersion
