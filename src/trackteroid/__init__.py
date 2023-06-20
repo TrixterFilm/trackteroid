@@ -1,4 +1,7 @@
-from .query import Query
+from .query import (
+    Query,
+    SCHEMA
+)
 from .session import SESSION
 from .entities import *
 from .entities.schematypes import (
