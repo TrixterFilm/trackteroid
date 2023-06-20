@@ -124,7 +124,7 @@ No need to worry if you haven't fully grasped the concepts yet. Subsequent secti
 The `EntityCollection` provides you with a lot of convenience for accessing, filtering and transforming containing data. 
 
 
-#### Item & Attribute Access
+#### Item and Attribute Access
 
 Retrieving items from a collection is straightforward and effortless. 
 These examples illustrate the versatility of the item getter on an EntityCollection.
@@ -342,5 +342,23 @@ print(
 
 ### CRUD (Create, Read, Update, Delete)
 
+[Collections](collections.md) provide a user interface for performing CRUD operations, which include creating, reading, updating, and deleting data. 
+The sections below are organized in a logical order to guide you through these operations.
 
+#### Read
+
+The listed page references will provide you will all the information when it comes to requesting and accessing data from Ftrack and how the data is being exposed on collections.
+
+- [Querying](#the-query): Learn how to construct queries to retrieve specific data
+- [Attribute Access](#item-and-attribute-access): Understand how to access attributes of items in collections.
+
+#### Update
+
+##### Setting Attributes
+
+##### Linking 
+
+#### Create
+
+#### Delete
 
