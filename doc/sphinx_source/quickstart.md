@@ -7,23 +7,16 @@ The following examples assumes you have [configured the api access for Ftrack](h
 
 ## Accessing Data From FTrack
 
-```python
-from trackteroid import (
-    Query,
-    AssetVersion
-)
+```{include} query/examples.md
+:start-after: example minimal start
+:end-before: example minimal end
 
-version_collection = Query(AssetVersion).get_first()
-print(version_collection)
-
-# output: EntityCollection[AssetVersion]{1}
 ```
 
 ### The Query
 
 ```{include} query/overview.md
 ```
-
 ### Defining Relationships
 
 One of the main objectives of Trackteroid is to minimize the need for in-depth knowledge of the underlying database structure when working with queries and resulting collections. This goal is accomplished through two distinct approaches.
@@ -32,18 +25,11 @@ Firstly, it automatically derives relationships whenever possible by dynamically
 
 However, Ftrack's dynamic nature means that certain entity types may require configuring relationships to align with specific requirements. Trackteroid provides the flexibility to describe and represent contextual relationships for such cases, enabling customization and adaptation to meet individual needs by implementing a [resolver](configuration.md#relationships-resolver).
 
-
 All communication with an Ftrack server is facilitated through a `Session` object. By default, a Query is constructed using the _SESSION_ singleton and the _default_ schema. Here's an example:
-```python
-from trackteroid import (
-    AssetVersion,
-    Query,
-    SESSION,
-)
-from trackteroid.query import SCHEMA
 
-# same as Query(AssetVersion)
-Query(AssetVersion, session=SESSION, schema=SCHEMA.default)
+```{include} query/examples.md
+:start-after: example session start
+:end-before: example session end
 ```
 
 However, you also have the flexibility to initialize your own `Session` object and provide a different schema. Here's an example:
@@ -124,7 +110,7 @@ No need to worry if you haven't fully grasped the concepts yet. Subsequent secti
 The `EntityCollection` provides you with a lot of convenience for accessing, filtering and transforming containing data. 
 
 
-#### Item & Attribute Access
+#### Item and Attribute Access
 
 Retrieving items from a collection is straightforward and effortless. 
 These examples illustrate the versatility of the item getter on an EntityCollection.
@@ -219,7 +205,7 @@ The presented example highlights a subset of the transformation methods availabl
 ```python
 from pprint import pprint
 
-from tracteroid import (
+from trackteroid import (
     Query,
     Asset,
     AssetVersion
@@ -342,5 +328,23 @@ print(
 
 ### CRUD (Create, Read, Update, Delete)
 
+[Collections](collections.md) provide a user interface for performing CRUD operations, which include creating, reading, updating, and deleting data. 
+The sections below are organized in a logical order to guide you through these operations.
 
+#### Read
+
+The listed page references will provide you will all the information when it comes to requesting and accessing data from Ftrack and how the data is being exposed on collections.
+
+- [Querying](#the-query): Learn how to construct queries to retrieve specific data
+- [Attribute Access](#item-and-attribute-access): Understand how to access attributes of items in collections.
+
+#### Update
+
+##### Setting Attributes
+
+##### Linking 
+
+#### Create
+
+#### Delete
 
