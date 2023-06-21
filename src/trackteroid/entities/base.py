@@ -366,10 +366,14 @@ class EntityCollection(object):
         self._query = None
         self._current_iter_index = []
         self._session = session
-        self._source = None
+
+        # similar to the source attribute on EmptyCollection
+        # we sometimes need to keep track of what produced this
+        # current collection
+        self._source = (None, None)
 
         self._schema_types_map = {
-            "string": (str),
+            "string": (str,),
             "number": (float,),
             "boolean": (bool,),
             "integer": (int,),
@@ -539,9 +543,19 @@ class EntityCollection(object):
         if key in self.MEMBERS:
             super(EntityCollection, self).__setattr__(key, value)
         else:
-            attribute = getattr(self, key, None)
-            if attribute is not None:
-                key, collection = attribute._source
+            attribute_value = getattr(self, key, None)
+            if attribute_value is not None:
+                # If the attribute access produces a collection
+                # we potentially can not go by key as the attribute
+                # access can be a type based shortcut.
+                # Therefore we need to resolve the collections produced
+                # via the full attribute chain and retain the last attribute
+                # as our key.
+                if not isinstance(attribute_value, list):
+                    key, collection = attribute_value._source
+                else:
+                    collection = self
+
                 compatible, reason = collection._is_attribute_compatible_with_value(key, value)
                 if not compatible:
                     raise TypeError(reason)
@@ -941,6 +955,7 @@ class EntityCollection(object):
         entities.query = self.query
         entities.query.valid = False
         entities._source = source
+
         return entities
 
     def group(self, predicate):
