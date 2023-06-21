@@ -1,4 +1,9 @@
-<img src=".graphics/svg/logo_white.svg" width=100>
+<p>
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset=".graphics/svg/logo_white.svg" width=100>
+        <img src=".graphics/svg/logo_black.svg" width=100>
+    </picture>
+</p>
 
 # Trackteroid
 
