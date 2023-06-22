@@ -1118,6 +1118,35 @@ class EntityCollection(object):
         else:
             return EmptyCollection(_type=self._entity, source=self._get_parent(self), session=self._session)
 
+    def put(self, predicate, attribute_name=None):
+        """Applies a predicate function to each entity in the collection and
+        assigns the generated value to the specified attribute.
+        If no attribute name is provided, the value is directly assigned to the calling collection.
+
+        Examples:
+            >>> some_collection.put(lambda c: c.another_attr[0] + "_edited", "some_attr")
+            >>> assetversion_collection.Task.Status.put(status_collection)
+
+        Args:
+            predicate (callable): A callable function that receives a single entity collection.
+                The return value of the function will be applied to the specified attribute.
+            attribute_name (optional: str): The name of the attribute to which the generated value will be assigned
+                or None
+
+        Returns:
+            EntityCollection: the current collection remains
+
+        """
+        if not attribute_name:
+            attribute_name, collection = self._source
+        else:
+            collection = self
+
+        for entitycollection in collection:
+            setattr(entitycollection, attribute_name, predicate(entitycollection))
+
+        return self
+
     @staticmethod
     def _get_parent(entitycollection):
         parent_relation = entitycollection._entity.relationship.parent or "parent"
