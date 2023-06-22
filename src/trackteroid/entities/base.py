@@ -1134,7 +1134,7 @@ class EntityCollection(object):
                 or None
 
         Returns:
-            EntityCollection: the current collection remains
+            EntityCollection: the updated collection
 
         """
         if not attribute_name:
@@ -1145,7 +1145,7 @@ class EntityCollection(object):
         for entitycollection in collection:
             setattr(entitycollection, attribute_name, predicate(entitycollection))
 
-        return self
+        return getattr(collection, attribute_name)
 
     @staticmethod
     def _get_parent(entitycollection):
