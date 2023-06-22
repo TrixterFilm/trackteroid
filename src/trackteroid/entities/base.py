@@ -820,9 +820,6 @@ class EntityCollection(object):
                 )
             return compatible, reason
 
-        # TODO: Allow assignment of single value to multiple receivers.
-        #  If is_array is true, we have to make sure, that the receiver either supports
-        #  a collection or we have to check if the value only contains a single value
         if isinstance(value, (EntityCollection, tuple, list)):
             _reason = (
                 "When setting an attribute on a receiver collection, "
