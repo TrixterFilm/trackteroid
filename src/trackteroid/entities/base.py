@@ -1619,15 +1619,12 @@ class EntityCollection(object):
         Returns:
             The SESSION object so we can call commit() directly.
         """
-
-
-        if not ALLOWED_FOR_DELETION_RESOLVER(session=self._session, type_name=self.entity_type.__name__):
+        type_name = self.entity_type.__name__
+        if not ALLOWED_FOR_DELETION_RESOLVER(session=self._session, type_name=type_name):
             raise AssertionError(
-                "Current entity type '{}' for server '{}' is not allowed for deletion as it doesn't match against "
-                "any of these patterns: {}".format(
-                    self.entity_type.__name__,
-                    self._session.server_url,
-                    (", ".join(allowed_for_deletion_patterns) or "<no pattern given>")
+                "Current entity type '{}' for server '{}' is not allowed for deletion. ".format(
+                    type_name,
+                    self._session.server_url
                 )
             )
 
