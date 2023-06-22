@@ -42,3 +42,8 @@ html_static_path = ['_static']
 
 html_favicon = "_static/favicon.ico"
 html_logo = '_static/logo_white.svg'
+
+suppress_warnings = [
+    'myst.xref_missing',
+    'myst.header'
+]

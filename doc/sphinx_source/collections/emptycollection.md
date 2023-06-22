@@ -7,47 +7,14 @@ By utilizing the `EmptyCollection`, developers can write cleaner and more concis
 Just as optional types in different programming languages offer methods or functions to check for presence (_isPresent()_) and provide fallback values (_orElse()_), the `EmptyCollection` provides a simple fallback functionality to handle cases where the collection is empty as it always evaluates to `False`.
 
 This demonstrates how you can implement a straightforward fallback mechanism using the or operator when retrieving the final data.
-```python
-from trackteroid import (
-    Asset,
-    Query
-)
-
-asset_collection = Query(Asset).by_name("DOESNT_EXIST").get_all()
-print(asset_collection)
-# output: EmptyCollection[Asset]
-
-print(not asset_collection)
-# output: True
-
-print(asset_collection or "Oh vey... no results found.")
-# output: Oh vey... no results found.
+```{include} collections/examples.md
+:start-after: example fallback1 start
+:end-before: example fallback1 end
 ```
 
 This code example showcases how to gracefully handle scenarios where the intermediate steps of querying, filtering, and retrieving data may result in an empty collection. By utilizing the or operator and providing an empty list as a fallback, we ensure that the final result is either the desired data or an empty list, mitigating the risk of errors or unexpected behavior.
 
-```python
-from trackteroid import (
-    Asset,
-    Query
-)
-
-print(
-    # The Query result could already be empty.
-    # This is more likely when using criteria to filter results when querying.
-    Query(Asset).get_first(
-        projections=[
-            "versions.is_published",
-            "versions.user.username"
-        ]
-    ).
-    # An asset could have no versions or at least no versions that have been marked as `is_published`.
-    versions.filter(
-        lambda avc: avc.is_published[0]
-    ).
-    user.username
-    # Finally, we retrieve the username of the user associated with the filtered versions.
-    # If at any point we encounter no results, we can gracefully handle it by providing an empty list as a fallback.
-    or []
-)
+```{include} collections/examples.md
+:start-after: example fallback2 start
+:end-before: example fallback2 end
 ```
