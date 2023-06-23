@@ -8,7 +8,7 @@ To make your configuration file accessible, you can utilize the `TRACKTEROID_CON
 
 Here's an example for Linux with Bash:
 ```shell
-export TRACKTEROID_EXAMPLE=/path/to/my/trackteroid_user_config.py
+export TRACKTEROID_CONFIGURATION=/path/to/my/trackteroid_user_config.py
 ```
 
 The subsequent section outlines the available configuration options within Trackteroid and explains how to customize them according to your preferences.
