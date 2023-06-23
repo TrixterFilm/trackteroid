@@ -90,7 +90,7 @@ def _override_configuration():
         for attribute in relevant_attributes:
             if hasattr(custom_configuration, attribute):
                 _LOG.info(f"Adding '{attribute}' from user configuration.")
-                if attribute in _CALLABLES_REQUIRE_FALLBACKS:
+                if attribute in _CALLABLES_REQUIRE_FALLBACK:
                     globals()[attribute] = _fallback_decorator(
                         globals()[attribute],
                         attribute
@@ -117,7 +117,7 @@ WARN_ON_INJECT = False
 ############################################################################################
 
 _LOG = logging.getLogger(f"{LOGGING_NAMESPACE}.configuration")
-_CALLABLES_REQUIRE_FALLBACKS = [
+_CALLABLES_REQUIRE_FALLBACK = [
     "RELATIONSHIPS_RESOLVER",
 ]
 
