@@ -43,7 +43,7 @@ import sys
 from ftrack_api.symbol import NOT_SET
 
 from .declarations import *
-from .relationships_parser import RelationshipsParser
+
 from .schematypes import (
     CUSTOM_ATTRIBUTE_TYPE_COMPATIBILITY,
     AttributeInfo
@@ -58,7 +58,6 @@ from ..configuration import (
     ALLOWED_FOR_DELETION_RESOLVER,
     WARN_ON_INJECT
 )
-from ..session import SESSION
 
 
 LOG = logging.getLogger("{}.entities".format(LOGGING_NAMESPACE))
@@ -174,7 +173,7 @@ class Relationship(dict):
 
         # on initial request infer all relationships from database and custom schema
         if key not in _RELATIONSHIPS_CACHE:
-            # always do a copy of ourselve that will be added to the cache as a Relationship instance
+            # always do a copy of ourselves that will be added to the cache as a Relationship instance
             # is currently being used as a class attribute
             self._infer_from_session_schema(session)
 
@@ -185,6 +184,8 @@ class Relationship(dict):
 
                 if not isinstance(relation, list):
                     _relation = [relation]
+                else:
+                    _relation = relation
 
                 for some_relation in _relation:
                     attribute_tokens = some_relation.split(".")
@@ -193,7 +194,7 @@ class Relationship(dict):
                     if len(attribute_tokens) > 1:
                         _collection = leaf_attribute in collection_attributes
                     else:
-                        _collection = bool(re.match("^(children|ancestors)(\[\w+\])?", attribute_tokens[0]))
+                        _collection = bool(re.match(r"^(children|ancestors)(\[\w+\])?", attribute_tokens[0]))
 
                     if collection is None:
                         collection = _collection
@@ -261,7 +262,7 @@ class EmptyCollection(object):
         # in case we use methods like .values() or .from_entities() etc
         # we need to take care to not increment the depth, as it doesn represent
         # an attribute/relation access
-        if item in [_ for _ in dir(EntityCollection) if not re.match("__\w+__|children", _)]:
+        if item in [_ for _ in dir(EntityCollection) if not re.match(r"__\w+__|children", _)]:
             collection_copy.depth = current_depth
         return collection_copy
 
@@ -276,8 +277,8 @@ class EmptyCollection(object):
         return self
 
     def __iter__(self):
-       self._current_iter_index = 0
-       return self
+        self._current_iter_index = 0
+        return self
 
     def __len__(self):
         return 0
@@ -305,11 +306,11 @@ class EmptyCollection(object):
 
     def create(self, **kwargs):
         assert self.depth == 1, \
-        """
-        This attribute does not exist yet. The parent attribute also did not exist.
-        Create can only be called on existing attributes OR if at least the parent
-        exists.
-        """
+            """
+            This attribute does not exist yet. The parent attribute also did not exist.
+            Create can only be called on existing attributes OR if at least the parent
+            exists.
+            """
         entitycollection = EntityCollection._make_empty(self._entity.__class__, self._session)
         return entitycollection.create(empty=self, **kwargs)
 
@@ -412,7 +413,9 @@ class EntityCollection(object):
                         else:
                             values.append(_)
                     if not entities and not values and not entity_type:
-                        entity_type = Entity.from_entity_type(name=self._get_attribute_compatibility_types(item).types[0].__name__)
+                        entity_type = Entity.from_entity_type(
+                            name=self._get_attribute_compatibility_types(item).types[0].__name__
+                        )
                 elif value.__class__.__name__ == "KeyValueMappedCollectionProxy":
                     values.append(dict(entity.ftrack_entity["metadata"].items()))
 
@@ -442,7 +445,11 @@ class EntityCollection(object):
         # handle collection.<type>
         elif item in globals():
             # if not already parsed and cached let's do it now
-            self._entity.relationship(session=self.query.session, schema=self.query.schema, entity_type=self._entity.__class__)
+            self._entity.relationship(
+                session=self.query.session,
+                schema=self.query.schema,
+                entity_type=self._entity.__class__
+            )
             if self._entity.relationship.get(globals()[item]):
                 relation = self._entity.relationship.get(globals()[item]).relation
 
@@ -802,15 +809,15 @@ class EntityCollection(object):
         # TEST: What happens if we naively do this. Adjust unittests to check!
         if value_info.types not in [_ for _ in attribute_info.types]:
             compatible, reason = False, \
-            (
-                "The given value '{}' does not have the correct type "
-                "for the receiver attribute '{}'. {} != {}".format(
-                    value,
-                    attribute_name,
-                    value_info.types,
-                    attribute_info.types
+                (
+                    "The given value '{}' does not have the correct type "
+                    "for the receiver attribute '{}'. {} != {}".format(
+                        value,
+                        attribute_name,
+                        value_info.types,
+                        attribute_info.types
+                    )
                 )
-            )
             return compatible, reason
 
         # TODO: Allow assignment of single value to multiple receivers.
@@ -913,6 +920,8 @@ class EntityCollection(object):
             entities (Entity or list): Entity subclass or list of Entity subclasses
             source (EntityCollection or tuple(str, EntityCollection)): store what source produced the new collection
             to preserve the source, from where the resulting EmptyCollection was generated from.
+            type_override: if given it will use the override as the type for the generated collection
+                and not determine it from the first entity automatically
 
         Returns:
             EntityCollection
@@ -1153,7 +1162,7 @@ class EntityCollection(object):
         """ Returns an EntityCollection with elements belonging to the current or the given collection or possibly both
 
         Args:
-            collection (EntityCollection): EntityCollection object of same type as the current one
+            collections (EntityCollection): EntityCollection object of same type as the current one
 
         Returns:
             EntityCollection:
@@ -1174,7 +1183,7 @@ class EntityCollection(object):
         """ Returns an EntityCollection with elements belonging to the current and the given collection
 
         Args:
-            collection (EntityCollection): EntityCollection object of same type as the current one
+            collections (EntityCollection): EntityCollection object of same type as the current one
 
         Returns:
             EntityCollection:
@@ -1311,7 +1320,7 @@ class EntityCollection(object):
                     # we are on a non branching level
                     key = list(iterable.keys())[0]
                     # append to the existing path as we don't need to branch
-                    path += "." + key if path else key # only insert dot in existing path
+                    path += "." + key if path else key  # only insert dot in existing path
                     # get the downstream dict recursively
                     if key.endswith("]"):
                         _ = __flatten(iterable[key], "")
@@ -1426,12 +1435,11 @@ class EntityCollection(object):
     def commit(self):
         self._session.commit()
 
-    def _get_relatives(self, relative_type, *args, **kwargs):
+    def _get_relatives(self, relative_type, **kwargs):
         """ Get the relative entity based on the relationship.
 
         Args:
             relative_type (Entity): subclass of Entity
-            *args ():
             **kwargs ():
 
         Returns:
@@ -1442,7 +1450,6 @@ class EntityCollection(object):
         if not relationship:
             raise ValueError("Unknown relationship for relative '{}'".format(relative_type))
 
-        relation_projections = []
         if not isinstance(relationship, list):
             relation_projections = [relationship]
         else:
@@ -1619,15 +1626,12 @@ class EntityCollection(object):
         Returns:
             The SESSION object so we can call commit() directly.
         """
-
-
-        if not ALLOWED_FOR_DELETION_RESOLVER(session=self._session, type_name=self.entity_type.__name__):
+        type_name = self.entity_type.__name__
+        if not ALLOWED_FOR_DELETION_RESOLVER(session=self._session, type_name=type_name):
             raise AssertionError(
-                "Current entity type '{}' for server '{}' is not allowed for deletion as it doesn't match against "
-                "any of these patterns: {}".format(
-                    self.entity_type.__name__,
-                    self._session.server_url,
-                    (", ".join(allowed_for_deletion_patterns) or "<no pattern given>")
+                "Current entity type '{}' for server '{}' is not allowed for deletion. ".format(
+                    type_name,
+                    self._session.server_url
                 )
             )
 
@@ -1775,15 +1779,15 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
     def inject(self, target, *filter):
         if any(re.search(r"^or\s*", _, flags=re.IGNORECASE) for _ in filter):
             raise ValueError(
-                "OR relationships are not supported accross multiple criteria or filter.\n"
-                "You can use an 'or' relatioship within a single filter string though."
+                "OR relationships are not supported across multiple criteria or filter.\n"
+                "You can use an 'or' relationship within a single filter string though."
             )
 
         # sanitize partial query
         sanitized_filters = [re.sub(r"^(and|where)\s*", "", _, flags=re.IGNORECASE) for _ in filter]
         partial_query = " and ".join(sanitized_filters)
         if WARN_ON_INJECT:
-            self.log.warning("`inject` crieria was used with partial query '{}'".format(partial_query))
+            self.log.warning("`inject` criteria was used with partial query '{}'".format(partial_query))
 
         return partial_query
 
@@ -1811,4 +1815,5 @@ class Entity(_EntityBase):
 
 class EntityCollectionOperationError(ValueError):
     pass
+
 
