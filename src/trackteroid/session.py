@@ -31,6 +31,7 @@
 import dbm
 import contextlib
 import json
+import logging
 import warnings
 import inspect
 import importlib
@@ -48,12 +49,13 @@ from ftrack_api.operation import (
     UpdateEntityOperation,
     Operations
 )
+from .configuration import LOGGING_NAMESPACE
 
 from .entities.relationships_parser import RelationshipsParser
 
 
 _PARSED_RELATIONSHIPS_CACHE = {}
-
+LOG = logging.getLogger(f"{LOGGING_NAMESPACE}.session")
 
 class Session(object):
     """ Delegates all attributes and methods to the ftrack session instance
@@ -63,8 +65,8 @@ class Session(object):
 
     # exclude members that we don't want to delegate
     MEMBERS = [
-        "_session",
         "_session_arguments",
+        "_session_instance",
         "_terminated_queries",  # this is our terminated query cache
         "reuse_query_results",
     ]
@@ -79,14 +81,29 @@ class Session(object):
                 session_arguments[arg_key] = arg_val
         session_arguments.update(kwargs)
 
-        self._session = ftrack_api.Session(**session_arguments)
-
-        # monkey patch ftrack session to find the way back from it to here
-        self._session.delegate = self
+        self._session_instance = None
         self._session_arguments = session_arguments
+
         self._terminated_queries = {}
 
         self.reuse_query_results = kwargs.get("reuse_query_results", False)
+
+    @property
+    def _session(self):
+        if self._session_instance is None:
+            self._session_instance = self._create_new_session()
+            print("NWWWWW")
+            LOG.info(f"Creating a new ftrack sesion instance {self._session_instance}")
+        return self._session_instance
+
+    def _create_new_session(self):
+        session = ftrack_api.Session(**self._session_arguments)
+        # monkey patch ftrack session to find the way back from it to here
+        session.delegate = self
+        # Some of the attributes propagated as arguments are cache-related, therefore we
+        # need to clear the cache in order to make sure it's empty for the new session.
+        session.cache.clear()
+        return session
 
     def __eq__(self, other):
         if isinstance(other, ftrack_api.Session):
@@ -146,10 +163,7 @@ class Session(object):
         self._session.close()
         self._session_arguments.update(session_attributes)
         self._session_arguments.update(kwargs)
-        self._session = ftrack_api.Session(**self._session_arguments)
-        # Some of the attributes propagated as arguments are cache-related, therefore we
-        # need to clear the cache in order to make sure it's empty for the new session.
-        self._session.cache.clear()
+        self._session_instance = None
 
         self._terminated_queries = {}
 
@@ -316,8 +330,8 @@ class Session(object):
         # load previous operations back in the stack
         self.recorded_operations = _previous_operations
 
-    def __getattribute__(self, item):
-        # delegating access to those attributes is neccessary to support the
+    def __getattr__(self, item):
+        # delegating access to those attributes is necessary to support the
         # temporary attribute value decorator
         if item in ("__dict__", "__slots__"):
             return self.__getattr__(item)
@@ -333,7 +347,6 @@ class Session(object):
     def __setattr__(self, key, value):
         if key in self.MEMBERS:
             super(Session, self).__setattr__(key, value)
-            setattr(self._session, key, value)
         elif hasattr(self, key):
             setattr(self._session, key, value)
         else:
@@ -342,7 +355,6 @@ class Session(object):
     def __delattr__(self, item):
         if item in self.MEMBERS:
             super(Session, self).__delattr__(item)
-            delattr(self._session, item)
         elif hasattr(self, item):
             delattr(self._session, item)
         else:
@@ -358,5 +370,4 @@ class _SessionDelegate(Session):
 
 # main session
 # TODO: defer connection
-SESSION = Session()
-SESSION.auto_populate = False
+SESSION = Session(auto_populate=False)
