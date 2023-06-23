@@ -102,10 +102,15 @@ class Session(object):
     def parsed_relationships(self):
         if not self._session.server_url in _PARSED_RELATIONSHIPS_CACHE:
             relationship_parser = RelationshipsParser(ftrack_session=self._session)
-            # TODO: why do we have to exclude certain types?
+            # types such as "Context" are ambiguous and cannot be used to extract direct relationships
+            # example structure - Seq -> Folder -> Shot
+            # in this case, establishing a relationship from Seq to Shot is impossible as would any other
+            # that went through "parent" or "children" for example
             relationship_parser.exclude_types = {"Context"}
             relationship_parser.parse_session_schemas()
-            # TODO: why do we have to exclude certain attributes?
+            # attributes that group things cannot be used to extract relationships
+            # as an example, "descendants" lists all children and children of children and so on,
+            # so they are all flattened with their relationships removed
             relationship_parser.attributes_blacklist = {"descendants", "ancestors", "status_changes"}
             relationship_parser.extract_all_entity_relations()
             _PARSED_RELATIONSHIPS_CACHE[self._session.server_url] = relationship_parser

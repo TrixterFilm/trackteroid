@@ -84,21 +84,36 @@ class RelationshipsParser(object):
 
     def create_entity_network(self, ftrack_entity):
         self._tmp_exclude_types = set(self._exclude_types)
+        # entity type must be excluded, as finding it in one of its children would lead to an endless recursion
+        self._tmp_exclude_types.add(ftrack_entity)
         return self.recurse_entity_connections(ftrack_entity, ancestors=set())
 
     def recurse_entity_connections(self, ftrack_entity, ancestors=None):
+        # ancestors are the entities, in sequence, linking to the current entity
+        # the top entity of course has none
         if ancestors is None:
             ancestors = set()
+        # refs - reference type attributes on the current entity
+        # type - current entity's type
         network = {"refs": {}, "type": ftrack_entity}
+        # return otherwise recursion will be endless
         if ftrack_entity in ancestors:
             return network
+
+        # get all array or non-array reference attributes of the current entity
         refs = self._entities.get(ftrack_entity).get(self._ref_key)
         if refs:
+            # first iteration - validate props
+            valid_props = {}
             for prop_name, prop_type in refs.items():
-                if prop_name in self._attributes_blacklist or prop_type in self._tmp_exclude_types or prop_type == ftrack_entity:
-                    continue
+                if prop_name not in self._attributes_blacklist and prop_type not in self._tmp_exclude_types and prop_type != ftrack_entity:
+                    valid_props[prop_name] = prop_type
+            # add valid prop types to exclude list for deeper recursions
+            self._tmp_exclude_types.update(valid_props.values())
+
+            # second iteration, recurse all valid props
+            for prop_name, prop_type in valid_props.items():
                 if prop_type in self._entities:
-                    self._tmp_exclude_types.add(ftrack_entity)
                     ancestors.add(ftrack_entity)
                     network["refs"][prop_name] = self.recurse_entity_connections(prop_type, ancestors)
         return network
@@ -124,15 +139,18 @@ class RelationshipsParser(object):
         for entity_name in self._entities:
             self._relationships[entity_name] = {}
 
+            # create network of non-array references
             self.use_array_refs = False
             asset_network = self.create_entity_network(entity_name)
 
             # extract non-collection relations
             self._relationships[entity_name]["non_collection"] = self.extract_entity_relations(asset_network)
 
-            # extract collection relations
+            # create network of array references
             self.use_array_refs = True
             asset_network = self.create_entity_network(entity_name)
+
+            # extract collection relations
             self._relationships[entity_name]["collection"] = self.extract_entity_relations(asset_network)
 
     def parse_project_structure(self, project):
