@@ -146,5 +146,19 @@ If multiple entities have the same min value, we follow Python's min implementat
 
 #### sort
 
+`sort(predicate)` returns a collection sorted by the given predicate.
+
+**Example1:** Sort the AssetVersion collection based on version number of the individual elements.
+```{include} collections/examples.md
+:start-after: example sort1 start
+:end-before: example sort1 end
+```
+
+**Example1:** Sort the AssetVersion collection based on the asset name of the individual elements.
+```{include} collections/examples.md
+:start-after: example sort2 start
+:end-before: example sort2 end
+```
+
 ### Set Operations
 

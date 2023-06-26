@@ -621,3 +621,58 @@ print(
 # (EntityCollection[AssetVersion]{11}, EntityCollection[AssetVersion]{89})
 ```
 example partition1 end
+
+example sort1 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion
+)
+
+asset_version_collection = Query(AssetVersion).get_all(limit=10, projections=["version"])
+
+print(
+    f"{asset_version_collection.version}\n"
+    f"{asset_version_collection.sort(lambda avc: avc.version).version}\n"
+    f"{asset_version_collection.sort(lambda avc: avc.version, reverse=True).version}"
+)
+# output:
+# [3, 1, 1, 2, 3, 1, 1, 1, 1, 1]
+# [1, 1, 1, 1, 1, 1, 1, 2, 3, 3]
+# [3, 3, 2, 1, 1, 1, 1, 1, 1, 1]
+```
+example sort1 end
+
+example sort2 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion,
+    Asset
+)
+
+asset_version_collection = Query(AssetVersion).get_all(limit=5, projections=[Asset.name, "version"])
+asset_version_collection_sorted = asset_version_collection.sort(lambda avc: avc.Asset.name)
+
+
+print(
+    list(
+        zip(
+            asset_version_collection.fold([], lambda x, y: x + y.asset.name),
+            asset_version_collection.version
+        )
+    )
+)
+print(
+    list(
+        zip(
+            asset_version_collection_sorted.fold([], lambda x, y: x + y.asset.name),
+            asset_version_collection_sorted.version
+        )
+    )
+)
+# output:
+# [('bc0040_comp', 3), ('classic_console_01', 1), ('classic_nightstand_01', 1), ('Animation', 2), ('Animation', 3)]
+# [('Animation', 2), ('Animation', 3), ('bc0040_comp', 3), ('classic_console_01', 1), ('classic_nightstand_01', 1)]
+```
+example sort2 end
