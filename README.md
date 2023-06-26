@@ -59,4 +59,4 @@ In summary Trackeroid tries to empower developers by providing a more intuitive 
 
 ## Usage
 
-See the [latest documentation](documentation) for usage details.
+See the [latest documentation](https://trackteroid.readthedocs.io) for usage details.
