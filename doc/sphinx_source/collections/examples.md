@@ -277,3 +277,113 @@ print(
 )
 ```
 example fallback2 end
+
+example apply1 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion,
+    Status,
+    Task
+)
+assetversion_collection = Query(AssetVersion).get_all(
+    limit=5,
+    projections=[Task, Task.Status, Task.Status.name]
+)
+print(
+    assetversion_collection.Task,
+    assetversion_collection.Task.Status.name
+)
+# output: EntityCollection[Task]{5} ['Done', 'Internal Approved', 'Not Started', 'Tweak', 'Final']
+
+status_collection = Query(Status).by_name("In Progress").get_first(projections=["name"])
+print(status_collection.name)
+# output: ['In Progress']
+
+assetversion_collection.Task.Status.apply(lambda avc: status_collection)
+print(
+    assetversion_collection.Task,
+    assetversion_collection.Task.Status.name
+)
+# output: EntityCollection[Task]{5} ['In Progress']
+```
+example apply1 end
+
+example apply2 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion
+)
+assetversion_collection = Query(AssetVersion).get_all(
+    limit=1, 
+    projections=["comment"]
+)
+print(assetversion_collection.comment)
+# output: ['submit version for review']
+
+assetversion_collection.apply(lambda avc: avc.comment[0] + " (edited)", attribute_name="comment")
+print(assetversion_collection.comment)
+# output: ['submit version for review (edited)']
+```
+example apply2 end
+
+example count1 start
+```python
+from trackteroid import (
+    Query,
+    Asset
+)
+
+asset_collection = Query(Asset).by_name("%character%", "%environment%").get_all(
+    limit=100,
+    projections=["name"]
+)
+print(asset_collection)
+# output: EntityCollection[Asset]{100}
+
+print(
+    asset_collection.count(lambda ac: "character" in ac.name[0]),
+    asset_collection.count(lambda ac: "environment" in ac.name[0]),
+)
+# output: 65 18
+```
+example count1 end
+
+example filter1 start
+```python
+from trackteroid import (
+    Query,
+    Asset
+)
+asset_collection = Query(Asset).get_all(
+    limit=100,
+    projections=["name"]
+)
+print(asset_collection)
+# output: EntityCollection[Asset]{100}
+
+prop_asset_collection = asset_collection.filter(lambda ac: "prop" in ac.name[0])
+print(prop_asset_collection)
+# output: EntityCollection[Asset]{1}
+```
+example filter1 end
+
+example filter2 start
+```python
+from trackteroid import (
+    Query,
+    Asset
+)
+asset_collection = Query(Asset).get_all(
+    limit=100,
+    projections=["versions"]
+)
+print(asset_collection)
+# output: EntityCollection[Asset]{100}
+
+frequent_asset_collection = asset_collection.filter(lambda ac: len(ac.versions) >= 10)
+print(frequent_asset_collection)
+# output: EntityCollection[Asset]{11}
+```
+example filter2 end
