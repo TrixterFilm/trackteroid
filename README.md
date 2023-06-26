@@ -31,7 +31,7 @@ Install and update using [pip](https://pip.pypa.io/en/stable/getting-started/):
 pip install trackteroid
 ```
 
-## Usage
+## Motivation
 
 We have decided to build a wrapping API around the Ftrack Python API to address several limitations and challenges that arise when directly interacting with the Python API. While the Ftrack Python API offers a lot of flexibility, there are certain aspects that can make development and maintenance more cumbersome and less intuitive. By creating a wrapping API, we aim to overcome these challenges and provide a more streamlined and developer-friendly experience. Here are the key reasons for this decision:
 
