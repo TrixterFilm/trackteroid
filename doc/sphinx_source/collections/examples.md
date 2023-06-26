@@ -373,17 +373,141 @@ example filter2 start
 ```python
 from trackteroid import (
     Query,
-    Asset
+    Asset,
+    AssetVersion
 )
 asset_collection = Query(Asset).get_all(
     limit=100,
-    projections=["versions"]
+    projections=[AssetVersion]
 )
 print(asset_collection)
 # output: EntityCollection[Asset]{100}
 
-frequent_asset_collection = asset_collection.filter(lambda ac: len(ac.versions) >= 10)
+frequent_asset_collection = asset_collection.filter(lambda ac: len(ac.AssetVersion) >= 10)
 print(frequent_asset_collection)
 # output: EntityCollection[Asset]{11}
 ```
 example filter2 end
+
+example fold1 start
+```python
+from trackteroid import (
+    Query,
+    Asset,
+    Component
+)
+
+asset_collection = Query(Asset).get_first(
+    projections=[
+        Component,
+        Component.size
+    ]
+)
+
+print(asset_collection.Component.size)
+# output: [1572543, 1940586, 4921736, ...]
+
+print(
+    "Asset's components total size: {:.2f} MB".format(
+        asset_collection.Component.fold(
+            0, lambda current, cc: current + cc.size[0]
+        ) / 1024**2
+    )
+)
+# output: Asset's components total size: 77.43 MB
+```
+example fold1 end
+
+example group1 start
+```python
+from pprint import pprint
+
+from trackteroid import (
+    Query,
+    AssetVersion,
+    Asset
+)
+
+pprint(
+    Query(AssetVersion).get_all(
+        limit=10,
+        projections=[Asset.name]
+    ).group(lambda avc: avc.Asset.name[0])
+)
+# output:
+# {'Animation': EntityCollection[AssetVersion]{3},
+#  'bc0040_comp': EntityCollection[AssetVersion]{1},
+#  'classic_console_01': EntityCollection[AssetVersion]{1},
+#  'classic_nightstand_01': EntityCollection[AssetVersion]{1},
+#  'coffee_table_01': EntityCollection[AssetVersion]{1},
+#  'gothic_bed_01': EntityCollection[AssetVersion]{1},
+#  'gothic_console_01': EntityCollection[AssetVersion]{1},
+#  'wooden_table_03': EntityCollection[AssetVersion]{1}}
+
+```
+example group1 end
+
+example group2 start
+```python
+from pprint import pprint
+
+from trackteroid import (
+    Query,
+    AssetVersion,
+    State
+)
+
+pprint(
+    Query(AssetVersion).get_all(
+        limit=10,
+        projections=[State.name]
+    ).group(lambda avc: avc.State.name[0])
+)
+# output:
+# {'Done': EntityCollection[AssetVersion]{1},
+#  'In Progress': EntityCollection[AssetVersion]{9}}
+```
+example group2 end
+
+example group_and_map1 start
+```python
+from pprint import pprint
+
+from trackteroid import (
+    Query,
+    AssetVersion,
+    Note,
+    Status
+)
+
+pprint(
+    Query(AssetVersion).by_publisher(
+        "leandra.rosa@example.com"
+    ).get_all(
+        limit=10,
+        projections=[
+            Status.name,
+            Note.content,
+            "version"
+        ]
+    ).group_and_map(
+        lambda avc: f"{avc.Asset.name[0]}_v{str(avc.version[0]).zfill(3)}",
+        lambda avc: f"{avc.Status.name[0]} - {avc.Note.content[0] or 'No notes provided yet.'}"
+    )
+)
+# output:
+# {'Animation_v001': 'Revise - I think we will still have him approach sooner. '
+#                    'revised expression.',
+#  'Animation_v002': "Revise - Isn't his left eyebrow too low? 2: I think we can "
+#                    'improve his expression at the end of the shot. Make the '
+#                    'expression a little more asymmetrical.',
+#  'Animation_v003': 'Approved - Good job, Approved!',
+#  'bc0040_layout_v001': 'Revise - Is this the approved camera? Seems way too '
+#                        'wide. Scale is off as well',
+#  'bc0040_layout_v002': 'Approved - Approved'}
+```
+example group_and_map1 end
+
+example map1 start
+
+example map1 end

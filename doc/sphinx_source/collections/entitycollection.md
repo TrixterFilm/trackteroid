@@ -7,13 +7,13 @@ The EntityCollection class provides higher-order methods that accept functions a
 `apply(predicate, attribute_name=None)` applies a given predicate function to each element in the collection and assigns the generated value to the specified attribute. 
 If no attribute name is provided, the value is directly assigned to the calling collection.
 
-**Example 1:** Override _status_ of all tasks associated to an `AssetVersion` collection.
+**Example 1:** Override status of all tasks associated to an AssetVersion collection.
 ```{include} collections/examples.md
 :start-after: example apply1 start
 :end-before: example apply1 end
 ```
 
-**Example 1:** Extend the _comment_ field of items within an `AssetVersion` collection.
+**Example 1:** Extend the comment field of items within an AssetVersion collection.
 ```{include} collections/examples.md
 :start-after: example apply2 start
 :end-before: example apply2 end
@@ -48,9 +48,39 @@ The predicate function is applied to each element in the collection, and its ret
 
 #### fold
 
+`fold(start_value, predicate)` accumulates the value starting with an initial value and applying an operation from the first to the last element in a collection.
+
+**Example 1:** Determine the total filesize of all components for one Asset.
+```{include} collections/examples.md
+:start-after: example fold1 start
+:end-before: example fold1 end
+```
+
 #### group
 
+`group(predicate)` returns a dictionary with keys given by the predicate. All entities from the original collection will be mapped to their corresponding key.
+
+**Example 1:** Group all AssetVersion collections via name of their asset.
+```{include} collections/examples.md
+:start-after: example group1 start
+:end-before: example group1 end
+```
+
+**Example 2:** Group all AssetVersion collections via state name of their status.
+```{include} collections/examples.md
+:start-after: example group2 start
+:end-before: example group2 end
+```
+
 #### group_and_map
+
+`group_and_map(group_predicate, map_predicate)` runs a [group](#group) first and then runs [map](#map) on all the collections in the resulting dictionary values.
+
+**Example1:** Provide a status -> last note overview for versions created by a given user.
+```{include} collections/examples.md
+:start-after: example group_and_map1 start
+:end-before: example group_and_map1 end
+```
 
 #### map
 
