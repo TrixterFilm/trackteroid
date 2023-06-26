@@ -74,7 +74,7 @@ The predicate function is applied to each element in the collection, and its ret
 
 #### group_and_map
 
-`group_and_map(group_predicate, map_predicate)` runs a [group](#group) first and then runs [map](#map) on all the collections in the resulting dictionary values.
+`group_and_map(group_predicate, map_predicate)` runs a [group](#group) first and then runs the map predicate function on all the collections in the resulting dictionary values.
 
 **Example1:** Provide a status -> last note overview for versions created by a given user.
 ```{include} collections/examples.md
@@ -84,14 +84,67 @@ The predicate function is applied to each element in the collection, and its ret
 
 #### map
 
+`map(predicate)` generates a sequence of results by applying a given predicate function to each element in the collection. The predicate function is invoked for each element, and its return value is included in the generated sequence.
+
+**Example1:** Generate a formatted representation of the AssetVersion combining the version number and the Asset name.
+```{include} collections/examples.md
+:start-after: example map1 start
+:end-before: example map1 end
+```
+
 #### max
+
+`max(predicate)` returns the first element yielding the largest value of the given function.
+
+**Example1:** Get the AssetVersion collection with the largest version number for one asset.
+```{include} collections/examples.md
+:start-after: example max1 start
+:end-before: example max1 end
+```
+
+**Example2:** Get the Asset collection that holds an AssetVersion with the largest version number.
+```{include} collections/examples.md
+:start-after: example max2 start
+:end-before: example max2 end
+```
+
+```{attention}
+The result of `max` will always be a single element collection even if multiple elements yield the same largest value. 
+If multiple entities have the same max value, we follow Python's max implementation by returning the last occurence of this value. 
+```
 
 #### min
 
+`min(predicate)` returns the first element yielding the smallest value of the given function.
+
+**Example1:** Get the AssetVersion collection with the smallest version number for one asset.
+```{include} collections/examples.md
+:start-after: example min1 start
+:end-before: example min1 end
+```
+
+**Example2:** Get the Asset collection that holds an AssetVersion with the smallest version number.
+```{include} collections/examples.md
+:start-after: example min2 start
+:end-before: example min2 end
+```
+
+```{attention}
+The result of `min` will always be a single element collection even if multiple elements yield the same smallest value. 
+If multiple entities have the same min value, we follow Python's min implementation by returning the first occurence of this value. 
+```
+
 #### partition
 
-#### sort
+`partition(predicate)` splits the collection into tuple of EntityCollections/EmptyCollections, where the first item contains a collection with elements for which the predicate returned `True`, while the second items contains a collection with elements for which the predicate returned `False`.
 
+**Example1:** Split the AssetVersion collection based on a potential "Done" state of the elements.
+```{include} collections/examples.md
+:start-after: example partition1 start
+:end-before: example partition1 end
+```
+
+#### sort
 
 ### Set Operations
 

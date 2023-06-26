@@ -509,5 +509,115 @@ pprint(
 example group_and_map1 end
 
 example map1 start
+```python
+from trackteroid import (
+    Query,
+    Asset,
+    AssetVersion
+)
 
+print(
+    list(
+        Query(AssetVersion).get_all(
+            limit=2,
+            projections=[Asset.name, "version"]
+        ).map(lambda avc: f"{avc.Asset.name[0]}:v{str(avc.version[0]).zfill(3)}")
+    )
+)
+# output: ['bc0040_comp:v003', 'classic_console_01:v001']
+```
 example map1 end
+
+example max1 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion
+)
+
+assetversion_collection = Query(AssetVersion).by_name("bc0050_comp").get_all(projections=["version"])
+max_version_collection = assetversion_collection.max(lambda avc: avc.version)
+print(
+    assetversion_collection.version,
+    max_version_collection,
+    max_version_collection.version
+)
+# output: [1, 2, 3] EntityCollection[AssetVersion]{1} [3]
+```
+example max1 end
+
+example max2 start
+```python
+from trackteroid import (
+    Query,
+    Asset,
+    AssetVersion
+)
+
+asset_collection = Query(Asset).\
+    by_name("bc0050_comp", "classic_console_01").\
+    get_all(
+    projections=[
+        AssetVersion,
+        AssetVersion.version
+    ]
+)
+print(asset_collection.max(lambda ac: ac.AssetVersion.version).name)
+# ['classic_console_01']
+```
+example max2 end
+
+example min1 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion
+)
+
+assetversion_collection = Query(AssetVersion).by_name("bc0050_comp").get_all(projections=["version"])
+max_version_collection = assetversion_collection.min(lambda avc: avc.version)
+print(
+    assetversion_collection.version,
+    max_version_collection,
+    max_version_collection.version
+)
+# output: [1, 2, 3] EntityCollection[AssetVersion]{1} [1]
+```
+example min1 end
+
+example min2 start
+```python
+from trackteroid import (
+    Query,
+    Asset,
+    AssetVersion
+)
+
+asset_collection = Query(Asset).\
+    by_name("bc0050_comp", "classic_console_01").\
+    get_all(
+    projections=[
+        AssetVersion,
+        AssetVersion.version
+    ]
+)
+print(asset_collection.min(lambda ac: ac.AssetVersion.version).name)
+# ['bc0050_comp']
+```
+example min2 end
+
+example partition1 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion,
+    State
+)
+
+print(
+    Query(AssetVersion).get_all(limit=100, projections=[State.name]).\
+    partition(lambda avc: avc.State.name[0] == "Done")
+)
+# (EntityCollection[AssetVersion]{11}, EntityCollection[AssetVersion]{89})
+```
+example partition1 end
