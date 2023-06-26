@@ -9,6 +9,7 @@
 
 [![Documentation Status][documentation-button]][documentation]
 [![Python Versions][pyversion-button]][pypi]
+[![Downloads][downloads-button]][downloads]
 [![BSD License][bsdlicense-button]][bsdlicense]
 
 [documentation]: https://trackteroid.readthedocs.io
@@ -17,6 +18,8 @@
 [pypi]: https://pypi.org/project/trackteroid/
 [bsdlicense]: https://opensource.org/licenses/BSD-3-Clause
 [bsdlicense-button]: https://img.shields.io/badge/license-BSD-yellow.svg
+[downloads]: https://pepy.tech/project/trackteroid
+[downloads-button]: https://static.pepy.tech/badge/trackteroid
 
 ----
 **Declarative, object-oriented wrapper for Ftrack queries. Powerful functional-style interactions with resulting collections.**
@@ -59,4 +62,4 @@ In summary Trackeroid tries to empower developers by providing a more intuitive 
 
 ## Usage
 
-See the [latest documentation](https://trackteroid.readthedocs.io) for usage details.
+See the [latest documentation][documentation] for usage details.
