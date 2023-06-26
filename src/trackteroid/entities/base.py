@@ -820,9 +820,6 @@ class EntityCollection(object):
                 )
             return compatible, reason
 
-        # TODO: Allow assignment of single value to multiple receivers.
-        #  If is_array is true, we have to make sure, that the receiver either supports
-        #  a collection or we have to check if the value only contains a single value
         if isinstance(value, (EntityCollection, tuple, list)):
             _reason = (
                 "When setting an attribute on a receiver collection, "
@@ -1117,6 +1114,35 @@ class EntityCollection(object):
             return self.from_entities(filtered)
         else:
             return EmptyCollection(_type=self._entity, source=self._get_parent(self), session=self._session)
+
+    def apply(self, predicate, attribute_name=None):
+        """Applies a predicate function to each entity in the collection and
+        assigns the generated value to the specified attribute.
+        If no attribute name is provided, the value is directly assigned to the calling collection.
+
+        Examples:
+            >>> some_collection.apply(lambda c: c.another_attr[0] + "_edited", "some_attr")
+            >>> assetversion_collection.Task.Status.apply(status_collection)
+
+        Args:
+            predicate (callable): A callable function that receives a single entity collection.
+                The return value of the function will be applied to the specified attribute.
+            attribute_name (optional: str): The name of the attribute to which the generated value will be assigned
+                or None
+
+        Returns:
+            EntityCollection: the updated collection
+
+        """
+        if not attribute_name:
+            attribute_name, collection = self._source
+        else:
+            collection = self
+
+        for entitycollection in collection:
+            setattr(entitycollection, attribute_name, predicate(entitycollection))
+
+        return getattr(collection, attribute_name)
 
     @staticmethod
     def _get_parent(entitycollection):
