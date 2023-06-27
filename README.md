@@ -1,9 +1,9 @@
-<p>
+<div align="center">
     <picture>
         <source media="(prefers-color-scheme: dark)" srcset=".graphics/svg/logo_white.svg" width=100>
         <img src=".graphics/svg/logo_black.svg" width=100>
     </picture>
-</p>
+</div>
 
 # Trackteroid
 
@@ -57,8 +57,135 @@ We have decided to build a wrapping API around the Ftrack Python API to address 
 - **Improved Field Accessibility**
   - The Ftrack Python API does not always present the available fields on entities directly, requiring developers to refer to the documentation or inspect the schema to determine the available properties. We do take steps to enhance field accessibility to some extent. We aim to provide a more intuitive and discoverable way for developers to access entity fields by exposing them directly through the API. This saves developers time and effort by eliminating the need for constant referencing of documentation or inspection of the underlying schema. It enhances productivity and code maintainability by making entity fields more accessible and discoverable within the development workflow.
 
-  
 In summary Trackeroid tries to empower developers by providing a more intuitive and efficient way to interact with the Ftrack platform, ultimately accelerating development, improving code quality, and enhancing the overall user experience.
+
+
+### Comparison
+With **Trackteroid**...
+```python
+# Calculate and display the total time duration logged for 
+# AssetBuild types within specified Shots and Folders.
+#
+# output:
+# Found 9 assetbuilds.
+# Found 1 assetbuilds with timelogs.
+# {16.0: ['Drone Craft'],
+#  'No time tracked yet.': ['Drawer Cabinet 01',
+#                           'Gothic Commode 01',
+#                           'Shelf 01',
+#                           'Side Table 01',
+#                           'Small Wooden Table 01',
+#                           'Vintage Wooden Drawer 01',
+#                           'Wooden Table 01',
+#                           'Wooden Table 02']}
+  
+from pprint import pprint
+
+from trackteroid import (
+    Query,
+    AssetBuild,
+    Folder,
+    Task,
+    Project
+)
+
+assetbuild_collection = Query(AssetBuild).\
+    by_name(Project, "sync", "showroom").\
+    by_name(Folder, "Asset%", "Delivery 3").\
+    get_all(
+        projections=[
+            Task.Timelog,
+            Task.Timelog.duration
+        ]
+    )
+
+print(
+    f"Found {len(assetbuild_collection)} assets.\n"
+    f"Found {assetbuild_collection.count(lambda ac: ac.Task.Timelog)} assetbuilds with timelogs."
+)
+
+pprint(
+    assetbuild_collection.group_and_map(
+        lambda abc: abc.Task.Timelog.fold(
+            0,
+            lambda current, tc: current + tc.duration[0] / 3600
+        ) or "No time tracked yet.",
+        lambda abc: abc.sort(
+            lambda abc: abc.name
+        ).name
+    )
+)
+```
+
+...in contrast to the **Ftrack Python API**.
+```python
+# Calculate and display the total time duration logged for 
+# AssetBuild types within specified Shots and Folders.
+#
+# output:
+# Found 9 assetbuilds.
+# Found 1 assetbuilds with timelogs.
+# {16.0: ['Drone Craft'],
+#  'No time tracked yet.': ['Drawer Cabinet 01',
+#                           'Gothic Commode 01',
+#                           'Shelf 01',
+#                           'Side Table 01',
+#                           'Small Wooden Table 01',
+#                           'Vintage Wooden Drawer 01',
+#                           'Wooden Table 01',
+#                           'Wooden Table 02']}
+
+from pprint import pprint
+
+import ftrack_api
+
+session = ftrack_api.Session(auto_connect_event_hub=False, auto_populate=False)
+project_names = ("sync", "showroom")
+folder_specific = "Delivery 3"
+folder_unspecific = "Asset%"
+
+query = (
+    f"select id, name, assets.name, parent.name, project.name, "
+    f"assets.versions.task.timelogs, assets.versions.task.timelogs.duration "
+    f"from AssetBuild where project has (name in {project_names}) "
+    f"and parent[Folder] has (name is '{folder_specific}' or name like '{folder_unspecific}')"
+)
+
+assetbuilds_no_duration = ["No time tracked yet.", []]
+assetbuilds_timelog_duration = [0, []]
+
+assetbuilds = session.query(query).all()
+
+for assetbuild in assetbuilds:
+    has_duration = False
+    for asset in assetbuild["assets"]:
+        for version in asset["versions"]:
+            durations = [_["duration"] for _ in version["task"]["timelogs"]]
+            if any(durations):
+                for duration in durations:
+                    assetbuilds_timelog_duration[0] += duration / 3600
+                if not has_duration:
+                    has_duration = True
+
+    if has_duration:
+        assetbuilds_timelog_duration[1].append(assetbuild["name"])
+    else:
+        assetbuilds_no_duration[1].append(assetbuild["name"])
+
+print(
+    f"Found {len(assetbuilds)} assetbuilds.\n"
+    f"Found {len(assetbuilds_timelog_duration[1])} assetbuilds with timelogs."
+)
+
+assetbuilds_no_duration[1].sort()
+assetbuilds_timelog_duration[1].sort()
+
+pprint(
+    dict(
+        [assetbuilds_no_duration, assetbuilds_timelog_duration]
+    )
+)
+```
 
 ## Usage
 
