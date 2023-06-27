@@ -162,3 +162,38 @@ If multiple entities have the same min value, we follow Python's min implementat
 
 ### Set Operations
 
+#### difference 
+
+`difference(*collections)` computes the difference between two or more collections.
+
+```{include} collections/examples.md
+:start-after: example difference1 start
+:end-before: example difference1 end
+```
+
+#### intersection
+
+`intersection(*collections)` computes the intersection of two or more collections.
+
+```{include} collections/examples.md
+:start-after: example intersection1 start
+:end-before: example intersection1 end
+```
+
+#### symmetric_difference
+`symmetric_difference(*collections)` computes the [symmetric difference](https://en.wikipedia.org/wiki/Symmetric_difference) between collections.
+
+```{include} collections/examples.md
+:start-after: example symmetric difference1 start
+:end-before: example symmetric difference1 end
+```
+
+#### union
+
+`union(*collections)` computes the union of two or more collections.
+
+```{include} collections/examples.md
+:start-after: example union1 start
+:end-before: example union1 end
+```
+

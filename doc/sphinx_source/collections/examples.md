@@ -676,3 +676,101 @@ print(
 # [('Animation', 2), ('Animation', 3), ('bc0040_comp', 3), ('classic_console_01', 1), ('classic_nightstand_01', 1)]
 ```
 example sort2 end
+
+example union1 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion
+)
+
+collection_a = Query(AssetVersion).get(limit=3)
+collection_b = Query(AssetVersion).get(limit=3, offset=1)
+collection_c = Query(AssetVersion).get(limit=3, offset=2)
+
+print(f"a = {collection_a.version}")
+# output: 'a = [3, 6, 7]'
+print(f"b = {collection_b.version}")
+# output: 'b = [6, 7, 19]'
+print(f"c = {collection_c.version}")
+# output: 'c = [7, 19, 12]'
+
+# union
+print(f"a + b = {collection_a.union(collection_b).version}")
+# output: 'a + b = [3, 6, 7, 19]'
+print(f"a + b + c = {collection_a.union(collection_b, collection_c).version}")
+# output: 'a + b + c = [3, 6, 7, 19, 12]'
+```
+example union1 end
+
+example difference1 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion
+)
+
+collection_a = Query(AssetVersion).get(limit=3)
+collection_b = Query(AssetVersion).get(limit=3, offset=1)
+collection_c = Query(AssetVersion).get(limit=3, offset=2)
+
+print(f"a = {collection_a.version}")
+# output: 'a = [3, 6, 7]'
+print(f"b = {collection_b.version}")
+# output: 'b = [6, 7, 19]'
+print(f"c = {collection_c.version}")
+# output: 'c = [7, 19, 12]'
+
+# difference
+print(f"a - b = {collection_a.difference(collection_b).version}")
+# output: 'a - b = [3]'
+print(f"b - a = ", collection_b.difference(collection_a).version)
+# output: 'b - a =  [19]'
+print(f"c - b - a = ", collection_c.difference(collection_a, collection_b).version)
+# output: 'c - b - a =  [12]'
+print(f"b - c - a = ", collection_b.difference(collection_c, collection_a).version)
+# output: 'b - c - a =  EmptyCollection[AssetVersion]'
+```
+example difference1 end
+
+example symmetric difference1 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion
+)
+
+collection_a = Query(AssetVersion).get(limit=3)
+collection_b = Query(AssetVersion).get(limit=3, offset=1)
+
+print(f"a = {collection_a.version}")
+# output: 'a = [3, 6, 7]'
+print(f"b = {collection_b.version}")
+# output: 'b = [6, 7, 19]'
+
+# symmetric_difference
+print(f"(a - b) + (b - a) = {collection_a.symmetric_difference(collection_b).version}")
+# output: '(a - b) + (b - a) = [3, 19]'
+```
+example symmetric difference1 end
+
+example intersection1 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion
+)
+
+collection_a = Query(AssetVersion).get(limit=3)
+collection_b = Query(AssetVersion).get(limit=3, offset=1)
+
+print(f"a = {collection_a.version}")
+# output: 'a = [3, 6, 7]'
+print(f"b = {collection_b.version}")
+# output: 'b = [6, 7, 19]'
+
+# intersection
+print(f"(a + b) - ((a - b) + (b - a)) = {collection_a.intersection(collection_b).version}")
+# output: '(a + b) - ((a - b) + (b - a)) = [6, 7]'
+```
+example intersection1 end
