@@ -1015,7 +1015,7 @@ class EntityCollection(object):
         """ Returns a list of results that is obtained by running the predicate
         with each Entity as it's argument and returning the result.
         """
-        return map(predicate, self)
+        return list(map(predicate, self))
 
     def group_and_map(self, group_predicate, map_predicate):
         """ Runs a group_by first and then runs map on all the Collection in
