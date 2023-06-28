@@ -161,9 +161,43 @@ The listed page references will provide you will all the information when it com
 
 ##### Setting Attributes
 
-##### Linking 
+Data updates are primarily performed by assigning values using the `=` operator.
+
+```{include} collections/examples.md
+:start-after: example setattr1 start
+:end-before: example setattr1 end
+```
+The provided code example illustrates the process of assigning values to the _resource_identifier_ attribute of `ComponentLocation` entities associated with an `AssetVersion` collection.
+
+The code demonstrates two scenarios for updating values: single-value and multi-value assignment. In the case of single-value assignment, a string value is assigned to _ComponentLocation[0].resource_identifier_, assuming that we are dealing with a collection containing a single element. This operation is possible when the collection has only one element. On the other hand, in the list assignment scenario, a list of values is assigned to the _ComponentLocation.resource_identifier_ attribute, with each value corresponding to an element in the collection. It is crucial to ensure that the number of elements in the list matches the number of elements in the collection.
+
+```{attention}
+It's important to note that updates made to the collection are only stored in the local cache until they are committed. 
+The `commit()` method can be called on any collection and will persist **all recorded operations** from the underlying session to the Ftrack server. To verify the success of the update, the code reconnects the session and retrieves the updated attribute value by executing a new query.
+```
+
+```{tip}
+The [apply](collections.md#apply) method provides a convenient approach when you need to assign a single value or a single-element collection to a collection that has multiple receivers.
+```
 
 #### Create
+
+##### Linking 
+
+The `AssetVersion` collection offers a convenient way to link entities to each other using the _uses_versions_ and _used_in_versions_ attribute types. Additionally, collections can be easily linked or unlinked from each other by utilizing the following methods:
+- `link_inputs(collection)`
+- `link_outputs(collection)` 
+- `unlink_inputs(collection)`
+- `unlink_outputs(collection)`
+
+```{attention}
+The linking process involves dedicated *Link types, and using `link_inputs` and `link_outputs` will **create** new link objects with appropriate assignments. Conversely, `unlink_inputs` and `unlink_outputs` are used to **delete** these link objects. 
+```
+
+```{include} collections/examples.md
+:start-after: example linking1 start
+:end-before: example linking1 end
+```
 
 #### Delete
 

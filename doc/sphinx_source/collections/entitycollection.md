@@ -181,6 +181,7 @@ If multiple entities have the same min value, we follow Python's min implementat
 ```
 
 #### symmetric_difference
+
 `symmetric_difference(*collections)` computes the [symmetric difference](https://en.wikipedia.org/wiki/Symmetric_difference) between collections.
 
 ```{include} collections/examples.md
@@ -196,4 +197,3 @@ If multiple entities have the same min value, we follow Python's min implementat
 :start-after: example union1 start
 :end-before: example union1 end
 ```
-
