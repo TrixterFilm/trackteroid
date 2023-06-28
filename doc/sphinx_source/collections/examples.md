@@ -774,3 +774,127 @@ print(f"(a + b) - ((a - b) + (b - a)) = {collection_a.intersection(collection_b)
 # output: '(a + b) - ((a - b) + (b - a)) = [6, 7]'
 ```
 example intersection1 end
+
+example setattr1 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion,
+    ComponentLocation,
+    SESSION
+)
+
+collection = Query(AssetVersion).get_all(limit=1, projections=[ComponentLocation.resource_identifier])
+
+print(collection.ComponentLocation.resource_identifier)
+# output:
+# ['729e05c2-2722-4cc2-97d0-37b4522671d1', 'e26d1b56-c72b-4b9d-8177-6faf47992375', 'ec2203a2-8b5f-11eb-80be-c2ffbce28b68']
+
+collection.ComponentLocation[0].resource_identifier = "new value"
+print(collection.ComponentLocation.resource_identifier)
+# output:
+# ['new value', 'e26d1b56-c72b-4b9d-8177-6faf47992375', 'ec2203a2-8b5f-11eb-80be-c2ffbce28b68']
+
+collection.ComponentLocation.resource_identifier = ["newer value"] * len(collection.ComponentLocation)
+print(collection.ComponentLocation.resource_identifier)
+# output:
+# ['newer value', 'newer value', 'newer value']
+
+# changes are only present in the sessions recorded operation
+# in order to send the updates to the Ftrack server you have to commit
+collection.commit()
+
+# prove that we updated the Ftrack database accordingly by reconnecting our session instance
+SESSION.reconnect()
+
+print(
+    Query(AssetVersion).get_all(limit=1, projections=[ComponentLocation.resource_identifier]).
+    ComponentLocation.resource_identifier
+)
+# output: ['newer value', 'newer value', 'newer value']
+```
+example setattr1 end
+
+example linking1 start
+```python
+from trackteroid import (
+    Query,
+    AssetBuild,
+    SESSION
+)
+
+assetbuild_collection = Query(AssetBuild).get_all(
+    limit=3,
+    projections=[
+        "name",
+        "incoming_links.from",
+        "incoming_links.from.name",
+        "outgoing_links.to"]
+)
+another_assetbuild_collection = Query(AssetBuild).get_all(
+    limit=1,
+    offset=3,
+    projections=["name"]
+)
+
+print(
+    f"assetbuilds: {assetbuild_collection.name}\n"
+    f"another assetbuild: {another_assetbuild_collection.name}\n"
+    f"incoming: {getattr(assetbuild_collection[1].incoming_links, 'from').name or 'nothing linked as input yet'}\n"
+    f"outgoing: {getattr(assetbuild_collection[1].outgoing_links, 'to').name or 'nothing linked as output yet'}\n"
+)
+# output:
+# assetbuilds: ['Small Round Wooden Table 01', 'Side Table Tall 01', 'Steel Frame Shelves 02']
+# another assetbuild: ['Steel Frame Shelves 01']
+# incoming: nothing linked as input yet
+# outgoing: nothing linked as output yet
+
+# create links with proper assignment and commit changes to database
+assetbuild_collection[1].\
+    link_inputs(assetbuild_collection[0]).\
+    link_outputs(assetbuild_collection[2]).\
+    commit()
+
+SESSION.reconnect()
+
+assetbuild_collection = Query(AssetBuild).get_all(
+    limit=3,
+    projections=[
+        "name",
+        "incoming_links.from",
+        "incoming_links.from.name",
+        "outgoing_links.to"
+    ]
+)
+# verify our changes arrived properly in the database
+print(
+    f"incoming: {getattr(assetbuild_collection[1].incoming_links, 'from').name or 'nothing linked as input yet'}\n"
+    f"outgoing: {getattr(assetbuild_collection[1].outgoing_links, 'to').name or 'nothing linked as output yet'}\n"
+)
+# # output:
+# incoming: ['Small Round Wooden Table 01']
+# outgoing: ['Steel Frame Shelves 02']
+
+# extend links
+assetbuild_collection[1].link_inputs(another_assetbuild_collection).commit()
+
+SESSION.reconnect()
+
+assetbuild_collection = Query(AssetBuild).get_all(
+    limit=3,
+    projections=[
+        "name",
+        "incoming_links.from",
+        "incoming_links.from.name",
+        "outgoing_links.to"
+    ]
+)
+
+# verify our changes arrived properly in the database
+print(
+    f"incoming: {getattr(assetbuild_collection[1].incoming_links, 'from').name or 'nothing linked as input yet'}\n"
+)
+# output:
+# incoming: ['Small Round Wooden Table 01', 'Steel Frame Shelves 01']
+```
+example linking1 end
