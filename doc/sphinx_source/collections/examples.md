@@ -944,3 +944,63 @@ print(
 assetversion.commit()
 ```
 example note creation1 end
+
+
+example type coercion1 start
+```python
+from trackteroid import (
+    Query,
+    Folder,
+    Shot,
+    TypedContext
+)
+
+folder_collection = Query(Folder).get_all()
+shot_collection = Query(Shot).get_all()
+
+print(folder_collection, shot_collection)
+# output:
+# EntityCollection[Folder]{6} EntityCollection[Shot]{10}
+
+print(
+    TypedContext(folder_collection),
+    TypedContext(shot_collection)
+)
+# output:
+# EntityCollection[TypedContext]{6} EntityCollection[TypedContext]{10}
+
+# can be used with set operations now
+typedcontext_collection = TypedContext(folder_collection).union(TypedContext(shot_collection))
+print(typedcontext_collection)
+# output: EntityCollection[TypedContext]{16}
+
+```
+example type coercion1 end
+
+example type filtering1 start
+```python
+from trackteroid import (
+    Query,
+    Project,
+    TypedContext
+)
+
+typedcontext_collection = Query(TypedContext).get_all(projections=["parent"])
+print(
+    typedcontext_collection.parent,
+    typedcontext_collection.parent[Project]
+)
+# output:
+# EntityCollection[TypedContext]{39} EntityCollection[Project]{3}
+
+# this only works for `TypeContext`, but not for `Project`
+print(
+    typedcontext_collection.
+        parent.
+        fetch_attributes("object_type.name").
+        object_type.name
+)
+# output:
+# ['Folder', 'Asset Build', 'Shot', 'Sequence']
+```
+example type filtering1 end

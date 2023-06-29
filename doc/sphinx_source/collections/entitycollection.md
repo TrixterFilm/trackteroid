@@ -197,3 +197,37 @@ If multiple entities have the same min value, we follow Python's min implementat
 :start-after: example union1 start
 :end-before: example union1 end
 ```
+
+### Type Coercion
+
+Certain entity types, such as `Component` and `TypedContext` subtypes, can be coerced to their respective base types. This allows for performing [set operations](#set-operations) between multiple types that inherit from the same base type. 
+Additionally, when creating new entities, the type of the collection determines the type of entity that will be created.
+
+To perform type coercion, you can use the constructor of the desired entity type.
+
+```{include} collections/examples.md
+:start-after: example type coercion1 start
+:end-before: example type coercion1 end
+```
+
+```{attention}
+In certain cases, attributes like _parent_, _ancestors_, _children_, _descendants_, and _components_ will undergo automatic type coercion, as these collections can contain entities of multiple types. 
+```
+
+`````{important}
+Although `Project` is not a subtype of `TypedContext`, accessing the _parent_ or _ancestors_ attributes may include `Project` entities. 
+The coercion performed on these attributes ensures that `Project` entities are considered, allowing for proper access and attribute fetching in a cohesive manner. 
+
+````{admonition} See the following example that demonstrates it:
+:class: dropdown
+
+```{include} collections/examples.md
+:start-after: example type filtering1 start
+:end-before: example type filtering1 end
+```
+````
+`````
+
+### Type Filtering
+
+Contrary to [type coercion](#type-coercion) filtering for subtypes is easily possible using the implemented item getter.

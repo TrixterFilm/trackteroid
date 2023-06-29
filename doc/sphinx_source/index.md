@@ -174,6 +174,7 @@ installation.md
 quickstart.md
 configuration.md
 session.md
+entity.md
 query.md
 collections.md
 ```
