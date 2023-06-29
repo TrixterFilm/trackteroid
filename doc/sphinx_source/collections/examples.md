@@ -898,3 +898,49 @@ print(
 # incoming: ['Small Round Wooden Table 01', 'Steel Frame Shelves 01']
 ```
 example linking1 end
+
+example note creation1 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion,
+    Note,
+    NoteCategory,
+    User
+)
+
+user = Query(User).by_name("aniela.morin@example.com").get_all(projections=["username"])
+category = Query(NoteCategory).by_name("Internal").get_all(projections=["name"])
+
+assetversion = Query(AssetVersion).by_id("6a229598-6596-11ed-a73a-92ba0fc0dc3d").get_one(
+    projections=[Note, Note.content, Note.NoteCategory.name]
+)
+
+print(
+    assetversion.Note.group_and_map(
+        lambda note: note.NoteCategory.name[0],
+        lambda note: note.content
+    )
+)
+# output:
+# {'Client feedback': ['The direction looks good!']}
+
+new_note = assetversion.Note.create(
+    author=user,
+    content="Thanks!",
+    is_todo=False,
+    category=category
+)
+assetversion.Note = assetversion.Note.union(new_note)
+print(
+    assetversion.Note.group_and_map(
+        lambda note: note.NoteCategory.name[0],
+        lambda note: note.content
+    )
+)
+# output:
+# {'Client feedback': ['The direction looks good!'], 'Internal': ['Thanks!']}
+
+assetversion.commit()
+```
+example note creation1 end

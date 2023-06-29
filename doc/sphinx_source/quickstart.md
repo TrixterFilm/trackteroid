@@ -182,6 +182,22 @@ The [apply](collections.md#apply) method provides a convenient approach when you
 
 #### Create
 
+The `create(**kwargs)` method on a collection enables the creation of new entities, providing a new collection that allows for additional operations on the created entities. The required keyword arguments for this method vary depending on the entity type being created.
+
+```{include} collections/examples.md
+:start-after: example note creation1 start
+:end-before: example note creation1 end
+```
+
+The code example showcases the process of adding a new note to an existing collection of notes within an `AssetVersion` collection. Since collections are immutable and do not allow entities to be added or removed from an existing collection directly, the create method returns a new `Note` collection that solely contains the newly created note.
+
+To preserve the existing notes, the code performs a `union` operation between the original `Note` collection and the newly created collection. This combined collection is then assigned back, ensuring that both the existing notes and the newly created note are included.
+
+```{attention}
+It's important to note that creation and updates made to the collection are only stored in the local cache until they are committed. 
+The `commit()` method can be called on any collection and will persist **all recorded operations** from the underlying session to the Ftrack server. To verify the success of the update, the code reconnects the session and retrieves the updated attribute value by executing a new query.
+```
+
 ##### Linking 
 
 The `AssetVersion` collection offers a convenient way to link entities to each other using the _uses_versions_ and _used_in_versions_ attribute types. Additionally, collections can be easily linked or unlinked from each other by utilizing the following methods:
