@@ -417,7 +417,7 @@ class EntityCollection(object):
                             name=self._get_attribute_compatibility_types(item).types[0].__name__
                         )
                 elif value.__class__.__name__ == "KeyValueMappedCollectionProxy":
-                    values.append(dict(entity.ftrack_entity["metadata"].items()))
+                    values.append(dict(entity.ftrack_entity[item].items()))
 
                 # wrap ftrack entity
                 elif hasattr(value, "entity_type"):
