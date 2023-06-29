@@ -727,13 +727,19 @@ class EntityCollection(object):
         Returns:
             self
         """
-        self.fetch_attributes("incoming_links.from_id")
+        self.fetch_attributes("incoming_links", "incoming_links.from_id")
+        collection.fetch_attributes("incoming_links", "incoming_links.from_id")
+
         if len(collection) != 0:
+            current_links = self.incoming_links
             for entity in self:
-                links = entity.incoming_links
-                for _id in collection.id:
-                    if _id not in links.from_id:
-                        entity.incoming_links.create(from_id=_id, to_id=entity.id[0])
+                for target in collection:
+                    links = entity.incoming_links
+                    if target.id[0] not in links.from_id:
+                        new_link = entity.incoming_links.create(from_id=target.id[0], to_id=entity.id[0])
+                        current_links = current_links.union(new_link)
+
+            self.incoming_links = current_links
         else:
             LOG.warning("The collection you want to link is empty.")
 
