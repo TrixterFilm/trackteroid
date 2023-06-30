@@ -260,7 +260,7 @@ class EmptyCollection(object):
         current_depth = self.depth
         collection_copy = copy(self)
         # in case we use methods like .values() or .from_entities() etc
-        # we need to take care to not increment the depth, as it doesn represent
+        # we need to take care to not increment the depth, as it doesn't represent
         # an attribute/relation access
         if item in [_ for _ in dir(EntityCollection) if not re.match(r"__\w+__|children", _)]:
             collection_copy.depth = current_depth
@@ -426,7 +426,22 @@ class EntityCollection(object):
                     values.append(value)
 
             if entities:
-                return self.from_entities(entities, source=(item, self))
+                # wrap into lambdas so this will be only requested when needed
+                _to_typedcontext = lambda: getattr(importlib.import_module("..entities", __name__), "TypedContext")
+                _to_component = lambda: getattr(importlib.import_module("..entities", __name__), "Component")
+                _to_original = lambda: lambda collection: collection
+
+                coerce_attributes = {
+                    "parent": _to_typedcontext,
+                    "children": _to_typedcontext,
+                    "ancestors": _to_typedcontext,
+                    "descendants": _to_typedcontext,
+                    "components": _to_component
+                }
+                coercion_type = coerce_attributes.get(item, _to_original)()
+
+                return coercion_type(self.from_entities(entities, source=(item, self)))
+
             elif entity_type:
                 return EmptyCollection(_type=entity_type, source=self, session=self._session)
             return values
@@ -639,14 +654,7 @@ class EntityCollection(object):
         Returns:
             EntityCollection[entity_type] or EmptyCollection[entity_type]
         """
-        if not issubclass(entity_type, ForwardDeclaration):
-            # this can only work if the given entity type is a subclass of our currently
-            # used collection type, like TypedContext -> AssetBuild|Shot|Sequence... or Component -> FileComponent
-            # TODO: re-think the necessity of checking for the actual base type
-            #  Enforcing a type coercion before filtering via entity type makes the code more clear, but is
-            #  not strictly needed for correct filtering.
-            assert issubclass(entity_type, self.entity_type)
-        else:
+        if issubclass(entity_type, ForwardDeclaration):
             entity_type = getattr(importlib.import_module("..entities", __name__), entity_type.__name__)
 
         matched_types = self.filter(lambda x: list(x.values())[0].ftrack_entity.entity_type == entity_type.__name__)
@@ -658,33 +666,6 @@ class EntityCollection(object):
             type_override=entity_type,
             source=getattr(matched_types, "source", None)
         )
-
-    @property
-    def children(self):
-        """ get all children
-
-        Returns:
-            EntityCollection[TypedContext]
-        """
-        # TODO: deal with this when it becomes a problem ;)
-        #  Other entities like Context or Group have children too. When we need to
-        #  access those we have to implement the functionality properly here.
-        # if not isinstance(self._entity, TypedContext):
-        #     getattr(self, "children")
-
-        default_projections = ["children.{}".format(_) for _ in self._entity.projections]
-        self._simple_children_fetch("children.object_type.name", *default_projections)
-
-        children_entities = []
-
-        for entity in self.values():
-            if entity["children"]:
-                for child in entity["children"]:
-                    children_entities.append(
-                        Entity.from_entity_type("TypedContext", ftrack_entity=child)
-                    )
-
-        return self.from_entities(children_entities, source=self)
 
     def query_children(self, projections=None, session=None):
         """Queries and returns the children of the collection. Only supported for
@@ -1699,11 +1680,17 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
             else:
                 _cls = source_collection.entity_type.__class__
 
-            assert issubclass(_cls, cls), \
-                "Can't coerce `{source}` to `{target}`, because `{source}` is not a subtype of `{target}`.".format(
-                    source=_cls.__name__,
-                    target=cls.__name__,
-                )
+            _ACCEPT_CASES = {
+                "TypedContext": ["Project"]
+            }
+            bypass_exception = _cls.__name__ in _ACCEPT_CASES.get(cls.__name__, [])
+
+            if not bypass_exception:
+                assert issubclass(_cls, cls), \
+                    "Can't coerce `{source}` to `{target}`, because `{source}` is not a subtype of `{target}`.".format(
+                        source=_cls.__name__,
+                        target=cls.__name__,
+                    )
 
             _source = getattr(source_collection, "source", None)
 
