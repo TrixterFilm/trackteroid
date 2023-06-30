@@ -173,7 +173,7 @@ The code demonstrates two scenarios for updating values: single-value and multi-
 
 ```{attention}
 It's important to note that updates made to the collection are only stored in the local cache until they are committed. 
-The `commit()` method can be called on any collection and will persist **all recorded operations** from the underlying session to the Ftrack server. To verify the success of the update, the code reconnects the session and retrieves the updated attribute value by executing a new query.
+The `commit()` method can be called on any collection and will persist **all recorded operations** from the underlying session to the Ftrack server. To verify the success of the update in the example, the code reconnects the session and retrieves the updated attribute value by executing a new query.
 ```
 
 ```{tip}
@@ -195,7 +195,7 @@ To preserve the existing notes, the code performs a `union` operation between th
 
 ```{attention}
 It's important to note that creation and updates made to the collection are only stored in the local cache until they are committed. 
-The `commit()` method can be called on any collection and will persist **all recorded operations** from the underlying session to the Ftrack server. To verify the success of the update, the code reconnects the session and retrieves the updated attribute value by executing a new query.
+The `commit()` method can be called on any collection and will commit **all recorded operations** from the underlying session to the Ftrack server.
 ```
 
 ##### Linking 
@@ -216,4 +216,17 @@ The linking process involves dedicated *Link types, and using `link_inputs` and 
 ```
 
 #### Delete
+
+The `delete()` method available on a collection provides the capability to delete entities associated with that collection.
+
+```{include} collections/examples.md
+:start-after: example delete start
+:end-before: example delete end
+```
+
+```{attention}
+It's important to note that of a collection is only stored in the local cache until the changes are committed. 
+The `commit()` method can be called on any collection and will commit **all recorded operations** from the underlying session to the Ftrack server. To verify the success of the deletion in the example, the code reconnects the session and retrieves the updated attribute value by executing a new query.
+```
+
 
