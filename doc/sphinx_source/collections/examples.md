@@ -508,6 +508,29 @@ pprint(
 ```
 example group_and_map1 end
 
+example group_and_map2 start
+```python
+from trackteroid import (
+    Query,
+    ObjectType,
+    Project,
+    TypedContext,
+)
+
+typedcontext_collection = Query(TypedContext).by_name(Project, "showroom").get_all(
+    projections=[ObjectType.name]
+)
+grouped_by_type = typedcontext_collection.group(
+    lambda tcc: tcc.ObjectType.name[0],
+)
+
+print(
+    f"All existing object types in this context: "
+    f"{', '.join(grouped_by_type.keys())}."
+)
+```
+example group_and_map2 end
+
 example map1 start
 ```python
 from trackteroid import (
@@ -979,6 +1002,7 @@ example type filtering1 start
 ```python
 from trackteroid import (
     Query,
+    ObjectType,
     Project,
     TypedContext
 )
@@ -995,10 +1019,30 @@ print(
 print(
     typedcontext_collection.
         parent.
-        fetch_attributes("object_type.name").
-        object_type.name
+        fetch_attributes(ObjectType.name).
+        ObjectType.name
 )
 # output:
 # ['Folder', 'Asset Build', 'Shot', 'Sequence']
 ```
 example type filtering1 end
+
+example type filtering2 start
+```python
+from trackteroid import (
+    Query,
+    AssetBuild,
+    Folder,
+    Project,
+    TypedContext,
+)
+
+typedcontext_collection = Query(TypedContext).by_name(Project, "showroom").get_all()
+
+print(
+    typedcontext_collection[Folder],
+    typedcontext_collection[AssetBuild]
+)
+# EntityCollection[Folder]{4} EntityCollection[AssetBuild]{17}
+```
+example type filtering2 end

@@ -230,4 +230,15 @@ The coercion performed on these attributes ensures that `Project` entities are c
 
 ### Type Filtering
 
-Contrary to [type coercion](#type-coercion) filtering for subtypes is easily possible using the implemented item getter.
+Contrary to [type coercion](#type-coercion), filtering for subtypes is straightforward using the implemented item getter.
+
+`````{tip}
+````{admonition} Use the [group_and_map](#group-and-map) to identify exising types.
+:class: dropdown
+
+```{include} collections/examples.md
+:start-after: example type filtering2 start
+:end-before: example type filtering2 end
+```
+````
+`````
