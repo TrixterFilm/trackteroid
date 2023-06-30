@@ -1046,3 +1046,25 @@ print(
 # EntityCollection[Folder]{4} EntityCollection[AssetBuild]{17}
 ```
 example type filtering2 end
+
+example delete start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion,
+    SESSION
+)
+
+_id = "405c569e-8bfa-11eb-ae63-c2ffbce28b68"
+
+Query(AssetVersion).by_id(_id).get_one().delete().commit()
+
+SESSION.reconnect()
+
+# will result in error as the entity doesn't exist anymore
+# ftrack_api.exception.NoResultFoundError: 
+# No result found for 'select id, asset.name, version from AssetVersion where (id is "405c569e-8bfa-11eb-ae63-c2ffbce28b68")'
+#
+Query(AssetVersion).by_id(_id).get_one()
+```
+example delete end
