@@ -517,12 +517,10 @@ from trackteroid import (
 )
 
 print(
-    list(
-        Query(AssetVersion).get_all(
-            limit=2,
-            projections=[Asset.name, "version"]
-        ).map(lambda avc: f"{avc.Asset.name[0]}:v{str(avc.version[0]).zfill(3)}")
-    )
+    Query(AssetVersion).get_all(
+        limit=2,
+        projections=[Asset.name, "version"]
+    ).map(lambda avc: f"{avc.Asset.name[0]}:v{str(avc.version[0]).zfill(3)}")
 )
 # output: ['bc0040_comp:v003', 'classic_console_01:v001']
 ```
