@@ -7,4 +7,5 @@
 - [Alf Kraus](https://github.com/99alfie)
 - [Pedro Zuñeda](https://github.com/pedrozuneda)
 - [Fridtjof Kühn](https://github.com/Fridi-K)
+- [Andreas Schuster](https://github.com/smoi23)
 
