@@ -128,13 +128,26 @@ example session start
 from trackteroid import (
     AssetVersion,
     Query,
+    SCHEMA,
     SESSION,
 )
-from trackteroid.query import SCHEMA
 
 # same as Query(AssetVersion)
 Query(AssetVersion, session=SESSION, schema=SCHEMA.default)
 ```
 example session end
 
+example session2 start
+```python
+from trackteroid import (
+    Query,
+    AssetVersion,
+    SCHEMA
+)
+from trackteroid.session import Session
 
+session = Session()
+
+Query(AssetVersion, session=session)
+```
+example session2 end
