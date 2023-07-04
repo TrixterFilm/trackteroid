@@ -586,6 +586,7 @@ class EntityCollection(object):
                         and len(collection) == 1 \
                         and list(collection._entities.values())[0].ftrack_entity[key].__class__.__name__ == "Collection":
                     if isinstance(value, EntityCollection):
+                        self._verify_operability(value)
                         list(collection.values())[0].ftrack_entity[key] = [_.ftrack_entity for _ in value.values()]
                 else:
                     for idx, entity in enumerate(collection.values()):
@@ -609,6 +610,7 @@ class EntityCollection(object):
                                         entity.ftrack_entity[key][_key] = _value
                         else:
                             if isinstance(value, EntityCollection):
+                                self._verify_operability(value)
                                 entity.ftrack_entity[key] = list(value.values())[idx].ftrack_entity
                             elif isinstance(value, (list, tuple)):
                                 entity.ftrack_entity[key] = value[idx]
@@ -874,6 +876,30 @@ class EntityCollection(object):
             raise AttributeError("Attribute '{}' not found in schema '{}'.".format(attribute_name, entity_schema["id"]))
 
         return attribute_info
+
+    def _verify_operability(self, *collections):
+        """ verify that an operation can actually work between collections
+
+        Args:
+            *collections (EntityCollection or EmptyCollection instances): collections to operate
+
+        """
+        sessions = [self._session] + [_._session for _ in [__ for __ in collections if __]]
+        unique_sessions = [item for i, item in enumerate(sessions) if item not in sessions[:i]]
+
+        if len(unique_sessions) > 1:
+            raise EntityCollectionOperationError(
+                "Operation can not be performed because collections are using different `Session` objects."
+            )
+
+        schemas = [self.query.schema["name"]] + [_.query.schema["name"] for _ in [__ for __ in collections if __]]
+        unique_schemas = set(schemas)
+
+        if len(unique_schemas) > 1:
+            raise EntityCollectionOperationError(
+                "Operation can not be performed because collections are using different schemas: "
+                f"{', '.join(unique_schemas)}"
+            )
 
     def keys(self):
         return self._entities.keys()
@@ -1175,6 +1201,8 @@ class EntityCollection(object):
             EntityCollection:
 
         """
+        self._verify_operability(*collections)
+
         entities = list(self.values())
         for collection in collections:
             if not collection:
@@ -1196,6 +1224,8 @@ class EntityCollection(object):
             EntityCollection:
 
         """
+        self._verify_operability(*collections)
+
         for collection in collections:
             self._validate_collection_type(collection)
 
@@ -1221,6 +1251,9 @@ class EntityCollection(object):
         Returns:
             EntityCollection
         """
+        # not necessarily needed as long as union will be called
+        self._verify_operability(*collections)
+
         for collection in collections:
             self._validate_collection_type(collection)
 
@@ -1245,6 +1278,7 @@ class EntityCollection(object):
         Returns:
             EntityCollection
         """
+        self._verify_operability(*collections)
 
         ids = self.keys()
 
