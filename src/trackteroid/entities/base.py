@@ -574,7 +574,16 @@ class EntityCollection(object):
                 # via the full attribute chain and retain the last attribute
                 # as our key.
                 if not isinstance(attribute_value, list):
-                    key, collection = attribute_value._source
+                    if isinstance(attribute_value, EntityCollection):
+                        key, collection = attribute_value._source
+                    elif isinstance(attribute_value, EmptyCollection):
+                        # TODO: assignment on an EmptyCollection attribute doesn't
+                        #  seem to be handled at the moment anyways.
+                        if attribute_value.depth > 1:
+                            raise EntityCollectionOperationError(
+                                "You are attempting to assign a value to an attribute on an EmptyCollection."
+                            )
+                        collection = attribute_value.source
                 else:
                     collection = self
 
