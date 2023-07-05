@@ -1453,7 +1453,7 @@ class EntityCollection(object):
             Any: whatever the attributes holds, most likely another EntityCollection
         """
 
-        relationship = self.query.entity_type.relationship.get(relative_type, default=TargetRelation()).relation
+        relationship = self.entity_type.relationship.get(relative_type, default=TargetRelation()).relation
         if not relationship:
             raise ValueError("Unknown relationship for relative '{}'".format(relative_type))
 
