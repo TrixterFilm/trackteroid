@@ -200,7 +200,7 @@ class Relationship(dict):
                         collection = _collection
                     if collection != _collection:
                         raise AttributeError(
-                            "Given relationships '{}' attribute array state is ambigious.".format(
+                            "Given relationships '{}' attribute array state is ambiguous.".format(
                                 relation
                             )
                         )
@@ -1359,7 +1359,7 @@ class EntityCollection(object):
                             path = ""
                         _ = __flatten(value, path)
                         if len(_.keys()) == 1:
-                            # if the childs are not branching we extract the values
+                            # if the children are not branching we extract the values
                             # and set them with the correct key
                             flat[key + "." + list(_.keys())[0]] = list(_.values())[0]
                         else:
@@ -1437,7 +1437,7 @@ class EntityCollection(object):
     def _simple_children_fetch(self, *attributes):
         # this is needed as a special case to avoid an infinite recursion due to
         # fetch_attributes calling getattr and getatrr calling fetch_attributes
-        # (wheh accessing children)
+        # (when accessing children)
         query = self.as_query(use_ids=True)
         # TODO(high): Reimplement the conditional fetching of non-existing projections.
         # Update the projections on the query object accordingly.
@@ -1500,7 +1500,7 @@ class EntityCollection(object):
         # make the Query class available
         _Query = getattr(importlib.import_module("...query", __name__), "Query")
 
-        # get the actual entity implemantions not the ForwardDeclare classes
+        # get the actual entity implementations not the ForwardDeclare classes
         _Recipient = getattr(importlib.import_module("..entities", __name__), "Recipient")
         _User = getattr(importlib.import_module("..entities", __name__), "User")
 
@@ -1797,7 +1797,11 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
     # this is how the query consolidates its criteria
     # having multiple filters allows us the inject criterion multiple times
     # Example:
-    #   Query(Task).inject("parent.parent.name is 'library').by_name(Project, "Foobar").inject("parent.status.name is 'Approved').get_all()
+    #   Query(Task).\
+    #       inject("parent.parent.name is 'library').\
+    #       by_name(Project, "Foobar").\
+    #       inject("parent.status.name is 'Approved').\
+    #       get_all()
     def inject(self, target, *filter):
         if any(re.search(r"^or\s*", _, flags=re.IGNORECASE) for _ in filter):
             raise ValueError(

@@ -54,8 +54,8 @@ class Criterion(object):
     def resolve(self):
         partial_query = self.filter(self.target, *self.args, **self.kwargs)
         if self.negate:
-            partial_query = re.sub("\s+(in|like)\s+", r" not_\1 ", partial_query)
-            partial_query = re.sub("\s+is\s+", " is_not ", partial_query)
+            partial_query = re.sub(r"\s+(in|like)\s+", r" not_\1 ", partial_query)
+            partial_query = re.sub(r"\s+is\s+", " is_not ", partial_query)
 
         return partial_query
 
@@ -71,15 +71,17 @@ class Criterion(object):
         }
 
 
-class Criteria():
+class Criteria:
     """ stubs for filtering (aka query criteria)
 
     This is used to allow proper autocompletion within (some) IDE(s).
     """
 
-    class InvalidArgumentsError(ValueError): pass
-    class CriterionNotImplementedError(NotImplementedError): pass
+    class InvalidArgumentsError(ValueError):
+        pass
 
+    class CriterionNotImplementedError(NotImplementedError):
+        pass
 
     def by_id(self, *ids):
         raise NotImplementedError

@@ -329,6 +329,7 @@ class Query(object):
             actual sorting in the end.
 
         Args:
+            projections (list): attributes you want to project
             limit (int): limited amount of resulting entities
             offset (int): offset
             order (str): "descending" or "ascending"
