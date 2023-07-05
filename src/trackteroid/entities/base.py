@@ -56,6 +56,7 @@ from ..query import (
 from ..configuration import (
     LOGGING_NAMESPACE,
     ALLOWED_FOR_DELETION_RESOLVER,
+    DEFAULT_PROJECTIONS_RESOLVER,
     WARN_ON_INJECT
 )
 
@@ -1660,11 +1661,9 @@ class EntityCollection(object):
 
 
 class _EntityBase(object, metaclass=ForwardDeclareCompare):
+    _ftrack_entity = None
 
     relationship = Relationship()
-    projections = ["id"]
-    _ftrack_entity = None
-    log = None
 
     def __new__(cls, *args, **kwargs):
         """ make it possible to swap the Entity class with the given class
@@ -1678,7 +1677,6 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
         """
         if kwargs.get("_cls"):
             cls = kwargs["_cls"]
-            cls.log = logging.getLogger("{}.entities.{}".format(cls.__name__, LOGGING_NAMESPACE))
             del kwargs["_cls"]
 
         if cls and args and isinstance(args[0], (EntityCollection, EmptyCollection)):
@@ -1720,10 +1718,6 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
 
     def __init__(self, _cls=None, ftrack_entity=None, **kwargs):
         self.ftrack_entity = ftrack_entity
-        if not _cls:
-            self.log = logging.getLogger(
-                "{}.entities.{}".format(self.__class__.__name__, LOGGING_NAMESPACE)
-            )
 
     def __getitem__(self, item):
         return self.ftrack_entity.get(item)
@@ -1762,6 +1756,16 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
             return 0
         else:
             return 1
+
+    @classmethod
+    @property
+    def projections(cls):
+        return DEFAULT_PROJECTIONS_RESOLVER(type_name=cls.__name__)
+
+    @classmethod
+    @property
+    def log(cls):
+        return logging.getLogger(f"{LOGGING_NAMESPACE}.entities.{cls.__name__}")
 
     def pre_create(self, **kwargs):
         return kwargs
