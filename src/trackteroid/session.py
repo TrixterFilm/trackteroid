@@ -124,7 +124,7 @@ class Session(object):
         type_map = {}
         for name in typenames:
             collection = getattr(type_module, "EntityCollection")
-            _type = getattr(type_module, name)
+            _type = getattr(type_module, name, None)
             if _type and issubclass(_type, getattr(type_module, "Entity")):
                 cached_entities = [
                     _type.from_entity_type(name=_type.__name__, ftrack_entity=_) for _ in self._local_cache.values()
@@ -274,20 +274,25 @@ class Session(object):
         yield
 
         # sync cache
+        _cache_records = []
         with file_cache._database() as database:
-            for key, value in database.items():
-                entity_data = json.loads(value)
-                for attr, attr_value in entity_data.items():
-                    if isinstance(attr_value, dict):
-                        entity_type = attr_value.get("__entity_type__")
-                        if entity_type:
-                            # if this is an entity we check whether the linked entity is available
-                            # in our filecache
-                            # TODO: eventually we should check for the actual primary key here
-                            #  for our current usecase it seems ok to blindly use the id
-                            cache_key = "('{}', ['{}'])".format(entity_type, attr_value["id"])
-                            if cache_key not in serialised_cache.keys():
-                                serialised_cache.set(cache_key, self._local_cache.get(cache_key))
+            for key in database.keys():
+                value = database[key]
+                _cache_records.append((key, value))
+
+        for key, value in _cache_records:
+            entity_data = json.loads(value)
+            for attr, attr_value in entity_data.items():
+                if isinstance(attr_value, dict):
+                    entity_type = attr_value.get("__entity_type__")
+                    if entity_type:
+                        # if this is an entity we check whether the linked entity is available
+                        # in our filecache
+                        # TODO: eventually we should check for the actual primary key here
+                        #  for our current usecase it seems ok to blindly use the id
+                        cache_key = "('{}', ['{}'])".format(entity_type, attr_value["id"])
+                        if cache_key not in serialised_cache.keys():
+                            serialised_cache.set(cache_key, self._local_cache.get(cache_key))
 
             # serialise operations and store them in the database
             ops = []
