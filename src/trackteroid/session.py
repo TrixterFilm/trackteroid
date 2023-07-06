@@ -275,8 +275,7 @@ class Session(object):
 
         # sync cache
         with file_cache._database() as database:
-            for key in database.keys():
-                value = database[key]
+            for key, value in database.items():
                 entity_data = json.loads(value)
                 for attr, attr_value in entity_data.items():
                     if isinstance(attr_value, dict):
