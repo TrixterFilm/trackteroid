@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      # Some tests are creating the same entity in the database.
+      # Until we have these tests adjusted we have to run the 
+      # tests serial to avoid race conditions.
       max-parallel: 1
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
