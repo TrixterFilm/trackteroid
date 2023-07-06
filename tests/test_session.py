@@ -31,7 +31,8 @@ def initial_operations():
         "is_active": True
     }
     yield (
-        f"./resources/session/operations_{'windows' if platform.platform().startswith('Windows') else 'linux'}.dbm",
+        f"{os.path.dirname(__file__)}/resources/session"
+        f"/operations_{'windows' if platform.platform().startswith('Windows') else 'linux'}.dbm",
         test_data
     )
     with ftrack_api.Session(auto_populate=False, auto_connect_event_hub=False) as session:
