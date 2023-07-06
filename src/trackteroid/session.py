@@ -124,7 +124,7 @@ class Session(object):
         type_map = {}
         for name in typenames:
             collection = getattr(type_module, "EntityCollection")
-            _type = getattr(type_module, name)
+            _type = getattr(type_module, name, None)
             if _type and issubclass(_type, getattr(type_module, "Entity")):
                 cached_entities = [
                     _type.from_entity_type(name=_type.__name__, ftrack_entity=_) for _ in self._local_cache.values()
@@ -275,7 +275,8 @@ class Session(object):
 
         # sync cache
         with file_cache._database() as database:
-            for key, value in database.items():
+            for key in database.keys():
+                value = database[key]
                 entity_data = json.loads(value)
                 for attr, attr_value in entity_data.items():
                     if isinstance(attr_value, dict):
