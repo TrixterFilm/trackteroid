@@ -40,7 +40,10 @@ from collections import (
 from copy import copy
 import sys
 
-from ftrack_api.attribute import CollectionAttribute, ReferenceAttribute
+from ftrack_api.attribute import (
+    CollectionAttribute,
+    ReferenceAttribute
+)
 from ftrack_api.symbol import NOT_SET
 
 from .declarations import *
@@ -335,14 +338,14 @@ class EmptyCollection(object):
     def union(self, *collections):
         if len(collections) == 1:
             return collections[0]
-        
+
         first = collections[0]
         others = [_ for _ in collections[1:] if _]
         first_type = first.entity_type
         for other_type in (_.entity_type for _ in others if _):
             assert first_type == other_type, "Can't union collections with different types. {} != {}."\
                 .format(first_type, other_type)
-        
+
         return first.union(*others)
 
 
@@ -460,11 +463,9 @@ class EntityCollection(object):
 
                     # If it's a collection or a reference attribute, we'll replace NOT_SET with
                     # an empty collection of the right type, for that we need to determine what
-                    # type of attribute it is via its original Ftrack type schema
-                    ftrack_session = sample_entity.session
-
+                    # type of attribute it is via its original Ftrack type schema:
                     # Find the ftrack type schema
-                    type_schema = [x for x in ftrack_session.schemas if x["id"] == sample_entity.entity_type][0]
+                    type_schema = [x for x in self._session.schemas if x["id"] == sample_entity.entity_type][0]
 
                     # Find the attribute schema
                     attribute_schema = type_schema["properties"][item]
