@@ -3,7 +3,7 @@
 Eager to get started? This page give some introduction to the core concepts of Trackteroid. 
 Follow [Installation](installation.md) and install Trackteroid first. Ideally you should also have a basic understanding of the [Ftrack Python API](https://ftrack-python-api.readthedocs.io/en/stable/index.html).
 
-The following examples assumes you have [configured the api access for Ftrack](https://ftrack-python-api.readthedocs.io/en/stable/understanding_sessions.html) accordingly.
+The provided examples assume that you have properly configured the [API access for Ftrack](https://ftrack-python-api.readthedocs.io/en/stable/understanding_sessions.html) accordingly.
 
 ## Accessing Data From FTrack
 
@@ -25,7 +25,7 @@ Firstly, it automatically derives relationships whenever possible by dynamically
 
 However, Ftrack's dynamic nature means that certain entity types may require configuring relationships to align with specific requirements. Trackteroid provides the flexibility to describe and represent contextual relationships for such cases, enabling customization and adaptation to meet individual needs by implementing a [resolver](configuration.md#relationships-resolver).
 
-All communication with an Ftrack server is facilitated through a `Session` object. By default, a Query is constructed using the _SESSION_ singleton and the _default_ schema. Here's an example:
+All communication with an Ftrack server is facilitated through a `Session` object. By default, a `Query` is constructed using the [_SESSION_ singleton](session.md#multiple-sessions) and the _default_ schema. Here's an example:
 
 ```{include} query/examples.md
 :start-after: example session start
@@ -36,13 +36,13 @@ However, you also have the flexibility to initialize your own `Session` object a
 
 ```python
 from trackteroid import (
-    AssetVersion,
     Query,
-    SCHEMA
+    SCHEMA,
+    AssetVersion
 )
 from trackteroid.session import Session
 
-my_session = Session(server_url="<some_ftrack_server>")
+my_session = Session()
 
 Query(AssetVersion, session=my_session, schema=SCHEMA.vfx)
 ```
@@ -70,7 +70,7 @@ The provided code demonstrates some of the capabilities of Trackteroid in handli
 Although the code may seem complex at first glance, the following explanations will break it down step by step.
 
 In the first part of the code, a single _TypedContext_ sample is retrieved using the _Query_ class. 
-The limit parameter is set to 1 to fetch only one sample. The projections parameter is used to specify the desired attributes (_Component.name_ and _ComponentLocation.resource_identifier_) to be included in the result.
+The _limit_ parameter is set to 1 to fetch only one sample. The _projections_ parameter is used to specify the desired attributes (_Component.name_ and _ComponentLocation.resource_identifier_) to be included in the result.
 
 Next, the retrieved _TypedContext_ sample is filtered using the _[Shot]_ filter. This filter selects only the subtypes of _TypedContext_ that match the _Shot_ entity and ensures that only _Shot_ entities are considered in the subsequent operations. 
 Since we are limiting the result of the _TypedContext_ query to only one entity, there is a possibility that the retrieved entity may not be a _Shot_. It could be of a different entity type, such as _AssetBuild_, _Sequence_, or _Folder_.
@@ -114,7 +114,7 @@ You can conveniently access individual attributes within the custom_attributes f
 #### Transformation Methods
 
 While iterating through loops is a valid approach, leveraging transformations can provide enhanced convenience. 
-The EntityCollection class provides higher-order methods that accept functions as arguments, aligning with the principles of functional programming. 
+The `EntityCollection` class provides [higher-order methods](collections.md#higher-order-methods) that accept functions as arguments, aligning with the principles of functional programming. 
 The presented example highlights a subset of the transformation methods available.
 
 ```{include} collections/examples.md
@@ -124,7 +124,7 @@ The presented example highlights a subset of the transformation methods availabl
 
 #### Set Operations
 
-Due to the immutability of collections, it is not possible to directly add or remove entities. However, you can utilize the identical set operations available in Python's `set` class to obtain new collections.
+Due to the immutability of collections, it is not possible to directly add or remove entities. However, you can utilize the identical [set operations](collections.md#set-operations) available in Python's `set` class to obtain new collections.
 ```{include} collections/examples.md
 :start-after: example set operations overview start
 :end-before: example set operations overview end
@@ -132,7 +132,7 @@ Due to the immutability of collections, it is not possible to directly add or re
 
 #### Fetching Attributes
 
-As Trackteroid's default Sessions disable the _autopolulate_ feature, it is possible to work with unprojected data. In such cases, you may need to fetch missing attributes when required. This can be accomplished using the `fetch_attributes` method on your collection.
+As Trackteroid's default Sessions disable the _auto-polulate_ feature, it is possible to work with unprojected data. In such cases, you may need to fetch missing attributes when required. This can be accomplished using the `fetch_attributes` method on your collection.
 ```{include} collections/examples.md
 :start-after: example fetch attributes1 start
 :end-before: example fetch attributes1 end
@@ -169,11 +169,11 @@ Data updates are primarily performed by assigning values using the `=` operator.
 ```
 The provided code example illustrates the process of assigning values to the _resource_identifier_ attribute of `ComponentLocation` entities associated with an `AssetVersion` collection.
 
-The code demonstrates two scenarios for updating values: single-value and multi-value assignment. In the case of single-value assignment, a string value is assigned to _ComponentLocation[0].resource_identifier_, assuming that we are dealing with a collection containing a single element. This operation is possible when the collection has only one element. On the other hand, in the list assignment scenario, a list of values is assigned to the _ComponentLocation.resource_identifier_ attribute, with each value corresponding to an element in the collection. It is crucial to ensure that the number of elements in the list matches the number of elements in the collection.
+The code demonstrates two scenarios for updating values: single-value and multi-value assignment. In the case of a single-value assignment, a string value is assigned to _ComponentLocation[0].resource_identifier_, assuming that we are dealing with a collection containing a single element. This operation is possible when the collection has only one element. On the other hand, in the list assignment scenario, a list of values is assigned to the _ComponentLocation.resource_identifier_ attribute, with each value corresponding to an element in the collection. It is crucial to ensure that the number of elements in the list matches the number of elements in the collection.
 
 ```{attention}
 It's important to note that updates made to the collection are only stored in the local cache until they are committed. 
-The `commit()` method can be called on any collection and will persist **all recorded operations** from the underlying session to the Ftrack server. To verify the success of the update in the example, the code reconnects the session and retrieves the updated attribute value by executing a new query.
+The `commit()` method can be called on any collection and will commit **all recorded operations** from the underlying session to the Ftrack server. To verify the success of the update in the example, the code reconnects the session and retrieves the updated attribute value by executing a new query.
 ```
 
 ```{tip}

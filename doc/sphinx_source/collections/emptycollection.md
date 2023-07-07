@@ -4,7 +4,7 @@ Similar to optional types in other languages, the `EmptyCollection` provides a c
 
 By utilizing the `EmptyCollection`, developers can write cleaner and more concise code by treating empty results as a valid state without the need for verbose conditional statements. This promotes a more functional programming style, allowing for seamless chaining and composition of operations even in scenarios where the result might be empty.
 
-Just as optional types in different programming languages offer methods or functions to check for presence (_isPresent()_) and provide fallback values (_orElse()_), the `EmptyCollection` provides a simple fallback functionality to handle cases where the collection is empty as it always evaluates to `False`.
+Just as optional types in different programming languages offer methods or functions to check for presence or provide fallback values , the `EmptyCollection` provides a simple fallback functionality to handle cases where the collection is empty as it always evaluates to `False`.
 
 This demonstrates how you can implement a straightforward fallback mechanism using the or operator when retrieving the final data.
 ```{include} collections/examples.md

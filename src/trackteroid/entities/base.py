@@ -201,7 +201,7 @@ class Relationship(dict):
                         collection = _collection
                     if collection != _collection:
                         raise AttributeError(
-                            "Given relationships '{}' attribute array state is ambigious.".format(
+                            "Given relationships '{}' attribute array state is ambiguous.".format(
                                 relation
                             )
                         )
@@ -624,7 +624,16 @@ class EntityCollection(object):
                 # via the full attribute chain and retain the last attribute
                 # as our key.
                 if not isinstance(attribute_value, list):
-                    key, collection = attribute_value._source
+                    if isinstance(attribute_value, EntityCollection):
+                        key, collection = attribute_value._source
+                    elif isinstance(attribute_value, EmptyCollection):
+                        # TODO: assignment on an EmptyCollection attribute doesn't
+                        #  seem to be handled at the moment anyways.
+                        if attribute_value.depth > 1:
+                            raise EntityCollectionOperationError(
+                                "You are attempting to assign a value to an attribute on an EmptyCollection."
+                            )
+                        collection = attribute_value.source
                 else:
                     collection = self
 
@@ -636,6 +645,7 @@ class EntityCollection(object):
                         and len(collection) == 1 \
                         and list(collection._entities.values())[0].ftrack_entity[key].__class__.__name__ == "Collection":
                     if isinstance(value, EntityCollection):
+                        self._verify_operability(value)
                         list(collection.values())[0].ftrack_entity[key] = [_.ftrack_entity for _ in value.values()]
                 else:
                     for idx, entity in enumerate(collection.values()):
@@ -659,6 +669,7 @@ class EntityCollection(object):
                                         entity.ftrack_entity[key][_key] = _value
                         else:
                             if isinstance(value, EntityCollection):
+                                self._verify_operability(value)
                                 entity.ftrack_entity[key] = list(value.values())[idx].ftrack_entity
                             elif isinstance(value, (list, tuple)):
                                 entity.ftrack_entity[key] = value[idx]
@@ -924,6 +935,30 @@ class EntityCollection(object):
             raise AttributeError("Attribute '{}' not found in schema '{}'.".format(attribute_name, entity_schema["id"]))
 
         return attribute_info
+
+    def _verify_operability(self, *collections):
+        """ verify that an operation can actually work between collections
+
+        Args:
+            *collections (EntityCollection or EmptyCollection instances): collections to operate
+
+        """
+        sessions = [self._session] + [_._session for _ in [__ for __ in collections if __]]
+        unique_sessions = [item for i, item in enumerate(sessions) if item not in sessions[:i]]
+
+        if len(unique_sessions) > 1:
+            raise EntityCollectionOperationError(
+                "Operation can not be performed because collections are using different `Session` objects."
+            )
+
+        schemas = [self.query.schema["name"]] + [_.query.schema["name"] for _ in [__ for __ in collections if __]]
+        unique_schemas = set(schemas)
+
+        if len(unique_schemas) > 1:
+            raise EntityCollectionOperationError(
+                "Operation can not be performed because collections are using different schemas: "
+                f"{', '.join(unique_schemas)}"
+            )
 
     def keys(self):
         return self._entities.keys()
@@ -1225,6 +1260,8 @@ class EntityCollection(object):
             EntityCollection:
 
         """
+        self._verify_operability(*collections)
+
         entities = list(self.values())
         for collection in collections:
             if not collection:
@@ -1246,6 +1283,8 @@ class EntityCollection(object):
             EntityCollection:
 
         """
+        self._verify_operability(*collections)
+
         for collection in collections:
             self._validate_collection_type(collection)
 
@@ -1271,6 +1310,9 @@ class EntityCollection(object):
         Returns:
             EntityCollection
         """
+        # not necessarily needed as long as union will be called
+        self._verify_operability(*collections)
+
         for collection in collections:
             self._validate_collection_type(collection)
 
@@ -1295,6 +1337,7 @@ class EntityCollection(object):
         Returns:
             EntityCollection
         """
+        self._verify_operability(*collections)
 
         ids = self.keys()
 
@@ -1400,7 +1443,7 @@ class EntityCollection(object):
                             path = ""
                         _ = __flatten(value, path)
                         if len(_.keys()) == 1:
-                            # if the childs are not branching we extract the values
+                            # if the children are not branching we extract the values
                             # and set them with the correct key
                             flat[key + "." + list(_.keys())[0]] = list(_.values())[0]
                         else:
@@ -1478,7 +1521,7 @@ class EntityCollection(object):
     def _simple_children_fetch(self, *attributes):
         # this is needed as a special case to avoid an infinite recursion due to
         # fetch_attributes calling getattr and getatrr calling fetch_attributes
-        # (wheh accessing children)
+        # (when accessing children)
         query = self.as_query(use_ids=True)
         # TODO(high): Reimplement the conditional fetching of non-existing projections.
         # Update the projections on the query object accordingly.
@@ -1503,7 +1546,7 @@ class EntityCollection(object):
             Any: whatever the attributes holds, most likely another EntityCollection
         """
 
-        relationship = self.query.entity_type.relationship.get(relative_type, default=TargetRelation()).relation
+        relationship = self.entity_type.relationship.get(relative_type, default=TargetRelation()).relation
         if not relationship:
             raise ValueError("Unknown relationship for relative '{}'".format(relative_type))
 
@@ -1541,7 +1584,7 @@ class EntityCollection(object):
         # make the Query class available
         _Query = getattr(importlib.import_module("...query", __name__), "Query")
 
-        # get the actual entity implemantions not the ForwardDeclare classes
+        # get the actual entity implementations not the ForwardDeclare classes
         _Recipient = getattr(importlib.import_module("..entities", __name__), "Recipient")
         _User = getattr(importlib.import_module("..entities", __name__), "User")
 
@@ -1867,7 +1910,11 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
     # this is how the query consolidates its criteria
     # having multiple filters allows us the inject criterion multiple times
     # Example:
-    #   Query(Task).inject("parent.parent.name is 'library').by_name(Project, "Foobar").inject("parent.status.name is 'Approved').get_all()
+    #   Query(Task).\
+    #       inject("parent.parent.name is 'library').\
+    #       by_name(Project, "Foobar").\
+    #       inject("parent.status.name is 'Approved').\
+    #       get_all()
     def inject(self, target, *filter):
         if any(re.search(r"^or\s*", _, flags=re.IGNORECASE) for _ in filter):
             raise ValueError(
