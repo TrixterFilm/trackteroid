@@ -41,7 +41,6 @@ from .schematypes import (
 
 
 class AssetVersion(Entity):
-    projections = ["id", "asset.name", "version"]
 
     relationship = Relationship()
     relationship.parent = "asset"
@@ -140,7 +139,6 @@ class AssetVersion(Entity):
 
 
 class TypedContext(Entity):
-    projections = ["id", "name"]
     relationship = Relationship()
 
     # only for autocompletion
@@ -300,7 +298,6 @@ class AssetGroup(TypedContext):
 
 
 class Component(Entity):
-    projections = ["id", "name"]
 
     relationship = Relationship()
     relationship.parent = "version"
@@ -361,19 +358,19 @@ class Component(Entity):
 
 
 class FileComponent(Component):
-    projections = ["id", "name"]
+    pass
 
 
 class ContainerComponent(Component):
-    projections = ["id", "name"]
+    pass
 
 
 class NoteComponent(Component):
-    projections = ["note_id", "component_id", "component"]
+    pass
 
 
 class Project(Entity):
-    projections = ["id", "name"]
+    pass
 
     @Criteria.supported_targets(Entity)
     def by_name(self, target, *names):
@@ -423,7 +420,6 @@ class Project(Entity):
 
 
 class ComponentLocation(Entity):
-    projections = ["id", "resource_identifier"]
 
     relationship = Relationship()
     relationship.parent = "component"
@@ -456,7 +452,6 @@ class ComponentLocation(Entity):
 
 
 class Asset(Entity):
-    projections = ["id", "name"]
 
     relationship = Relationship()
 
@@ -496,7 +491,6 @@ class Asset(Entity):
 
 
 class Status(Entity):
-    projections = ["id", "name"]
 
     relationship = Relationship()
 
@@ -507,21 +501,19 @@ class Status(Entity):
 
 
 class State(Entity):
-    projections = ["id", "name"]
 
     relationship = Relationship()
 
 
 class AssetVersionLink(Entity):
-    projections = ["id", "from_id", "to_id"]
+    pass
 
 
 class ProjectSchema(Entity):
-    projections = ["id", "name"]
+    pass
 
 
 class User(Entity):
-    projections = ["id", "username", "is_active"]
 
     relationship = Relationship()
 
@@ -540,7 +532,6 @@ class User(Entity):
 
 
 class Timelog(Entity):
-    projections =["id", "comment", "start", "duration"]
 
     relationship = Relationship()
     relationship.parent = "user"
@@ -567,19 +558,18 @@ class Timelog(Entity):
 
 
 class UserSecurityRole(Entity):
-    projections = ["id", "security_role", "projects"]
+    pass
 
 
 class UserSecurityRoleProject(Entity):
-    projections = ["id", "project"]
+    pass
 
 
 class SecurityRole(Entity):
-    projections = ["id", "name", "type"]
+    pass
 
 
 class Appointment(Entity):
-    projections = ["id", "resource", "resource.name"]
 
     relationship = Relationship()
     relationship.parent = "context"
@@ -599,19 +589,19 @@ class Appointment(Entity):
 
 
 class ObjectType(Entity):
-    projections = ["id"]
+    pass
 
 
 class Context(Entity):
-    projections = ["id"]
+    pass
 
 
 class AssetType(Entity):
-    projections = ["id", "name"]
+    pass
 
 
 class Event(Entity):
-    projections = ["id", "action", "user", "data"]
+    pass
 
     relationship = Relationship()
 
@@ -632,23 +622,23 @@ class Event(Entity):
 
 
 class TypedContextLink(Entity):
-    projections = ["id", "from_id", "to_id"]
+    pass
 
 
 class TaskTypeSchema(Entity):
-    projections = ["id", "types.name"]
+    pass
 
 
 class Type(Entity):
-    projections = ["id", "name"]
+    pass
 
 
 class Metadata(Entity):
-    projections = ["id", "key", "value"]
+    pass
 
 
 class NoteCategory(Entity):
-    projections = ["id", "name"]
+    pass
 
     @Criteria.supported_targets()
     def by_name(self, target, *names):
@@ -657,7 +647,7 @@ class NoteCategory(Entity):
 
 
 class Note(Entity):
-    projections = ["id", "content"]
+
     relationship = Relationship()
 
     # FIX: why do we need to set a parent if the precreate set
@@ -728,7 +718,7 @@ class Note(Entity):
 
 
 class ReviewSession(Entity):
-    projections = ["id", "name"]
+
     relationship = Relationship()
 
     def pre_create(self, **kwargs):
@@ -748,7 +738,7 @@ class ReviewSession(Entity):
 
 
 class ReviewSessionObject(Entity):
-    projections = ["id", "name"]
+
     relationship = Relationship()
     relationship.parent = "review_session"
 
@@ -762,7 +752,7 @@ class ReviewSessionObject(Entity):
 
 
 class ReviewSessionInvitee(Entity):
-    projections = ["id", "name", "email"]
+
     relationship = Relationship()
     # TEST: Check if this is needed or how it is actually used.
     relationship.parent = "review_session"
@@ -773,15 +763,11 @@ class ReviewSessionInvitee(Entity):
 
 
 class ReviewSessionObjectStatus(Entity):
-    projections = ["id", "status"]
+    pass
 
 
 class Recipient(Entity):
-    # recipients are only used in notes and thus we can simply project
-    # everything
-    projections = ["resource_id", "note", "note_id", "recipient", "user"]
-
-    relationship = Relationship()
+    pass
 
 
 class EntitySetting(Entity):
@@ -789,7 +775,6 @@ class EntitySetting(Entity):
 
 
 class Group(Entity):
-    projections = ["id", "name"]
 
     @Criteria.supported_targets()
     def by_name(self, target, *names):
@@ -798,9 +783,6 @@ class Group(Entity):
 
 
 class Job(Entity):
-    projections = ["id", "status", "data"]
-
-    relationship = Relationship()
 
     @Criteria.supported_targets(Entity)
     def by_name(self, target, *names):
@@ -876,11 +858,10 @@ class Job(Entity):
 
 
 class Membership(Entity):
-    projections = ["id", "group"]
+    pass
 
 
 class Location(Entity):
-    projections = ["id", "name"]
 
     @Criteria.supported_targets()
     def by_name(self, target, *names):
@@ -889,7 +870,6 @@ class Location(Entity):
 
 
 class List(Entity):
-    projections = ["id", "name"]
 
     relationship = Relationship()
 
@@ -941,9 +921,6 @@ class AssetVersionList(List):
 
 
 class ListCategory(Entity):
-    projections = ["id", "name"]
-
-    relationship = Relationship()
 
     @Criteria.supported_targets()
     def by_name(self, target, *names):
@@ -956,7 +933,6 @@ class WorkflowSchema(Entity):
 
 
 class NoteLabel(Entity):
-    projections = ["id", "name"]
 
     @Criteria.supported_targets(Entity)
     def by_name(self, target, *names):
@@ -971,4 +947,4 @@ class Resource(Entity):
 # automatically declare classes for all TypedContext objects
 for _type in OBJECT_TYPES.types:
     if _type not in locals() or issubclass(locals().get(_type, None), ForwardDeclaration):
-        locals()[_type] = type(str(_type), (TypedContext,), {"projections": ['id', 'name']})
+        locals()[_type] = type(str(_type), (TypedContext,), {})

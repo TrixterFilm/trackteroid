@@ -60,6 +60,7 @@ from ..query import (
 from ..configuration import (
     LOGGING_NAMESPACE,
     ALLOWED_FOR_DELETION_RESOLVER,
+    DEFAULT_PROJECTIONS_RESOLVER,
     WARN_ON_INJECT
 )
 
@@ -728,22 +729,6 @@ class EntityCollection(object):
             type_override=entity_type,
             source=getattr(matched_types, "source", None)
         )
-
-    def query_children(self, projections=None, session=None):
-        """Queries and returns the children of the collection. Only supported for
-        entities that have a "children" relation
-
-        Args:
-            projections (`list` of `str`): Projections to fetch from the children
-            session (Session): Optional session to use.
-
-        """
-        projections_ = ["children.{}".format(_) for _ in self._entity.projections]
-        projections_ += ["children.{}".format(x) for x in (projections or [])]
-        projections_.append("children.object_type.name")
-        query = self.as_query(use_ids=True)
-        query.projections = list(set(projections_).union(query.projections))  # update not override
-        return query.get_all(session=session or self._session).children
 
     # TODO: move to avoid circular import
     @staticmethod
@@ -1745,11 +1730,9 @@ class EntityCollection(object):
 
 
 class _EntityBase(object, metaclass=ForwardDeclareCompare):
+    _ftrack_entity = None
 
     relationship = Relationship()
-    projections = ["id"]
-    _ftrack_entity = None
-    log = None
 
     def __new__(cls, *args, **kwargs):
         """ make it possible to swap the Entity class with the given class
@@ -1763,7 +1746,6 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
         """
         if kwargs.get("_cls"):
             cls = kwargs["_cls"]
-            cls.log = logging.getLogger("{}.entities.{}".format(cls.__name__, LOGGING_NAMESPACE))
             del kwargs["_cls"]
 
         if cls and args and isinstance(args[0], (EntityCollection, EmptyCollection)):
@@ -1805,10 +1787,6 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
 
     def __init__(self, _cls=None, ftrack_entity=None, **kwargs):
         self.ftrack_entity = ftrack_entity
-        if not _cls:
-            self.log = logging.getLogger(
-                "{}.entities.{}".format(self.__class__.__name__, LOGGING_NAMESPACE)
-            )
 
     def __getitem__(self, item):
         # Try/Except against KeyError to keep compatibility with
@@ -1852,6 +1830,14 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
             return 0
         else:
             return 1
+
+    def projections(self, session):
+        return DEFAULT_PROJECTIONS_RESOLVER(session=session, type_name=self.__class__.__name__)
+
+    @classmethod
+    @property
+    def log(cls):
+        return logging.getLogger(f"{LOGGING_NAMESPACE}.entities.{cls.__name__}")
 
     def pre_create(self, **kwargs):
         return kwargs
