@@ -117,7 +117,12 @@ class Session(object):
 
         return _PARSED_RELATIONSHIPS_CACHE[self._session.server_url]
 
+    def get_type_class(self, type_name):
+        from .entities import entities
+        return getattr(entities, type_name, None)
+
     def get_cached_collections(self):
+        # TODO: Is this function still needed?
         typenames = sorted([str(k) for k, v in self._build_entity_type_classes(self.schemas).items()])
         type_module = importlib.import_module("..entities", __name__)
 
