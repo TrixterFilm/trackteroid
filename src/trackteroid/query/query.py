@@ -115,7 +115,7 @@ class Query(object):
 
         self.entity_type.relationship(session=session, schema=schema)
 
-        self.primary_key = self.entity_type.projections[0] if len(self.entity_type.projections) else "id"
+        self.primary_key = session.types[self.entity_type.__class__.__name__].primary_key_attributes[0]
         self.projections = []
         self.criteria = []
         self.session = session
@@ -157,10 +157,7 @@ class Query(object):
 
         projections = ", ".join(self.projections or self.entity_type.projections)
 
-        _query = "select {} from {}".format(
-                projections,
-                self.entity_type.__class__.__name__
-            )
+        _query = (f"select {projections} from " if projections else "") + f"{self.entity_type.__class__.__name__}"
 
         if self.criteria:
             # We sort the criteria based on the distance to the queried entity:
