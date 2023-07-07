@@ -34,7 +34,7 @@ from trackteroid import (
 )
 
 version_collection = Query(AssetVersion).get_first(projections=[Project.name])
-# Performing query: "select asset.name, task.project.name, id, version from Asset"
+# Performing query: "select asset.name, task.project.name, id, version from AssetVersion"
 
 # The abbreviation is not only working for projections, 
 # but also via attribute access on the resulting collection
