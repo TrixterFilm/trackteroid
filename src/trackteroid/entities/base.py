@@ -40,6 +40,10 @@ from collections import (
 from copy import copy
 import sys
 
+from ftrack_api.attribute import (
+    CollectionAttribute,
+    ReferenceAttribute
+)
 from ftrack_api.symbol import NOT_SET
 
 from .declarations import *
@@ -335,14 +339,14 @@ class EmptyCollection(object):
     def union(self, *collections):
         if len(collections) == 1:
             return collections[0]
-        
+
         first = collections[0]
         others = [_ for _ in collections[1:] if _]
         first_type = first.entity_type
         for other_type in (_.entity_type for _ in others if _):
             assert first_type == other_type, "Can't union collections with different types. {} != {}."\
                 .format(first_type, other_type)
-        
+
         return first.union(*others)
 
 
@@ -398,13 +402,34 @@ class EntityCollection(object):
             return False
 
     def __getattr__(self, item):
+        from .entities import TypedContext, Component
+        coercion_map = {
+            "parent": TypedContext,
+            "children": TypedContext,
+            "ancestors": TypedContext,
+            "descendants": TypedContext,
+            "components": Component
+        }
+
         # TODO: clean after we have tests for this functionality
-        if self and item in list(self.values())[0].ftrack_entity.keys():
+        sample_entity = list(self.values())[0].ftrack_entity
+
+        # Checking if an attribute exists on the ftrack entity via
+        # "item in sample_entity" for some reason triggers the attribute
+        # getter in the entity which in turn triggers a bug on the Ftrack API
+        # that "locks" an NOT_SET attribute via setting an empty collection as
+        # the local value. By checking the attributes schema we can bypass this
+        # behaviour
+        existing_attributes = [x.name for x in sample_entity.attributes]
+
+        if self and item in existing_attributes:
             entities = []
             values = []
             entity_type = None
+
             for entity in self.values():
                 value = entity[item]
+
                 # resolve entities in collections
                 if value.__class__.__name__ == "Collection":
                     for _ in value:
@@ -426,22 +451,48 @@ class EntityCollection(object):
                 else:
                     values.append(value)
 
+            # If all values are NOT_SET means we have not fetched that attribute
+            # that we're trying to retrieve. We must then pick up reference and
+            # collection attributes and properly return them as EmptyCollection
+            # of the proper entity type.
+            if values and all([x is NOT_SET for x in values]):
+                # We get the ftrack attribute type, to check if this attribute is a reference
+                # to any other type of entity
+                ftrack_attribute = sample_entity.attributes.get(item)
+
+                if isinstance(ftrack_attribute, (CollectionAttribute, ReferenceAttribute)):
+
+                    # If it's a collection or a reference attribute, we'll replace NOT_SET with
+                    # an empty collection of the right type, for that we need to determine what
+                    # type of attribute it is via its original Ftrack type schema:
+                    # Find the ftrack type schema
+                    type_schema = [x for x in self._session.schemas if x["id"] == sample_entity.entity_type][0]
+
+                    # Find the attribute schema
+                    attribute_schema = type_schema["properties"][item]
+
+                    # Find the actual reference type
+                    collection_type_name = attribute_schema.get("$ref")
+                    if collection_type_name is None:
+                        collection_type_name = attribute_schema["items"]["$ref"]
+
+                    # Convert it to a trackteroid type and coerce it
+                    entity_type_class = self._session.get_type_class(collection_type_name)
+                    entity_type_class = coercion_map.get(item, entity_type_class)
+
+                    # Finally return the actual emtpy collection
+                    return EmptyCollection(
+                        _type=entity_type_class(),
+                        source=self,
+                        session=self._session
+                    )
+
             if entities:
-                # wrap into lambdas so this will be only requested when needed
-                _to_typedcontext = lambda: getattr(importlib.import_module("..entities", __name__), "TypedContext")
-                _to_component = lambda: getattr(importlib.import_module("..entities", __name__), "Component")
-                _to_original = lambda: lambda collection: collection
+                collection = self.from_entities(entities, source=(item, self))
+                if item in coercion_map:
+                    return coercion_map[item](collection)
 
-                coerce_attributes = {
-                    "parent": _to_typedcontext,
-                    "children": _to_typedcontext,
-                    "ancestors": _to_typedcontext,
-                    "descendants": _to_typedcontext,
-                    "components": _to_component
-                }
-                coercion_type = coerce_attributes.get(item, _to_original)()
-
-                return coercion_type(self.from_entities(entities, source=(item, self)))
+                return collection
 
             elif entity_type:
                 return EmptyCollection(_type=entity_type, source=self, session=self._session)
@@ -698,11 +749,11 @@ class EntityCollection(object):
     # TODO: move to avoid circular import
     @staticmethod
     def _make_empty(entity_class, session):
+        from ..query import Query
         # UGLY AS HELL!!!!!
         entitycollection = EntityCollection(_cls=entity_class, entities=OrderedDict())
         # this special import is neccessary to avoid a circular import
-        adhoc_type = getattr(importlib.import_module("...query", __name__), "Query")
-        entitycollection.query = adhoc_type(entity=entity_class, session=session)
+        entitycollection.query = Query(entity=entity_class, session=session)
         entitycollection.query.valid = False
         entitycollection._session = session
         return entitycollection
@@ -1754,12 +1805,17 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
         self.ftrack_entity = ftrack_entity
 
     def __getitem__(self, item):
-        return self.ftrack_entity.get(item)
+        # Try/Except against KeyError to keep compatibility with
+        # what it would be "ftrack_entity.get()"
+        try:
+            return self._get_attribute(item)
+        except KeyError:
+            return None
 
     def __getattr__(self, item):
         value = None
         if item in self.ftrack_entity.keys():
-            value = self.ftrack_entity[item]
+            value = self._get_attribute(item)
             if hasattr(value, "entity_type"):
                 return Entity.from_entity_type(str(value.entity_type), ftrack_entity=value)
         return value
@@ -1803,6 +1859,30 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
 
     def pre_create(self, **kwargs):
         return kwargs
+
+    def _get_attribute(self, attribute_name):
+        """Gets an attribute value of the underlying Ftrack entity. Use
+        this function to bypass the issue with locking attributes in the
+        ftrack api
+
+        Args:
+            attribute_name (str): The attribute name
+
+        Raises:
+            KeyError: If the attribute does not exist
+        """
+
+        attribute = self.ftrack_entity.attributes.get(attribute_name)
+
+        if not attribute:
+            raise KeyError(attribute_name)
+
+        local_value = attribute.get_local_value(self.ftrack_entity)
+
+        if local_value is not NOT_SET:
+            return local_value
+
+        return attribute.get_remote_value(self.ftrack_entity)
 
     @property
     def ftrack_entity(self):
