@@ -155,7 +155,7 @@ class Query(object):
     def __str__(self):
         """ returns the generated query string """
 
-        projections = ", ".join(self.projections or self.entity_type.projections)
+        projections = ", ".join(self.projections or self.entity_type.projections(self.session))
 
         _query = (f"select {projections} from " if projections else "") + f"{self.entity_type.__class__.__name__}"
 
@@ -307,7 +307,7 @@ class Query(object):
                 else:
                     _projections.append(projection)
             # extend default projections
-            self.projections = list(set(_projections + self.entity_type.__class__.projections))
+            self.projections = list(set(_projections + self.entity_type.projections(self.session)))
 
     @property
     def valid(self):

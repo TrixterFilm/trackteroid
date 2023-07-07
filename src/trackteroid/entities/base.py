@@ -730,22 +730,6 @@ class EntityCollection(object):
             source=getattr(matched_types, "source", None)
         )
 
-    def query_children(self, projections=None, session=None):
-        """Queries and returns the children of the collection. Only supported for
-        entities that have a "children" relation
-
-        Args:
-            projections (`list` of `str`): Projections to fetch from the children
-            session (Session): Optional session to use.
-
-        """
-        projections_ = ["children.{}".format(_) for _ in self._entity.projections]
-        projections_ += ["children.{}".format(x) for x in (projections or [])]
-        projections_.append("children.object_type.name")
-        query = self.as_query(use_ids=True)
-        query.projections = list(set(projections_).union(query.projections))  # update not override
-        return query.get_all(session=session or self._session).children
-
     # TODO: move to avoid circular import
     @staticmethod
     def _make_empty(entity_class, session):
@@ -1847,10 +1831,8 @@ class _EntityBase(object, metaclass=ForwardDeclareCompare):
         else:
             return 1
 
-    @classmethod
-    @property
-    def projections(cls):
-        return DEFAULT_PROJECTIONS_RESOLVER(type_name=cls.__name__)
+    def projections(self, session):
+        return DEFAULT_PROJECTIONS_RESOLVER(session=session, type_name=self.__class__.__name__)
 
     @classmethod
     @property

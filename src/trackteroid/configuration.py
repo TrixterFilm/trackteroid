@@ -113,7 +113,7 @@ LOGGING_NAMESPACE = "trackteroid"
 # deletion for and resolves to True or False.
 ALLOWED_FOR_DELETION_RESOLVER = lambda session, type_name: True
 
-DEFAULT_PROJECTIONS_RESOLVER = lambda type_name: []
+DEFAULT_PROJECTIONS_RESOLVER = lambda session, type_name: []
 
 WARN_ON_INJECT = False
 ############################################################################################
