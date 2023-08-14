@@ -1518,7 +1518,8 @@ class EntityCollection(object):
             for resource_id in resource_ids:
                 recipient = recipients.create(
                     note_id=ftrack_note_entity["id"],
-                    resource_id=resource_id
+                    resource_id=resource_id,
+                    no_parent=True
                 )
                 ftrack_note_entity["recipients"].append(list(recipient.values())[0].ftrack_entity)
 
