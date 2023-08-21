@@ -1,24 +1,46 @@
+import dbm
 import os
-import shutil
+import platform
 import tempfile
 
+import ftrack_api
 import pytest
 
-from trackteroid import SESSION, Query, AssetVersion
-import dbm
+
+from trackteroid import (
+    SESSION,
+    Query,
+    AssetVersion,
+    User
+)
 
 
 @pytest.fixture
 def dumped_operations_file():
-    temp = tempfile.gettempdir()
-    yield os.path.join(temp, "operations.dbm")
-    # TODO: This fails as it's in use when it reaches teardown. Why?
-    # shutil.rmtree(temp)
+    yield os.path.join(tempfile.gettempdir(), "operations.dbm")
 
 
 @pytest.fixture
-def initial_operations_file():
-    return os.path.join(tempfile.gettempdir(), "operations.dbm")
+def initial_operations():
+    # these contents need to match the operations in the given resource file
+    test_data = {
+        "username": "demo.user@example.com",
+        "first_name": "demo",
+        "last_name": "user",
+        "is_active": True
+    }
+    yield (
+        f"{os.path.dirname(__file__)}/resources/session"
+        f"/operations_{'windows' if platform.platform().startswith('Windows') else 'linux'}.dbm",
+        test_data
+    )
+    with ftrack_api.Session(auto_populate=False, auto_connect_event_hub=False) as session:
+        demo_user = session.query(
+            f"select first_name, last_name from User where username is \"{test_data['username']}\""
+        ).first()
+        if demo_user:
+            session.delete(demo_user)
+            session.commit()
 
 
 def test_deferred_operations(dumped_operations_file):
@@ -50,26 +72,24 @@ def test_deferred_operations(dumped_operations_file):
     assert expected_keys, database.keys()
 
 
-def test_reconnect_and_commit(initial_operations_file):
+def test_reconnect_and_commit(initial_operations):
 
+    SESSION.reconnect_and_commit(initial_operations[0])
 
-
-    SESSION.reconnect_and_commit(initial_operations_file)
-
-    assetversion = Query(AssetVersion).by_id("fbb682b6-e9e6-4111-8edb-38d0797c9ffe").get_one(
-        projections=["components.name"]
+    user = Query(User).by_name(initial_operations[1]["username"]).get_one(
+        projections=["first_name", "last_name", "is_active"]
     )
-    assert 99 == assetversion.version[0]
-    assert "pymelle" == assetversion.components.name[0]
+    assert initial_operations[1]["first_name"] == user.first_name[0]
+    assert initial_operations[1]["last_name"] == user.last_name[0]
+    assert initial_operations[1]["is_active"] is True
 
 
-def test_get_cached_collections(initial_operations_file):
-    SESSION.reconnect_and_commit(initial_operations_file)
+def test_get_cached_collections(initial_operations):
+    SESSION.reconnect_and_commit(initial_operations[0])
 
-    avs = SESSION.get_cached_collections()[AssetVersion]
-    avs.fetch_attributes("asset.versions")
-
-    v99, rest = avs.asset.versions.partition(lambda x: x.version[0] == 99)
-    v99.uses_versions = rest
-
-    SESSION.commit()
+    cached_users = SESSION.get_cached_collections()[User]
+    for cached_user in cached_users:
+        user = Query(User).by_id(cached_user.id[0]).get_first(projections=["username", "first_name"])
+        if user:
+            users_split = user.partition(lambda u: u.username[0] == initial_operations[1]["username"])
+            assert users_split[0].first_name == [initial_operations[1]["first_name"]]
