@@ -18,9 +18,9 @@ from trackteroid import (
 from trackteroid.entities.base import EntityCollection, Entity
 
 
-def test_link_inputs(scenario_sequence):
+def test_link_inputs(scenario_sequence_folder):
     sequences = (
-        Query(Sequence).by_id(*scenario_sequence.sequence_ids).get_all(order_by="name")
+        Query(Sequence).by_id(*scenario_sequence_folder.entity_ids["Sequence"]).get_all(order_by="name")
     )
     sequence1 = sequences[0]
     sequence2 = sequences[1]
@@ -54,7 +54,7 @@ def test_link_inputs(scenario_sequence):
 
 
 def test_create(scenario_project, ftrack_session):
-    project = Query(Project).by_id(scenario_project.project_id).get_one()
+    project = Query(Project).by_id(scenario_project.entity_ids["Project"][0]).get_one()
 
     test_entities = []
 
@@ -146,7 +146,7 @@ def test_create_project(ftrack_session):
 
 
 def test_create_sequence(scenario_project):
-    test_project = Query(Project).by_id(scenario_project.project_id).get_one()
+    test_project = Query(Project).by_id(scenario_project.entity_ids["Project"][0]).get_one()
 
     with pytest.raises(AssertionError):
         test_project.children[Sequence].create()
@@ -163,9 +163,9 @@ def test_create_sequence(scenario_project):
     assert test_project.id == queried_sequence.parent_id
 
 
-def test_create_shot(scenario_sequence):
+def test_create_shot(scenario_sequence_folder):
     test_sequence = (
-        Query(Sequence).by_id(Project, scenario_sequence.project_id).get_all()
+        Query(Sequence).by_id(Project, scenario_sequence_folder.entity_ids["Project"][0]).get_all()
     )
 
     with pytest.raises(AssertionError):
@@ -177,7 +177,7 @@ def test_create_shot(scenario_sequence):
     assert "Ambiguous context" in str(excinfo.value)
 
     test_sequence = (
-        Query(Sequence).by_id(Project, scenario_sequence.project_id).get_first()
+        Query(Sequence).by_id(Project, scenario_sequence_folder.entity_ids["Project"][0]).get_first()
     )
     created_shot = test_sequence.children[Shot].create(name=str(uuid.uuid4()))
 
@@ -191,10 +191,10 @@ def test_create_shot(scenario_sequence):
     assert test_sequence.id == queried_shot.parent_id
 
 
-def test_create_task(scenario_shot):
+def test_create_task(scenario_assetbuild_shot):
     test_shot = (
         Query(Shot)
-        .by_id(Project, scenario_shot.project_id)
+        .by_id(Project, scenario_assetbuild_shot.entity_ids["Project"][0])
         .get_all(projections=["project.project_schema._task_type_schema.types.name"])
     )
     task_types = [
@@ -214,7 +214,7 @@ def test_create_task(scenario_shot):
         )
     assert "Ambiguous context" in str(context.value)
 
-    test_shot = Query(Shot).by_id(Project, scenario_shot.project_id).get_first()
+    test_shot = Query(Shot).by_id(Project, scenario_assetbuild_shot.entity_ids["Project"][0]).get_first()
 
     created_task = test_shot.children[Task].create(
         name=str(uuid.uuid4()), type=random.choice(task_types)
@@ -257,9 +257,9 @@ def _construct_collection_from_ftrack_entities(ftrack_entities, session):
     return collection
 
 
-def test_create_on_ambigious_context(scenario_shot_asset, scenario_assetbuild_asset, ftrack_session):
-    shots = scenario_shot_asset.grab(ftrack_session, "Shot", ["assets.id"])
-    asset_builds = scenario_assetbuild_asset.grab(ftrack_session, "AssetBuild", ["assets.id"])
+def test_create_on_ambigious_context(scenario_asset_task_version, ftrack_session):
+    shots = scenario_asset_task_version.grab(ftrack_session, "Shot", ["assets.id"])
+    asset_builds = scenario_asset_task_version.grab(ftrack_session, "AssetBuild", ["assets.id"])
 
     mix = [shots[0]["assets"][0], asset_builds[0]["assets"][0]]
 
@@ -277,7 +277,7 @@ def test_create_on_ambigious_context(scenario_shot_asset, scenario_assetbuild_as
     assert "Ambiguous context" in str(context.value)
 
 
-def test_create_note(scenario_shot):
+def test_create_note(scenario_assetbuild_shot):
     categories = Query(NoteCategory).get_all()
     # Run it three times, once on an empty collection, another in a collection
     # with a single entity and then two (this last one will test that the parent
@@ -285,7 +285,7 @@ def test_create_note(scenario_shot):
     for i in range(3):
         chosen_category = random.choice(categories)
         # Query every time to ensure the cache is not fooling the tests
-        test_shot = Query(Shot).by_id(*scenario_shot.shot_ids).get_first(projections=["notes.content"])
+        test_shot = Query(Shot).by_id(*scenario_assetbuild_shot.entity_ids["Shot"]).get_first(projections=["notes.content"])
 
         assert (
                 len(test_shot.notes) == i

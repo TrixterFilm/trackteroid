@@ -1,7 +1,6 @@
 import dbm
 import os
 import platform
-import shutil
 import tempfile
 
 import ftrack_api
@@ -9,11 +8,12 @@ import pytest
 
 
 from trackteroid import (
-    SESSION,
     Query,
-    AssetVersion,
+    Shot,
     User
 )
+
+from trackteroid.session import Session
 
 
 @pytest.fixture
@@ -46,21 +46,23 @@ def initial_operations():
 
 def test_deferred_operations(dumped_operations_file):
     # case 1. clear an existing cache temporarily
-    query_result = Query(AssetVersion).get_first(projections=["task", "version"])
-    operations_count = len(SESSION.recorded_operations)
+    session = Session()
+    operations_count = len(session.recorded_operations)
+    query_result = Query(Shot).get_first(projections=["name"])
 
     # do a query -> cache a result
-    with SESSION.deferred_operations(dumped_operations_file):
-        assert 0 == len(SESSION.recorded_operations)
+    with session.deferred_operations(dumped_operations_file):
+        assert 0 == len(session.recorded_operations)
 
-        avs = Query(AssetVersion).by_id(*query_result.id).get_one(projections=["task"])
-        avs.version = avs.version[0] + 10
-        avs2 = avs.create(task=avs.task)  # -> create entity, update task, update asset
-        avs2.version = avs.version[0] + 10
+        shot = Query(Shot).by_id(*query_result.id).get_one(projections=["name"])
+        print(shot)
+        shot.name = "first shot"
+        shot2 = shot.create(name="second shot")  # -> create entity, update task, update asset
+        shot2.name = "second shot renamed"
 
-        assert 5 == len(SESSION.recorded_operations)
+        assert 4 == len(session.recorded_operations)
 
-    assert operations_count == len(SESSION.recorded_operations)
+    assert operations_count == len(session.recorded_operations)
     # check the created file database
     database = dbm.open(dumped_operations_file, "r")
 
@@ -69,13 +71,13 @@ def test_deferred_operations(dumped_operations_file):
             lambda x: "('{}', ['{}'])".format(x.entity_type.__name__, x.id[0])
         )
 
-    expected_keys = make_keys(avs.union(avs2)) + make_keys(avs.task) + make_keys(avs.asset) + ["__operations__"]
+    expected_keys = make_keys(shot.union(shot2)) + ["__operations__"]
     assert expected_keys, database.keys()
 
 
 def test_reconnect_and_commit(initial_operations):
-
-    SESSION.reconnect_and_commit(initial_operations[0])
+    session = Session()
+    session.reconnect_and_commit(initial_operations[0])
 
     user = Query(User).by_name(initial_operations[1]["username"]).get_one(
         projections=["first_name", "last_name", "is_active"]
@@ -86,9 +88,12 @@ def test_reconnect_and_commit(initial_operations):
 
 
 def test_get_cached_collections(initial_operations):
-    SESSION.reconnect_and_commit(initial_operations[0])
+    session = Session()
+    session.reconnect_and_commit(initial_operations[0])
 
-    users = SESSION.get_cached_collections()[User].fetch_attributes("first_name", "last_name", "is_active")
-
-    users_split = users.partition(lambda u: u.username[0] == initial_operations[1]["username"])
-    assert users_split[0].first_name == [initial_operations[1]["first_name"]]
+    cached_users = session.get_cached_collections()[User]
+    for cached_user in cached_users:
+        user = Query(User).by_id(cached_user.id[0]).get_first(projections=["username", "first_name"])
+        assert user, "Cached user does not exist: {}".format(cached_user.id[0])
+        users_split = user.partition(lambda u: u.username[0] == initial_operations[1]["username"])
+        assert users_split[0].first_name == [initial_operations[1]["first_name"]]
